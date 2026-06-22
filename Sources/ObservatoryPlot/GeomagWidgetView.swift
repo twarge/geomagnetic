@@ -98,7 +98,6 @@ struct GeomagWidgetView: View {
                           stormIntervals: snapshot.stormIntervals,
                           showHeader: true,
                           headerFont: .footnote)
-                .widgetAccentable()
         }
     }
 
@@ -260,15 +259,19 @@ struct GeomagWidgetView: View {
         (value >= 0 ? "+" : "") + compact(value)
     }
 
+    /// Field-trajectory arrow. A change of less than 5 nT (over the last 30 minutes) is
+    /// shown as a flat/horizontal arrow; otherwise it slopes up or down.
+    static let steadyThreshold: Double = 5
+
     static func trendSymbol(_ value: Double) -> String {
-        if value > 0.5 { return "arrow.up.right" }
-        if value < -0.5 { return "arrow.down.right" }
+        if value >= steadyThreshold { return "arrow.up.right" }
+        if value <= -steadyThreshold { return "arrow.down.right" }
         return "arrow.right"
     }
 
     static func trendColor(_ value: Double) -> Color {
-        if value > 0.5 { return .green }
-        if value < -0.5 { return .orange }
+        if value >= steadyThreshold { return .green }
+        if value <= -steadyThreshold { return .orange }
         return .secondary
     }
 }

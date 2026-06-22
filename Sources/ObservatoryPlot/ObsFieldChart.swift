@@ -8,8 +8,15 @@
 //
 // Magnetic-storm sections (fast 30-minute field change) are highlighted with a warning-color
 // band and labelled along the bottom.
+//
+// Drawing is split into two layers so accessory complications can tint only the right
+// things: the *accent* layer (station code, the data trace + dot, and the y-axis marks)
+// gets the watch face's accent color; the *default* layer (gridlines, hour labels, dashed
+// reference line, storm bands/labels) renders in the muted default color. In full-color
+// contexts (the app and home-screen widgets) both layers draw their own colors as usual.
 
 import SwiftUI
+import WidgetKit
 
 struct ObsFieldChart: View {
     let series: [ObsLineSeries]
@@ -30,16 +37,20 @@ struct ObsFieldChart: View {
             if showHeader, let stationCode {
                 headerView(stationCode)
             }
-            Canvas { context, size in draw(context, size) }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            ZStack {
+                Canvas { context, size in drawDefaultLayer(context, size) }
+                Canvas { context, size in drawAccentLayer(context, size) }
+                    .widgetAccentable()
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 
-    // Only the station code is in the highlight/accent color; the value, unit, and trend
-    // arrow are the non-highlight color.
+    // Only the station code is accentable (highlight); the value, unit, and trend arrow are
+    // the muted default color.
     private func headerView(_ code: String) -> some View {
         HStack(spacing: 4) {
-            Text(code).foregroundStyle(Color.accentColor).fontWeight(.semibold)
+            Text(code).foregroundStyle(Color.accentColor).fontWeight(.semibold).widgetAccentable()
             if let latestValue {
                 Text(String(format: "%.2f", latestValue)).foregroundStyle(.primary)
             }
@@ -55,45 +66,58 @@ struct ObsFieldChart: View {
         .minimumScaleFactor(0.6)
     }
 
-    // MARK: - Drawing
+    // MARK: - Layout
 
-    private func draw(_ context: GraphicsContext, _ size: CGSize) {
-        let drawable = series.filter { $0.points.count >= 2 }
-        guard !drawable.isEmpty, size.width > 8, size.height > 8 else { return }
-        let xs = drawable.flatMap { $0.points.map(\.x) }
-        let ys = drawable.flatMap { $0.points.map(\.y) }
-        guard let xRange = ObsPlotRange(optionalValues: xs),
-              let yRange = ObsPlotRange(optionalValues: ys) else { return }
-
-        let storms = stormIntervals.filter { $0.category != .quiet && $0.end >= xRange.minimum && $0.start <= xRange.maximum }
-
-        // Integer-only y labels are narrow, so the plot reclaims the saved left margin.
-        let leftMargin: CGFloat = showMinMax ? 22 : 4
-        let hourMargin: CGFloat = showHourGrid ? 13 : 2
-        let stormMargin: CGFloat = storms.isEmpty ? 0 : 12
-        // Minimal top inset so the graph runs right up to the value in the header.
-        let topInset: CGFloat = 2
-        let rect = CGRect(x: leftMargin, y: topInset,
-                          width: max(1, size.width - leftMargin - 5),
-                          height: max(1, size.height - hourMargin - stormMargin - topInset))
-        let tint = Color.accentColor
+    private struct Geometry {
+        let rect: CGRect
+        let xRange: ObsPlotRange
+        let yRange: ObsPlotRange
+        let drawable: [ObsLineSeries]
+        let storms: [StormInterval]
 
         func px(_ x: Double) -> CGFloat { rect.minX + rect.width * CGFloat(xRange.unclampedRatio(for: x)) }
         func py(_ y: Double) -> CGFloat { rect.maxY - rect.height * CGFloat(yRange.unclampedRatio(for: y)) }
         func clampX(_ x: CGFloat) -> CGFloat { Swift.min(Swift.max(x, rect.minX), rect.maxX) }
+        var referenceY: Double? { drawable.first?.points.last?.y }
+    }
 
-        // Storm sections: warning-color band behind everything.
-        for storm in storms {
-            let x0 = clampX(px(storm.start))
-            let x1 = clampX(px(storm.end))
+    private func geometry(_ size: CGSize) -> Geometry? {
+        let drawable = series.filter { $0.points.count >= 2 }
+        guard !drawable.isEmpty, size.width > 8, size.height > 8 else { return nil }
+        let xs = drawable.flatMap { $0.points.map(\.x) }
+        let ys = drawable.flatMap { $0.points.map(\.y) }
+        guard let xRange = ObsPlotRange(optionalValues: xs),
+              let yRange = ObsPlotRange(optionalValues: ys) else { return nil }
+
+        let storms = stormIntervals.filter {
+            $0.category != .quiet && $0.end >= xRange.minimum && $0.start <= xRange.maximum
+        }
+        let leftMargin: CGFloat = showMinMax ? 22 : 4
+        let hourMargin: CGFloat = showHourGrid ? 13 : 2
+        let stormMargin: CGFloat = storms.isEmpty ? 0 : 12
+        let topInset: CGFloat = 2   // run the graph right up to the value in the header
+        let rect = CGRect(x: leftMargin, y: topInset,
+                          width: max(1, size.width - leftMargin - 5),
+                          height: max(1, size.height - hourMargin - stormMargin - topInset))
+        return Geometry(rect: rect, xRange: xRange, yRange: yRange, drawable: drawable, storms: storms)
+    }
+
+    // MARK: - Default layer (muted): gridlines, hour labels, dashed line, storm bands/labels
+
+    private func drawDefaultLayer(_ context: GraphicsContext, _ size: CGSize) {
+        guard let g = geometry(size) else { return }
+        let rect = g.rect
+
+        for storm in g.storms {
+            let x0 = g.clampX(g.px(storm.start))
+            let x1 = g.clampX(g.px(storm.end))
             let band = CGRect(x: x0, y: rect.minY, width: max(2, x1 - x0), height: rect.height)
             context.fill(Path(band), with: .color(Self.stormColor(storm.category).opacity(0.20)))
         }
 
-        // Faint vertical hour gridlines + hour labels.
         if showHourGrid {
-            for tick in hourTicks(min: xRange.minimum, max: xRange.maximum) {
-                let x = px(tick.epoch)
+            for tick in hourTicks(min: g.xRange.minimum, max: g.xRange.maximum) {
+                let x = g.px(tick.epoch)
                 guard x >= rect.minX - 0.5, x <= rect.maxX + 0.5 else { continue }
                 var line = Path()
                 line.move(to: CGPoint(x: x, y: rect.minY))
@@ -107,10 +131,8 @@ struct ObsFieldChart: View {
             }
         }
 
-        // Dashed reference line at the most recent reading.
-        let referenceY = drawable.first?.points.last?.y
-        if let referenceY {
-            let y = py(referenceY)
+        if let referenceY = g.referenceY {
+            let y = g.py(referenceY)
             var dashed = Path()
             dashed.move(to: CGPoint(x: rect.minX, y: y))
             dashed.addLine(to: CGPoint(x: rect.maxX, y: y))
@@ -118,40 +140,44 @@ struct ObsFieldChart: View {
                            style: StrokeStyle(lineWidth: 1, dash: [3, 3]))
         }
 
-        // Unfilled trace in the accent (highlight) color.
-        for item in drawable {
+        for storm in g.storms {
+            let mid = g.clampX((g.px(storm.start) + g.px(storm.end)) / 2)
+            context.draw(Text(storm.category.label).font(.system(size: 9, weight: .semibold))
+                            .foregroundStyle(Self.stormColor(storm.category)),
+                         at: CGPoint(x: mid, y: size.height - 2), anchor: .bottom)
+        }
+    }
+
+    // MARK: - Accent layer (highlight): trace, dot, y-axis marks
+
+    private func drawAccentLayer(_ context: GraphicsContext, _ size: CGSize) {
+        guard let g = geometry(size) else { return }
+        let rect = g.rect
+        let tint = Color.accentColor
+
+        for item in g.drawable {
             var path = Path()
-            path.move(to: CGPoint(x: px(item.points[0].x), y: py(item.points[0].y)))
+            path.move(to: CGPoint(x: g.px(item.points[0].x), y: g.py(item.points[0].y)))
             for point in item.points.dropFirst() {
-                path.addLine(to: CGPoint(x: px(point.x), y: py(point.y)))
+                path.addLine(to: CGPoint(x: g.px(point.x), y: g.py(point.y)))
             }
             context.stroke(path, with: .color(tint),
                            style: StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round))
         }
 
-        // Dot at the most recent point.
-        if let last = drawable.first?.points.last {
-            let center = CGPoint(x: px(last.x), y: py(last.y))
+        if let last = g.drawable.first?.points.last {
+            let center = CGPoint(x: g.px(last.x), y: g.py(last.y))
             let radius = max(2.5, lineWidth + 1.5)
             context.fill(Path(ellipseIn: CGRect(x: center.x - radius, y: center.y - radius,
                                                  width: radius * 2, height: radius * 2)),
                          with: .color(tint))
         }
 
-        // Y-axis markings: integer deviation from the reference (latest) line.
-        if showMinMax, let referenceY {
-            context.draw(Text(Self.signedInt(yRange.maximum - referenceY)).font(.system(size: 9)).foregroundStyle(tint),
+        if showMinMax, let referenceY = g.referenceY {
+            context.draw(Text(Self.signedInt(g.yRange.maximum - referenceY)).font(.system(size: 9)).foregroundStyle(tint),
                          at: CGPoint(x: 2, y: rect.minY), anchor: .topLeading)
-            context.draw(Text(Self.signedInt(yRange.minimum - referenceY)).font(.system(size: 9)).foregroundStyle(tint),
+            context.draw(Text(Self.signedInt(g.yRange.minimum - referenceY)).font(.system(size: 9)).foregroundStyle(tint),
                          at: CGPoint(x: 2, y: rect.maxY), anchor: .bottomLeading)
-        }
-
-        // Storm category labels along the very bottom, centered under each band.
-        for storm in storms {
-            let mid = clampX((px(storm.start) + px(storm.end)) / 2)
-            context.draw(Text(storm.category.label).font(.system(size: 9, weight: .semibold))
-                            .foregroundStyle(Self.stormColor(storm.category)),
-                         at: CGPoint(x: mid, y: size.height - 2), anchor: .bottom)
         }
     }
 

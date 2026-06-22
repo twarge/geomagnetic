@@ -54,12 +54,10 @@ final class WatchViewModel: ObservableObject {
         return (series.element, sample)
     }
 
+    /// Field trajectory over the last 30 minutes (latest minus ~30 min earlier).
     var trend: Double? {
-        guard let primaryCode = primary?.element.code,
-              let series = result?.series.first(where: { $0.element.code == primaryCode }),
-              let first = series.samples.first?.value,
-              let last = series.samples.last?.value else { return nil }
-        return last - first
+        guard let primaryCode = primary?.element.code else { return nil }
+        return result?.series.first(where: { $0.element.code == primaryCode })?.recentChange
     }
 
     var primarySparkline: [ObsLineSeries] {

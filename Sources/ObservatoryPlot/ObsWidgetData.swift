@@ -87,10 +87,7 @@ enum GeomagWidgetData {
 
         let primaryCode = ObservatoryElementPreference.primary(from: result.series.map { $0.element.code })
         let primarySeries = result.series.first { $0.element.code == primaryCode }
-        let trend: Double? = primarySeries.flatMap { s in
-            guard let first = s.samples.first?.value, let last = s.samples.last?.value else { return nil }
-            return last - first
-        }
+        let trend = primarySeries?.recentChange   // field trajectory over the last 30 minutes
         let activity: Double? = primarySeries.flatMap { s in
             let values = s.samples.map(\.value)
             guard let lo = values.min(), let hi = values.max() else { return nil }

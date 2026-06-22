@@ -216,9 +216,10 @@ public actor GeomagRepository {
             }
             samples.sort { $0.time < $1.time }
             let storms = StormDetector.intervals(from: samples)   // from full-res, before decimation
+            let recentChange = netChange(samples, window: StormDetector.windowSeconds)
             let decimated = decimate(samples, maxPoints: maxPoints)
             seriesList.append(GeomagSeries(element: GeomagElement(element), samples: decimated,
-                                           stormIntervals: storms))
+                                           stormIntervals: storms, recentChange: recentChange))
         }
 
         let covered: ClosedRange<Double>? = coveredHi >= coveredLo ? coveredLo...coveredHi : nil
@@ -226,6 +227,17 @@ public actor GeomagRepository {
         return GeomagSeriesResult(observatoryCode: code.uppercased(), series: seriesList,
                                   requestedRange: requestedRange, coveredRange: covered,
                                   fromCacheOnly: fromCacheOnly)
+    }
+
+    /// Net change between the latest sample and the finite sample nearest to `window`
+    /// seconds before it — the field's trajectory over the trailing window.
+    static func netChange(_ samples: [GeomagSample], window: Double) -> Double? {
+        guard let last = samples.last else { return nil }
+        let target = last.time - window
+        guard let nearest = samples.min(by: { abs($0.time - target) < abs($1.time - target) }) else {
+            return nil
+        }
+        return last.value - nearest.value
     }
 
     /// Min/max envelope decimation: preserves storm spikes that average/stride decimation

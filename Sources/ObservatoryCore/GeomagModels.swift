@@ -118,11 +118,16 @@ public struct GeomagSeries: Sendable, Identifiable {
     public let element: GeomagElement
     public let samples: [GeomagSample]
     public let stormIntervals: [StormInterval]
+    /// Net field change over the last 30 minutes of available data (latest minus the value
+    /// ~30 min earlier), computed from full-resolution samples. nil if unknown.
+    public let recentChange: Double?
 
-    public init(element: GeomagElement, samples: [GeomagSample], stormIntervals: [StormInterval] = []) {
+    public init(element: GeomagElement, samples: [GeomagSample],
+                stormIntervals: [StormInterval] = [], recentChange: Double? = nil) {
         self.element = element
         self.samples = samples
         self.stormIntervals = stormIntervals
+        self.recentChange = recentChange
     }
 
     public var id: String { element.code }
