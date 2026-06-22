@@ -1,0 +1,274 @@
+// SPDX-FileCopyrightText: 2026 Twarge LLC
+// SPDX-License-Identifier: Apache-2.0
+//
+// One adaptive view for every WidgetKit family — iOS/macOS home-screen widgets, iOS lock
+// screen accessories, and watch complications — driven by a GeomagWidgetSnapshot. The
+// `style` selects which member of the widget/complication set is being rendered.
+
+import SwiftUI
+import WidgetKit
+
+enum GeomagWidgetStyle {
+    case field        // headline value + sparkline
+    case chart        // sparkline-dominant
+    case components   // grid of every component's current value
+}
+
+struct GeomagWidgetView: View {
+    let snapshot: GeomagWidgetSnapshot
+    var style: GeomagWidgetStyle = .field
+    @Environment(\.widgetFamily) private var family
+
+    var body: some View {
+        content
+            .containerBackground(for: .widget) { background }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        switch family {
+        case .accessoryInline:
+            Text(inlineText)
+        case .accessoryCircular:
+            circular
+        case .accessoryRectangular:
+            rectangularChart
+        default:
+            #if os(watchOS)
+            if family == .accessoryCorner {
+                corner
+            } else {
+                circular
+            }
+            #else
+            systemTile
+            #endif
+        }
+    }
+
+    // MARK: - Accessory families
+
+    private var inlineText: String {
+        guard let value = snapshot.primaryValue, let element = snapshot.primaryElement else {
+            return "\(snapshot.observatoryCode) —"
+        }
+        if style == .chart, let activity = snapshot.activity {
+            return "\(snapshot.observatoryCode) \(element.code) ±\(Self.compact(activity)) \(element.unit)"
+        }
+        return "\(snapshot.observatoryCode) \(element.code) \(Self.compact(value)) \(element.unit)"
+    }
+
+    private var circular: some View {
+        ZStack {
+            AccessoryWidgetBackground()
+            VStack(spacing: 0) {
+                Text(snapshot.primaryElement?.code ?? snapshot.observatoryCode)
+                    .font(.system(size: 11, weight: .semibold))
+                Text(snapshot.primaryValue.map(Self.compactShort) ?? "—")
+                    .font(.system(size: 15, weight: .bold, design: .rounded))
+                    .minimumScaleFactor(0.5)
+                    .lineLimit(1)
+                if !snapshot.sparkline.isEmpty {
+                    ObsSparkline(series: snapshot.sparkline, lineWidth: 1.4, showsLatestDot: false)
+                        .frame(height: 9)
+                        .widgetAccentable()
+                }
+            }
+            .padding(2)
+        }
+    }
+
+    // The largest accessory family — the watch rectangular complication and the iOS
+    // lock-screen rectangular — uses the same chart style as the watch app.
+    @ViewBuilder
+    private var rectangularChart: some View {
+        if snapshot.sparkline.isEmpty {
+            HStack(spacing: 4) {
+                Text(snapshot.observatoryCode).foregroundStyle(Color.accentColor).fontWeight(.semibold)
+                Text(snapshot.primaryValue.map { Self.compact($0) } ?? "—")
+                Spacer(minLength: 0)
+            }
+            .font(.footnote)
+        } else {
+            ObsFieldChart(series: snapshot.sparkline,
+                          stationCode: snapshot.observatoryCode,
+                          latestValue: snapshot.primaryValue,
+                          unit: snapshot.primaryElement?.unit,
+                          trend: snapshot.trend,
+                          stormIntervals: snapshot.stormIntervals,
+                          showHeader: true,
+                          headerFont: .footnote)
+                .widgetAccentable()
+        }
+    }
+
+    #if os(watchOS)
+    private var corner: some View {
+        Text(snapshot.primaryValue.map(Self.compactShort) ?? "—")
+            .font(.system(size: 16, weight: .bold, design: .rounded))
+            .widgetLabel("\(snapshot.observatoryCode) \(snapshot.primaryElement?.code ?? "")")
+    }
+    #endif
+
+    // MARK: - System families (iOS / macOS)
+
+    @ViewBuilder
+    private var systemTile: some View {
+        switch style {
+        case .field:
+            fieldTile
+        case .chart:
+            chartTile
+        case .components:
+            #if os(iOS) || os(macOS)
+            family == .systemSmall ? AnyView(fieldTile) : AnyView(componentsTile)
+            #else
+            fieldTile
+            #endif
+        }
+    }
+
+    private var systemHeader: some View {
+        HStack(alignment: .firstTextBaseline) {
+            Text(snapshot.observatoryCode).font(.headline)
+            Spacer()
+            Text(snapshot.range.shortLabel).font(.caption2).foregroundStyle(.secondary)
+        }
+    }
+
+    private var fieldTile: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            systemHeader
+            #if os(iOS) || os(macOS)
+            if family != .systemSmall {
+                Text(snapshot.observatoryName).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+            }
+            #endif
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                Text(snapshot.primaryValue.map { Self.compact($0) } ?? "—")
+                    .font(.system(.title2, design: .rounded).weight(.semibold))
+                    .minimumScaleFactor(0.5).lineLimit(1)
+                if let element = snapshot.primaryElement {
+                    Text(element.unit).font(.caption2).foregroundStyle(.secondary)
+                }
+                if let trend = snapshot.trend {
+                    Image(systemName: Self.trendSymbol(trend)).font(.caption).foregroundStyle(Self.trendColor(trend))
+                }
+            }
+            fieldChart(showHeader: false)
+        }
+    }
+
+    // Sparkline-dominant tile: the health-style chart carries its own "FRD 50083.42" header.
+    private var chartTile: some View {
+        fieldChart(showHeader: true)
+    }
+
+    @ViewBuilder
+    private func fieldChart(showHeader: Bool) -> some View {
+        if snapshot.sparkline.isEmpty {
+            VStack(alignment: .leading, spacing: 4) {
+                if showHeader { systemHeader }
+                sparklineOrPlaceholder(fill: false)
+            }
+        } else {
+            ObsFieldChart(series: snapshot.sparkline,
+                          stationCode: snapshot.observatoryCode,
+                          latestValue: snapshot.primaryValue,
+                          unit: snapshot.primaryElement?.unit,
+                          trend: showHeader ? snapshot.trend : nil,
+                          stormIntervals: snapshot.stormIntervals,
+                          showHeader: showHeader,
+                          headerFont: .subheadline)
+        }
+    }
+
+    private var componentsTile: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            systemHeader
+            Text(snapshot.observatoryName).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+            if snapshot.components.isEmpty {
+                sparklineOrPlaceholder(fill: false)
+            } else {
+                LazyVGrid(columns: [GridItem(.flexible(), alignment: .leading),
+                                    GridItem(.flexible(), alignment: .leading)], spacing: 8) {
+                    ForEach(snapshot.components) { component in
+                        let index = snapshot.components.firstIndex { $0.id == component.id } ?? 0
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text(component.element.code)
+                                .font(.caption2.weight(.semibold))
+                                .foregroundStyle(ObsPlotSeriesPalette.color(at: index))
+                            HStack(spacing: 3) {
+                                Text(Self.compact(component.value))
+                                    .font(.system(.body, design: .rounded).weight(.semibold))
+                                    .monospacedDigit().minimumScaleFactor(0.5).lineLimit(1)
+                                Text(component.element.unit).font(.caption2).foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                }
+                Spacer(minLength: 0)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func sparklineOrPlaceholder(fill: Bool) -> some View {
+        if !snapshot.sparkline.isEmpty {
+            ObsSparkline(series: snapshot.sparkline, lineWidth: 2, showsLatestDot: true, fill: fill)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else {
+            Text("No recent data").font(.caption2).foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+    }
+
+    // MARK: - Background
+
+    @ViewBuilder
+    private var background: some View {
+        switch family {
+        case .accessoryInline, .accessoryCircular, .accessoryRectangular:
+            Color.clear
+        default:
+            #if os(watchOS)
+            Color.clear
+            #else
+            LinearGradient(colors: [Color.accentColor.opacity(0.18), Color.accentColor.opacity(0.04)],
+                           startPoint: .topLeading, endPoint: .bottomTrailing)
+            #endif
+        }
+    }
+
+    // MARK: - Formatting
+
+    static func compact(_ value: Double) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = abs(value) < 100 ? 1 : 0
+        return formatter.string(from: NSNumber(value: value)) ?? String(format: "%.0f", value)
+    }
+
+    static func compactShort(_ value: Double) -> String {
+        let magnitude = abs(value)
+        if magnitude >= 10_000 { return String(format: "%.1fk", value / 1_000) }
+        if magnitude >= 1_000 { return String(format: "%.2fk", value / 1_000) }
+        return String(format: "%.0f", value)
+    }
+
+    static func signed(_ value: Double) -> String {
+        (value >= 0 ? "+" : "") + compact(value)
+    }
+
+    static func trendSymbol(_ value: Double) -> String {
+        if value > 0.5 { return "arrow.up.right" }
+        if value < -0.5 { return "arrow.down.right" }
+        return "arrow.right"
+    }
+
+    static func trendColor(_ value: Double) -> Color {
+        if value > 0.5 { return .green }
+        if value < -0.5 { return .orange }
+        return .secondary
+    }
+}
