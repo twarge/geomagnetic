@@ -17,7 +17,8 @@ been removed and replaced with an INTERMAGNET data layer.
 ## What it does
 
 - **Browse observatories** — a searchable directory of INTERMAGNET stations with favorites.
-- **Plot the field** — X/Y/Z/H/D/F/G components on an interactive UTC time axis. Pinch or
+- **Plot the field** — X/Y/Z/H/D/F/G components on an interactive time axis shown in your
+  local time zone (the data itself is UTC). Pinch or
   drag to zoom, double-tap to reset, pan with two fingers / scroll.
 - **Pick a window** — 3H / 6H / 1D / 3D / 1W / 1M, each fetched on demand.
 - **Spot storms** — sections where the field changes by ≥50 nT within 30 minutes are flagged

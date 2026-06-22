@@ -53,6 +53,20 @@ struct ObsAxisDescriptor {
     }
 }
 
+/// Time formatting that honors the device's "24-Hour Time" setting.
+enum ObsClock {
+    static var is24Hour: Bool {
+        let template = DateFormatter.dateFormat(fromTemplate: "j", options: 0, locale: .current) ?? ""
+        return !template.contains("a")
+    }
+
+    /// Standard hour:minute label format, e.g. "06:00" / "18:00" (24h) or "6:00AM" (12h).
+    static var hourMinuteFormat: String { is24Hour ? "HH:mm" : "h:mma" }
+
+    /// Short hour-only label format for compact charts, e.g. "06" / "18" (24h) or "6AM" (12h).
+    static var hourFormat: String { is24Hour ? "HH" : "ha" }
+}
+
 /// Time-aware x-axis: picks human-friendly tick spacing (seconds → years) and formats
 /// the labels in the requested time zone.
 enum ObsTimeAxis {
@@ -199,8 +213,8 @@ enum ObsTimeAxis {
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.timeZone = timeZone
         switch style {
-        case .secs:  formatter.dateFormat = "HH:mm:ss"
-        case .time:  formatter.dateFormat = "HH:mm"
+        case .secs:  formatter.dateFormat = ObsClock.is24Hour ? "HH:mm:ss" : "h:mm:ssa"
+        case .time:  formatter.dateFormat = ObsClock.hourMinuteFormat
         case .day:   formatter.dateFormat = includeYear ? "yyyy-MM-dd" : "MMM d"
         case .month: formatter.dateFormat = "MMM yyyy"
         case .year:  formatter.dateFormat = "yyyy"

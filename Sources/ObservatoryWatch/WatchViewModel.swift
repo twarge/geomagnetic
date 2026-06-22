@@ -18,6 +18,31 @@ final class WatchViewModel: ObservableObject {
 
     var observatory: GeomagObservatory { Observatories.observatory(code: code) ?? Observatories.default }
 
+    /// Full station name from the data's IAGA header when available, else the bundled name.
+    var stationName: String {
+        if let name = result?.stationName, !name.isEmpty { return name }
+        return observatory.name
+    }
+
+    /// Complete "Source of Data" text from the IAGA header (no abbreviation), shown as the
+    /// attribution below the graphs.
+    var sourceText: String? {
+        guard let source = result?.source, !source.isEmpty else { return nil }
+        return source
+    }
+
+    /// One graph per reported element, F first, then X / Y / Z, then the rest.
+    var elementGraphs: [WatchElementGraph] {
+        guard let result else { return [] }
+        let order = ["F", "X", "Y", "Z", "H", "D", "G", "I", "S"]
+        return result.series.sorted {
+            (order.firstIndex(of: $0.element.code) ?? 99) < (order.firstIndex(of: $1.element.code) ?? 99)
+        }.map {
+            WatchElementGraph(element: $0.element, value: $0.latest?.value, trend: $0.recentChange,
+                              sparkline: [$0.obsLineSeries(index: 0)], storms: $0.stormIntervals)
+        }
+    }
+
     func load(force: Bool = false) async {
         isLoading = true
         errorMessage = nil
@@ -89,4 +114,14 @@ final class WatchViewModel: ObservableObject {
     }
 
     var hasData: Bool { !(result?.isEmpty ?? true) }
+}
+
+/// One element's compact graph for the watch's scrollable stack.
+struct WatchElementGraph: Identifiable {
+    let element: GeomagElement
+    let value: Double?
+    let trend: Double?
+    let sparkline: [ObsLineSeries]
+    let storms: [StormInterval]
+    var id: String { element.code }
 }

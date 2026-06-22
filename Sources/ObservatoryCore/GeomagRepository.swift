@@ -224,9 +224,11 @@ public actor GeomagRepository {
 
         let covered: ClosedRange<Double>? = coveredHi >= coveredLo ? coveredLo...coveredHi : nil
         let fromCacheOnly = days.allSatisfy { $0.isFinal }
+        let stationName = days.compactMap { $0.stationName }.last
+        let source = days.compactMap { $0.source }.last
         return GeomagSeriesResult(observatoryCode: code.uppercased(), series: seriesList,
                                   requestedRange: requestedRange, coveredRange: covered,
-                                  fromCacheOnly: fromCacheOnly)
+                                  fromCacheOnly: fromCacheOnly, stationName: stationName, source: source)
     }
 
     /// Net change between the latest sample and the finite sample nearest to `window`

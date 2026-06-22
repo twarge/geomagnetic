@@ -116,7 +116,9 @@ public struct GINClient: Sendable {
                 elements: elements,
                 values: columns,
                 isFinal: dayStart < today,
-                fetchedAt: now
+                fetchedAt: now,
+                stationName: parsed.stationName,
+                source: parsed.source
             )
         }
         .sorted { $0.dayStart < $1.dayStart }

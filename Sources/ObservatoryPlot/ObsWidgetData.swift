@@ -32,6 +32,13 @@ struct GeomagWidgetSnapshot: Sendable {
     var isPlaceholder: Bool
 
     var hasData: Bool { primaryValue != nil && !sparkline.isEmpty }
+
+    /// Min…max of the primary element over the window (for the corner range gauge).
+    var primaryRange: ClosedRange<Double>? {
+        let values = sparkline.first?.points.map(\.y) ?? []
+        guard let lo = values.min(), let hi = values.max(), hi > lo else { return nil }
+        return lo...hi
+    }
 }
 
 enum GeomagWidgetData {

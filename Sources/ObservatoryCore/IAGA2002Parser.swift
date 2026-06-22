@@ -7,6 +7,7 @@ import Foundation
 public struct ParsedIAGA: Sendable {
     public var observatoryCode: String
     public var stationName: String?
+    public var source: String?         // "Source of Data" — operating institute (for attribution)
     public var latitude: Double?
     public var longitude: Double?      // normalized to [-180, 180]
     public var elevation: Double?
@@ -34,6 +35,7 @@ public enum IAGA2002Parser {
 
         var code: String?
         var stationName: String?
+        var source: String?
         var latitude: Double?
         var longitude: Double?
         var elevation: Double?
@@ -69,6 +71,7 @@ public enum IAGA2002Parser {
             switch label.lowercased() {
             case "iaga code":            code = value.uppercased()
             case "station name":         stationName = value
+            case "source of data":       source = value
             case "geodetic latitude":    latitude = Double(value)
             case "geodetic longitude":   longitude = Double(value).map(normalizeLongitude)
             case "elevation":            elevation = Double(value)
@@ -88,6 +91,7 @@ public enum IAGA2002Parser {
         return ParsedIAGA(
             observatoryCode: code ?? "",
             stationName: stationName,
+            source: source,
             latitude: latitude,
             longitude: longitude,
             elevation: elevation,

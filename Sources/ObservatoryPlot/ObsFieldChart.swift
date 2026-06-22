@@ -21,21 +21,25 @@ import WidgetKit
 struct ObsFieldChart: View {
     let series: [ObsLineSeries]
     var stationCode: String? = nil
+    var element: String? = nil      // shown after the station code, e.g. "FRD F"
     var latestValue: Double? = nil
     var unit: String? = nil
     var trend: Double? = nil
     var stormIntervals: [StormInterval] = []
-    var timeZone: TimeZone = .gmt
+    var timeZone: TimeZone = .current
     var showHeader: Bool = true
     var showHourGrid: Bool = true
     var showMinMax: Bool = true
+    /// Drop the top/bottom margins so the trace uses the full height (hour labels overlay
+    /// the bottom). Used by the small complication to reclaim vertical space.
+    var fillsVertically: Bool = false
     var lineWidth: CGFloat = 1.6
     var headerFont: Font = .headline
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            if showHeader, let stationCode {
-                headerView(stationCode)
+            if showHeader, stationCode != nil || latestValue != nil {
+                headerView
             }
             ZStack {
                 Canvas { context, size in drawDefaultLayer(context, size) }
@@ -46,11 +50,16 @@ struct ObsFieldChart: View {
         }
     }
 
-    // Only the station code is accentable (highlight); the value, unit, and trend arrow are
-    // the muted default color.
-    private func headerView(_ code: String) -> some View {
+    // Only the station code (when shown) is accentable (highlight); the value, unit, and
+    // trend arrow are the muted default color.
+    private var headerView: some View {
         HStack(spacing: 4) {
-            Text(code).foregroundStyle(Color.accentColor).fontWeight(.semibold).widgetAccentable()
+            if let stationCode {
+                Text(stationCode).foregroundStyle(Color.accentColor).fontWeight(.semibold).widgetAccentable()
+            }
+            if let element {
+                Text(element).foregroundStyle(Color.accentColor).fontWeight(.semibold).widgetAccentable()
+            }
             if let latestValue {
                 Text(String(format: "%.2f", latestValue)).foregroundStyle(.primary)
             }
@@ -59,6 +68,12 @@ struct ObsFieldChart: View {
             }
             if let trend {
                 Image(systemName: GeomagWidgetView.trendSymbol(trend)).foregroundStyle(.secondary)
+            }
+            // In the complication (where storm labels are suppressed), also flag a storm with
+            // a warning symbol next to the arrow, colored by severity.
+            if fillsVertically, let worst = stormIntervals.map(\.category).max() {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .foregroundStyle(Self.stormColor(worst))
             }
         }
         .font(headerFont)
@@ -93,9 +108,9 @@ struct ObsFieldChart: View {
             $0.category != .quiet && $0.end >= xRange.minimum && $0.start <= xRange.maximum
         }
         let leftMargin: CGFloat = showMinMax ? 22 : 4
-        let hourMargin: CGFloat = showHourGrid ? 13 : 2
-        let stormMargin: CGFloat = storms.isEmpty ? 0 : 12
-        let topInset: CGFloat = 2   // run the graph right up to the value in the header
+        let hourMargin: CGFloat = fillsVertically ? 0 : (showHourGrid ? 13 : 2)
+        let stormMargin: CGFloat = (fillsVertically || storms.isEmpty) ? 0 : 12
+        let topInset: CGFloat = fillsVertically ? 0 : 2   // else, run up to the header value
         let rect = CGRect(x: leftMargin, y: topInset,
                           width: max(1, size.width - leftMargin - 5),
                           height: max(1, size.height - hourMargin - stormMargin - topInset))
@@ -125,8 +140,10 @@ struct ObsFieldChart: View {
                 context.stroke(line, with: .color(.secondary.opacity(tick.labeled ? 0.32 : 0.16)),
                                lineWidth: tick.labeled ? 1 : 0.75)
                 if let label = tick.label {
-                    context.draw(Text(label).font(.system(size: 9)).foregroundStyle(.secondary),
-                                 at: CGPoint(x: x, y: rect.maxY + 2), anchor: .top)
+                    let point = fillsVertically ? CGPoint(x: x, y: size.height - 1)
+                                                : CGPoint(x: x, y: rect.maxY + 2)
+                    context.draw(Text(label).font(.system(size: 9)).foregroundStyle(.primary),
+                                 at: point, anchor: fillsVertically ? .bottom : .top)
                 }
             }
         }
@@ -140,11 +157,13 @@ struct ObsFieldChart: View {
                            style: StrokeStyle(lineWidth: 1, dash: [3, 3]))
         }
 
-        for storm in g.storms {
-            let mid = g.clampX((g.px(storm.start) + g.px(storm.end)) / 2)
-            context.draw(Text(storm.category.label).font(.system(size: 9, weight: .semibold))
-                            .foregroundStyle(Self.stormColor(storm.category)),
-                         at: CGPoint(x: mid, y: size.height - 2), anchor: .bottom)
+        if !fillsVertically {
+            for storm in g.storms {
+                let mid = g.clampX((g.px(storm.start) + g.px(storm.end)) / 2)
+                context.draw(Text(storm.category.label).font(.system(size: 9, weight: .semibold))
+                                .foregroundStyle(Self.stormColor(storm.category)),
+                             at: CGPoint(x: mid, y: size.height - 2), anchor: .bottom)
+            }
         }
     }
 
@@ -211,7 +230,8 @@ struct ObsFieldChart: View {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.timeZone = timeZone
-        formatter.dateFormat = labelStep < 24 ? "ha" : "M/d"
+        // Short hour-only labels keep the compact axis from overlapping (e.g. "06" / "6AM").
+        formatter.dateFormat = labelStep < 24 ? ObsClock.hourFormat : "M/d"
 
         let endLocalHour = max / 3_600 + offsetHours
         var localHour = ((min / 3_600 + offsetHours) / gridStep).rounded(.up) * gridStep

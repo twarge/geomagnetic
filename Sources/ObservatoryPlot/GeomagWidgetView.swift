@@ -17,10 +17,18 @@ enum GeomagWidgetStyle {
 struct GeomagWidgetView: View {
     let snapshot: GeomagWidgetSnapshot
     var style: GeomagWidgetStyle = .field
+    /// When the host disables content margins, re-apply them on every side but the top so
+    /// the header sits flush with the top edge (used by the complication).
+    var dropsTopMargin: Bool = false
     @Environment(\.widgetFamily) private var family
+    @Environment(\.widgetContentMargins) private var contentMargins
 
     var body: some View {
         content
+            .padding(dropsTopMargin
+                     ? EdgeInsets(top: 0, leading: contentMargins.leading,
+                                  bottom: contentMargins.bottom, trailing: contentMargins.trailing)
+                     : EdgeInsets())
             .containerBackground(for: .widget) { background }
     }
 
@@ -62,19 +70,19 @@ struct GeomagWidgetView: View {
         ZStack {
             AccessoryWidgetBackground()
             VStack(spacing: 0) {
-                Text(snapshot.primaryElement?.code ?? snapshot.observatoryCode)
-                    .font(.system(size: 11, weight: .semibold))
-                Text(snapshot.primaryValue.map(Self.compactShort) ?? "—")
-                    .font(.system(size: 15, weight: .bold, design: .rounded))
-                    .minimumScaleFactor(0.5)
+                Text("\(snapshot.observatoryCode) \(snapshot.primaryElement?.code ?? "")")
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundStyle(Color.accentColor)
+                    .widgetAccentable()
+                    .minimumScaleFactor(0.7)
                     .lineLimit(1)
-                if !snapshot.sparkline.isEmpty {
-                    ObsSparkline(series: snapshot.sparkline, lineWidth: 1.4, showsLatestDot: false)
-                        .frame(height: 9)
-                        .widgetAccentable()
-                }
+                // The full 5-digit reading in nT, no decimals.
+                Text(snapshot.primaryValue.map { String(Int($0.rounded())) } ?? "—")
+                    .font(.system(size: 18, weight: .semibold, design: .rounded))
+                    .minimumScaleFactor(0.4)
+                    .lineLimit(1)
             }
-            .padding(2)
+            .padding(.horizontal, 1)
         }
     }
 
@@ -92,20 +100,47 @@ struct GeomagWidgetView: View {
         } else {
             ObsFieldChart(series: snapshot.sparkline,
                           stationCode: snapshot.observatoryCode,
+                          element: snapshot.primaryElement?.code,
                           latestValue: snapshot.primaryValue,
                           unit: snapshot.primaryElement?.unit,
                           trend: snapshot.trend,
                           stormIntervals: snapshot.stormIntervals,
                           showHeader: true,
+                          fillsVertically: true,
                           headerFont: .footnote)
         }
     }
 
     #if os(watchOS)
+    @ViewBuilder
     private var corner: some View {
-        Text(snapshot.primaryValue.map(Self.compactShort) ?? "—")
-            .font(.system(size: 16, weight: .bold, design: .rounded))
-            .widgetLabel("\(snapshot.observatoryCode) \(snapshot.primaryElement?.code ?? "")")
+        if let current = snapshot.primaryValue, let range = snapshot.primaryRange {
+            // "FRD F" is the inner content; the gauge hugs the dial (widgetLabel) with the
+            // reading as its currentValueLabel (on the arc), the marker at the current reading,
+            // and the ends labeled as the variation from the current reading.
+            Text("\(snapshot.observatoryCode) \(snapshot.primaryElement?.code ?? "")")
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(Color.accentColor)
+                .widgetAccentable()
+                .minimumScaleFactor(0.5)
+                .lineLimit(1)
+                .widgetLabel {
+                    Gauge(value: Swift.min(Swift.max(current, range.lowerBound), range.upperBound), in: range) {
+                        EmptyView()
+                    } currentValueLabel: {
+                        Text(String(format: "%.2f nT", current)).foregroundStyle(.primary)
+                    } minimumValueLabel: {
+                        Text(ObsFieldChart.signedInt(range.lowerBound - current))
+                    } maximumValueLabel: {
+                        Text(ObsFieldChart.signedInt(range.upperBound - current))
+                    }
+                    .gaugeStyle(.accessoryLinear)
+                }
+        } else {
+            Text(snapshot.primaryValue.map { String(format: "%.2f nT", $0) } ?? "—")
+                .foregroundStyle(.primary)
+                .widgetLabel("\(snapshot.observatoryCode) \(snapshot.primaryElement?.code ?? "")")
+        }
     }
     #endif
 

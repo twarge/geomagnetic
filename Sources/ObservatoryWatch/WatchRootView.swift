@@ -9,51 +9,70 @@ struct WatchRootView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 10) {
-                    chartCard
-                    rangePicker
-                    navigation
+                VStack(alignment: .leading, spacing: 4) {
+                    // Station name, kept tight to the first reading line below it.
+                    Text(model.stationName)
+                        .font(.title3).fontWeight(.semibold)
+                        .lineLimit(1).minimumScaleFactor(0.6)
+                        .padding(.horizontal, 4)
+                        .padding(.bottom, -2)
+
+                    content
                 }
                 .padding(.horizontal, 4)
-            }
-            .navigationTitle(model.code)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        Task { await model.load(force: true) }
-                    } label: {
-                        Image(systemName: "arrow.clockwise")
-                    }
-                }
             }
             .task(id: TaskKey(code: model.code, range: model.range)) { await model.load() }
         }
     }
 
     @ViewBuilder
-    private var chartCard: some View {
+    private var content: some View {
         if model.hasData {
-            NavigationLink {
-                WatchPlotView(model: model)
-            } label: {
-                ObsFieldChart(series: model.primarySparkline,
-                              stationCode: model.observatory.code,
-                              latestValue: model.primary?.sample.value,
-                              unit: model.primary?.element.unit,
-                              trend: model.trend,
-                              stormIntervals: model.stormIntervals,
-                              showHeader: true)
-                    .frame(height: 128)
-                    .padding(8)
-                    .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            // F on top, then X / Y / Z, in a scrollable stack.
+            ForEach(model.elementGraphs) { graph in
+                graphCard(graph)
             }
-            .buttonStyle(.plain)
+            attributionView
         } else if model.isLoading {
-            ProgressView().frame(maxWidth: .infinity, minHeight: 128)
+            ProgressView().frame(maxWidth: .infinity, minHeight: 120)
         } else {
-            ContentUnavailableView("No Data", systemImage: "chart.xyaxis.line")
-                .frame(minHeight: 128)
+            ContentUnavailableView("No Data", systemImage: "chart.xyaxis.line").frame(minHeight: 120)
         }
+        rangePicker
+        observatoryLink
+        reloadButton
+    }
+
+    // A plain, non-interactive graph card (tapping does nothing for now).
+    private func graphCard(_ graph: WatchElementGraph) -> some View {
+        ObsFieldChart(series: graph.sparkline,
+                      stationCode: model.code,
+                      element: graph.element.code,
+                      latestValue: graph.value,
+                      unit: graph.element.unit,
+                      trend: graph.trend,
+                      stormIntervals: graph.storms,
+                      showHeader: true,
+                      headerFont: .footnote)
+            .frame(height: 104)
+            .padding(8)
+            .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+    }
+
+    // Complete data-source text, on as many lines as it needs, below the graphs.
+    private var attributionView: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            if let source = model.sourceText {
+                Text(source)
+            }
+            Text("INTERMAGNET")
+        }
+        .font(.caption2)
+        .foregroundStyle(.secondary)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .fixedSize(horizontal: false, vertical: true)
+        .padding(.horizontal, 4)
+        .padding(.top, 2)
     }
 
     private var rangePicker: some View {
@@ -65,38 +84,27 @@ struct WatchRootView: View {
         .pickerStyle(.navigationLink)
     }
 
-    private var navigation: some View {
+    private var observatoryLink: some View {
         NavigationLink {
             WatchObservatoryListView(model: model)
         } label: {
             Label("Observatory", systemImage: "globe")
         }
     }
+
+    private var reloadButton: some View {
+        Button {
+            Task { await model.load(force: true) }
+        } label: {
+            Label("Refresh", systemImage: "arrow.clockwise")
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.borderedProminent)
+        .disabled(model.isLoading)
+    }
 }
 
 private struct TaskKey: Equatable {
     let code: String
     let range: ObservatoryTimeRange
-}
-
-struct WatchPlotView: View {
-    @ObservedObject var model: WatchViewModel
-
-    var body: some View {
-        Group {
-            if model.hasData {
-                ObsLinePlotView(
-                    series: model.plotSeries,
-                    xAxis: .time(timeZone: .gmt),
-                    yAxisLabel: "nT",
-                    visibleXRange: .constant(nil),
-                    visibleYRange: .constant(nil),
-                    fullXRange: model.fullXRange)
-                .padding(.vertical, 4)
-            } else {
-                ContentUnavailableView("No Data", systemImage: "chart.xyaxis.line")
-            }
-        }
-        .navigationTitle("\(model.code) \(model.range.shortLabel)")
-    }
 }

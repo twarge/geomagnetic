@@ -126,7 +126,7 @@ struct ObservatoryDetailView: View {
             if model.hasData {
                 ObsLinePlotView(
                     series: model.plotSeries,
-                    xAxis: .time(timeZone: .gmt),
+                    xAxis: .time(timeZone: .current),
                     yAxisLabel: model.yAxisLabel,
                     visibleXRange: $visibleXRange,
                     visibleYRange: $visibleYRange,

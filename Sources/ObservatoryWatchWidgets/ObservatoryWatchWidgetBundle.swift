@@ -28,11 +28,12 @@ struct ObservatoryFieldComplication: Widget {
 struct ObservatoryChartComplication: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "ObservatoryChartComplication", provider: watchProvider()) { entry in
-            GeomagWidgetView(snapshot: entry.snapshot, style: .chart)
+            GeomagWidgetView(snapshot: entry.snapshot, style: .chart, dropsTopMargin: true)
         }
         .configurationDisplayName("Field Chart")
         .description("Recent field variation, storm highlights, and the latest reading.")
         .supportedFamilies([.accessoryRectangular])
+        .contentMarginsDisabled()
     }
 }
 

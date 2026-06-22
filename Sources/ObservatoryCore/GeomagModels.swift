@@ -76,9 +76,13 @@ public struct GeomagDay: Codable, Sendable {
     /// `true` once the day is in the past and known complete — never re-fetched.
     public let isFinal: Bool
     public let fetchedAt: Date
+    // From the IAGA-2002 header (optional so older cache files still decode).
+    public let stationName: String?   // e.g. "Fredericksburg, USA"
+    public let source: String?        // operating institute, e.g. "USGS"
 
     public init(observatoryCode: String, dayStart: Double, cadence: Double,
-                elements: [String], values: [[Float]], isFinal: Bool, fetchedAt: Date) {
+                elements: [String], values: [[Float]], isFinal: Bool, fetchedAt: Date,
+                stationName: String? = nil, source: String? = nil) {
         self.observatoryCode = observatoryCode
         self.dayStart = dayStart
         self.cadence = cadence
@@ -86,6 +90,8 @@ public struct GeomagDay: Codable, Sendable {
         self.values = values
         self.isFinal = isFinal
         self.fetchedAt = fetchedAt
+        self.stationName = stationName
+        self.source = source
     }
 
     public var sampleCount: Int { values.first?.count ?? 0 }
@@ -149,15 +155,19 @@ public struct GeomagSeriesResult: Sendable {
     public let requestedRange: ClosedRange<Double>
     public let coveredRange: ClosedRange<Double>?
     public let fromCacheOnly: Bool
+    public let stationName: String?   // from the IAGA-2002 header, when available
+    public let source: String?        // operating institute, for attribution
 
     public init(observatoryCode: String, series: [GeomagSeries],
                 requestedRange: ClosedRange<Double>, coveredRange: ClosedRange<Double>?,
-                fromCacheOnly: Bool) {
+                fromCacheOnly: Bool, stationName: String? = nil, source: String? = nil) {
         self.observatoryCode = observatoryCode
         self.series = series
         self.requestedRange = requestedRange
         self.coveredRange = coveredRange
         self.fromCacheOnly = fromCacheOnly
+        self.stationName = stationName
+        self.source = source
     }
 
     public var isEmpty: Bool { series.allSatisfy { $0.samples.isEmpty } }

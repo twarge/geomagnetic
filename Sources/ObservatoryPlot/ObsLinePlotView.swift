@@ -25,7 +25,7 @@ struct ObsLinePlotView: View {
 
     init(series: [ObsLineSeries],
          xAxis: ObsXAxisKind,
-         xAxisLabel: String = "Time (UTC)",
+         xAxisLabel: String = "Time",
          yAxisLabel: String,
          visibleXRange: Binding<ObsPlotRange?>,
          visibleYRange: Binding<ObsPlotRange?>,
