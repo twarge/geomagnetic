@@ -113,17 +113,21 @@ struct GeomagWidgetView: View {
 
     #if os(watchOS)
     private var corner: some View {
-        // "FRD F" sits at the inner corner; the reading curves around the dial.
-        Text("\(snapshot.observatoryCode) \(snapshot.primaryElement?.code ?? "")")
-            .font(.system(size: 11, weight: .semibold))
-            .foregroundStyle(Color.accentColor)
-            .widgetAccentable()
-            .minimumScaleFactor(0.5)
-            .lineLimit(1)
-            .widgetLabel {
-                Text(snapshot.primaryValue.map { String(format: "%.2f nT", $0) } ?? "—")
-                    .foregroundStyle(.primary)
-            }
+        // "F" over "FRD" at the inner corner; the reading curves around the dial.
+        VStack(spacing: -2) {
+            Text(snapshot.primaryElement?.code ?? "")
+                .font(.system(size: 17, weight: .bold))
+            Text(snapshot.observatoryCode)
+                .font(.system(size: 13, weight: .semibold))
+        }
+        .foregroundStyle(Color.accentColor)
+        .widgetAccentable()
+        .minimumScaleFactor(0.5)
+        .lineLimit(1)
+        .widgetLabel {
+            Text(snapshot.primaryValue.map { String(format: "%.2f nT", $0) } ?? "—")
+                .foregroundStyle(.primary)
+        }
     }
     #endif
 
