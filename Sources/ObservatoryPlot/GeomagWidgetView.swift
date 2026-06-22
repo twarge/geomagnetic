@@ -112,35 +112,18 @@ struct GeomagWidgetView: View {
     }
 
     #if os(watchOS)
-    @ViewBuilder
     private var corner: some View {
-        if let current = snapshot.primaryValue, let range = snapshot.primaryRange {
-            // "FRD F" is the inner content; the gauge hugs the dial (widgetLabel) with the
-            // reading as its currentValueLabel (on the arc), the marker at the current reading,
-            // and the ends labeled as the variation from the current reading.
-            Text("\(snapshot.observatoryCode) \(snapshot.primaryElement?.code ?? "")")
-                .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(Color.accentColor)
-                .widgetAccentable()
-                .minimumScaleFactor(0.5)
-                .lineLimit(1)
-                .widgetLabel {
-                    Gauge(value: Swift.min(Swift.max(current, range.lowerBound), range.upperBound), in: range) {
-                        EmptyView()
-                    } currentValueLabel: {
-                        Text(String(format: "%.2f nT", current)).foregroundStyle(.primary)
-                    } minimumValueLabel: {
-                        Text(ObsFieldChart.signedInt(range.lowerBound - current))
-                    } maximumValueLabel: {
-                        Text(ObsFieldChart.signedInt(range.upperBound - current))
-                    }
-                    .gaugeStyle(.accessoryLinear)
-                }
-        } else {
-            Text(snapshot.primaryValue.map { String(format: "%.2f nT", $0) } ?? "—")
-                .foregroundStyle(.primary)
-                .widgetLabel("\(snapshot.observatoryCode) \(snapshot.primaryElement?.code ?? "")")
-        }
+        // "FRD F" sits at the inner corner; the reading curves around the dial.
+        Text("\(snapshot.observatoryCode) \(snapshot.primaryElement?.code ?? "")")
+            .font(.system(size: 11, weight: .semibold))
+            .foregroundStyle(Color.accentColor)
+            .widgetAccentable()
+            .minimumScaleFactor(0.5)
+            .lineLimit(1)
+            .widgetLabel {
+                Text(snapshot.primaryValue.map { String(format: "%.2f nT", $0) } ?? "—")
+                    .foregroundStyle(.primary)
+            }
     }
     #endif
 
