@@ -158,29 +158,25 @@ struct GeomagWidgetView: View {
     }
 
     private var fieldTile: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            systemHeader
-            #if os(iOS) || os(macOS)
-            if family != .systemSmall {
-                Text(snapshot.observatoryName).font(.caption).foregroundStyle(.secondary).lineLimit(1)
-            }
-            #endif
-            HStack(alignment: .firstTextBaseline, spacing: 4) {
-                Text(snapshot.primaryValue.map { Self.compact($0) } ?? "—")
-                    .font(.system(.title2, design: .rounded).weight(.semibold))
-                    .minimumScaleFactor(0.5).lineLimit(1)
-                if let element = snapshot.primaryElement {
-                    Text(element.unit).font(.caption2).foregroundStyle(.secondary)
-                }
-                if let trend = snapshot.trend {
-                    Image(systemName: Self.trendSymbol(trend)).font(.caption).foregroundStyle(Self.trendColor(trend))
-                }
-            }
+        // Lead with the compact complication-style reading ("FRD F 50083.42 nT →"), tuck the
+        // station name close beneath it, and let the chart take all the remaining height.
+        VStack(alignment: .leading, spacing: 2) {
+            ObsReadingLine(stationCode: snapshot.observatoryCode,
+                           element: snapshot.primaryElement?.code,
+                           value: snapshot.primaryValue,
+                           unit: snapshot.primaryElement?.unit,
+                           trend: snapshot.trend,
+                           font: .subheadline)
+            Text(snapshot.observatoryName)
+                .font(.caption2).foregroundStyle(.secondary)
+                .lineLimit(1).minimumScaleFactor(0.7)
             fieldChart(showHeader: false)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 
-    // Sparkline-dominant tile: the health-style chart carries its own "FRD 50083.42" header.
+    // Sparkline-dominant tile: the health-style chart carries its own "FRD F 50083.42 nT →"
+    // header (same reading line as the small complication).
     private var chartTile: some View {
         fieldChart(showHeader: true)
     }
@@ -195,6 +191,7 @@ struct GeomagWidgetView: View {
         } else {
             ObsFieldChart(series: snapshot.sparkline,
                           stationCode: snapshot.observatoryCode,
+                          element: snapshot.primaryElement?.code,
                           latestValue: snapshot.primaryValue,
                           unit: snapshot.primaryElement?.unit,
                           trend: showHeader ? snapshot.trend : nil,
@@ -215,16 +212,16 @@ struct GeomagWidgetView: View {
                                     GridItem(.flexible(), alignment: .leading)], spacing: 8) {
                     ForEach(snapshot.components) { component in
                         let index = snapshot.components.firstIndex { $0.id == component.id } ?? 0
+                        // Value on its own line so the number uses the full cell width and
+                        // isn't squashed by the unit; the unit sits small beneath it.
                         VStack(alignment: .leading, spacing: 0) {
                             Text(component.element.code)
                                 .font(.caption2.weight(.semibold))
                                 .foregroundStyle(ObsPlotSeriesPalette.color(at: index))
-                            HStack(spacing: 3) {
-                                Text(Self.compact(component.value))
-                                    .font(.system(.body, design: .rounded).weight(.semibold))
-                                    .monospacedDigit().minimumScaleFactor(0.5).lineLimit(1)
-                                Text(component.element.unit).font(.caption2).foregroundStyle(.secondary)
-                            }
+                            Text(Self.compact(component.value))
+                                .font(.system(.body, design: .rounded).weight(.semibold))
+                                .monospacedDigit().minimumScaleFactor(0.6).lineLimit(1)
+                            Text(component.element.unit).font(.caption2).foregroundStyle(.secondary)
                         }
                     }
                 }
@@ -289,11 +286,5 @@ struct GeomagWidgetView: View {
         if value >= steadyThreshold { return "arrow.up.right" }
         if value <= -steadyThreshold { return "arrow.down.right" }
         return "arrow.right"
-    }
-
-    static func trendColor(_ value: Double) -> Color {
-        if value >= steadyThreshold { return .green }
-        if value <= -steadyThreshold { return .orange }
-        return .secondary
     }
 }

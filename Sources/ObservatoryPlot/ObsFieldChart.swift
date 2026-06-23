@@ -18,6 +18,43 @@
 import SwiftUI
 import WidgetKit
 
+/// The compact one-line reading shared by the small complication header and the home-screen
+/// widget tiles: "FRD F 50083.42 nT →". The station and element render in the accent color
+/// (and are `widgetAccentable`, so a tinted watch face colors them); the value is the primary
+/// color; the unit and trend arrow are the muted secondary color.
+struct ObsReadingLine: View {
+    var stationCode: String? = nil
+    var element: String? = nil
+    var value: Double? = nil
+    var unit: String? = nil
+    var trend: Double? = nil
+    var font: Font = .subheadline
+    var valueFormat: String = "%.2f"
+
+    var body: some View {
+        HStack(spacing: 4) {
+            if let stationCode {
+                Text(stationCode).foregroundStyle(Color.accentColor).fontWeight(.semibold).widgetAccentable()
+            }
+            if let element {
+                Text(element).foregroundStyle(Color.accentColor).fontWeight(.semibold).widgetAccentable()
+            }
+            if let value {
+                Text(String(format: valueFormat, value)).foregroundStyle(.primary)
+                if let unit { Text(unit).foregroundStyle(.secondary) }
+            } else {
+                Text("—").foregroundStyle(.primary)
+            }
+            if let trend {
+                Image(systemName: GeomagWidgetView.trendSymbol(trend)).foregroundStyle(.secondary)
+            }
+        }
+        .font(font)
+        .lineLimit(1)
+        .minimumScaleFactor(0.6)
+    }
+}
+
 struct ObsFieldChart: View {
     let series: [ObsLineSeries]
     var stationCode: String? = nil
@@ -50,35 +87,19 @@ struct ObsFieldChart: View {
         }
     }
 
-    // Only the station code (when shown) is accentable (highlight); the value, unit, and
-    // trend arrow are the muted default color.
+    // The reading line ("FRD F 50083.42 nT →"); station + element accentable (highlight),
+    // value primary, unit + arrow muted. In the complication (where storm labels are
+    // suppressed) a severity-colored warning symbol is appended.
     private var headerView: some View {
         HStack(spacing: 4) {
-            if let stationCode {
-                Text(stationCode).foregroundStyle(Color.accentColor).fontWeight(.semibold).widgetAccentable()
-            }
-            if let element {
-                Text(element).foregroundStyle(Color.accentColor).fontWeight(.semibold).widgetAccentable()
-            }
-            if let latestValue {
-                Text(String(format: "%.2f", latestValue)).foregroundStyle(.primary)
-            }
-            if let unit {
-                Text(unit).foregroundStyle(.secondary)
-            }
-            if let trend {
-                Image(systemName: GeomagWidgetView.trendSymbol(trend)).foregroundStyle(.secondary)
-            }
-            // In the complication (where storm labels are suppressed), also flag a storm with
-            // a warning symbol next to the arrow, colored by severity.
+            ObsReadingLine(stationCode: stationCode, element: element, value: latestValue,
+                           unit: unit, trend: trend, font: headerFont)
             if fillsVertically, let worst = stormIntervals.map(\.category).max() {
                 Image(systemName: "exclamationmark.triangle.fill")
+                    .font(headerFont)
                     .foregroundStyle(Self.stormColor(worst))
             }
         }
-        .font(headerFont)
-        .lineLimit(1)
-        .minimumScaleFactor(0.6)
     }
 
     // MARK: - Layout
