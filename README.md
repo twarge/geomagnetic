@@ -58,7 +58,15 @@ See [`GeomagRepository`](Sources/ObservatoryCore/GeomagRepository.swift).
 
 ## Data source
 
-Requests mirror the official INTERMAGNET `download.py` reference, e.g.:
+By default the app talks to the **Observatory mirror** — a Cloudflare Worker (the
+`observatory-worker` repo) that caches INTERMAGNET data and rate-limits upstream access so
+the whole app fleet never hammers the GIN directly. The mirror is a drop-in: it accepts the
+same `GetData` request and returns identical IAGA-2002 text, so the parser/cache/decimation
+below are unchanged. Set the `OBSERVATORY_BASE_URL` environment variable (in the Xcode
+scheme) to bypass it and hit the GIN — or a local `wrangler dev` — directly. See
+[`GINClient`](Sources/ObservatoryCore/GINClient.swift).
+
+The underlying request mirrors the official INTERMAGNET `download.py` reference, e.g.:
 
 ```
 https://imag-data.bgs.ac.uk/GIN_V1/GINServices?Request=GetData&format=IAGA2002

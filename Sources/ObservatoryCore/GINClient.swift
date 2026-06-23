@@ -16,7 +16,25 @@ public struct GINClient: Sendable {
         public var seconds: Double { UTCDate.secondsPerDay / Double(rawValue) }
     }
 
-    public static let baseURL = "https://imag-data.bgs.ac.uk/GIN_V1/GINServices"
+    /// Base URL of the geomagnetic data service.
+    ///
+    /// Defaults to the **Observatory mirror** — a Cloudflare Worker (the `observatory-worker`
+    /// repo) that caches INTERMAGNET data and rate-limits upstream access, so the app fleet
+    /// (every iPhone/Watch) never hammers the GIN directly. The mirror speaks the GIN's
+    /// `GetData` request and returns identical IAGA-2002 text, so nothing else here changes.
+    ///
+    /// Override with the `OBSERVATORY_BASE_URL` environment variable (set it in the Xcode
+    /// scheme) to bypass the mirror — e.g. hit `ginDirectURL`, or a local `wrangler dev`.
+    public static let baseURL: String = {
+        if let override = ProcessInfo.processInfo.environment["OBSERVATORY_BASE_URL"],
+           !override.isEmpty {
+            return override
+        }
+        return "https://observatory-mirror.twarge.workers.dev/GIN_V1/GINServices"
+    }()
+
+    /// The upstream INTERMAGNET GIN that the mirror fronts — for reference or direct use.
+    public static let ginDirectURL = "https://imag-data.bgs.ac.uk/GIN_V1/GINServices"
 
     /// Publication state: "adj-or-rep" returns the best of adjusted/reported/definitive,
     /// matching the reference downloader.
