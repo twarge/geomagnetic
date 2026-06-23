@@ -1,34 +1,16 @@
 // SPDX-FileCopyrightText: 2026 Twarge LLC
 // SPDX-License-Identifier: Apache-2.0
 //
-// The iOS / macOS widget set. All three share GeomagWidgetProvider (one bounded fetch per
-// timeline) and the adaptive GeomagWidgetView, differing only in style and families.
+// The iOS / macOS widget set: a Field Chart (home-screen tiles plus the rectangular and
+// inline lock-screen accessories) and, on iOS, a Field Reading circular lock-screen
+// accessory. Both share GeomagWidgetProvider (one bounded fetch per timeline) and the
+// adaptive GeomagWidgetView.
 
 import WidgetKit
 import SwiftUI
 
-/// Headline reading + recent trace. Works as a home-screen tile and lock-screen accessory.
-struct ObservatoryFieldWidget: Widget {
-    var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "ObservatoryFieldWidget", provider: GeomagWidgetProvider()) { entry in
-            GeomagWidgetView(snapshot: entry.snapshot, style: .field)
-        }
-        .configurationDisplayName("Field Reading")
-        .description("Latest field reading and recent trace from your selected observatory.")
-        .supportedFamilies(Self.families)
-    }
-
-    static var families: [WidgetFamily] {
-        #if os(iOS)
-        // accessoryRectangular is served by the chart widget so it gets the full chart style.
-        [.systemSmall, .systemMedium, .accessoryCircular, .accessoryInline]
-        #else
-        [.systemSmall, .systemMedium]
-        #endif
-    }
-}
-
-/// Sparkline-dominant variation chart.
+/// Sparkline-dominant variation chart. Serves the home-screen tiles and, on iOS, the
+/// rectangular and inline lock-screen accessories.
 struct ObservatoryChartWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "ObservatoryChartWidget", provider: GeomagWidgetProvider()) { entry in
@@ -41,21 +23,23 @@ struct ObservatoryChartWidget: Widget {
 
     static var families: [WidgetFamily] {
         #if os(iOS)
-        [.systemSmall, .systemMedium, .accessoryRectangular]
+        [.systemSmall, .systemMedium, .accessoryRectangular, .accessoryInline]
         #else
         [.systemSmall, .systemMedium]
         #endif
     }
 }
 
-/// Grid of every reported component's current value.
-struct ObservatoryComponentsWidget: Widget {
+#if os(iOS)
+/// The latest reading on the circular lock-screen dial ("FRD F" over the value).
+struct ObservatoryFieldWidget: Widget {
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "ObservatoryComponentsWidget", provider: GeomagWidgetProvider()) { entry in
-            GeomagWidgetView(snapshot: entry.snapshot, style: .components)
+        StaticConfiguration(kind: "ObservatoryFieldWidget", provider: GeomagWidgetProvider()) { entry in
+            GeomagWidgetView(snapshot: entry.snapshot, style: .field)
         }
-        .configurationDisplayName("All Components")
-        .description("Current readings for every component (X / Y / Z / F …).")
-        .supportedFamilies([.systemMedium, .systemLarge])
+        .configurationDisplayName("Field Reading")
+        .description("Latest field reading from your selected observatory.")
+        .supportedFamilies([.accessoryCircular])
     }
 }
+#endif

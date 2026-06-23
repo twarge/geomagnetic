@@ -7,8 +7,9 @@ import SwiftUI
 @main
 struct ObservatoryWidgetBundle: WidgetBundle {
     var body: some Widget {
-        ObservatoryFieldWidget()
         ObservatoryChartWidget()
-        ObservatoryComponentsWidget()
+        #if os(iOS)
+        ObservatoryFieldWidget()
+        #endif
     }
 }

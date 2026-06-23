@@ -18,10 +18,12 @@
 import SwiftUI
 import WidgetKit
 
-/// The compact one-line reading shared by the small complication header and the home-screen
-/// widget tiles: "FRD F 50083.42 nT →". The station and element render in the accent color
-/// (and are `widgetAccentable`, so a tinted watch face colors them); the value is the primary
-/// color; the unit and trend arrow are the muted secondary color.
+/// The compact reading shared by the small complication header and the home-screen widget
+/// tiles: "FRD F 50,083.00 nT →". The station and element render in the accent color (and are
+/// `widgetAccentable`, so a tinted watch face colors them); the value is the primary color;
+/// the unit and trend arrow are the muted secondary color. When `stacked` is set, the station
+/// + element sit on a first line and the value + unit + trend on a second — for narrow tiles
+/// (the small "2×2" widget) where a single line would be squashed.
 struct ObsReadingLine: View {
     var stationCode: String? = nil
     var element: String? = nil
@@ -29,9 +31,28 @@ struct ObsReadingLine: View {
     var unit: String? = nil
     var trend: Double? = nil
     var font: Font = .subheadline
-    var valueFormat: String = "%.2f"
+    var stacked: Bool = false
 
     var body: some View {
+        Group {
+            if stacked {
+                VStack(alignment: .leading, spacing: 1) {
+                    label
+                    reading
+                }
+            } else {
+                HStack(spacing: 4) {
+                    label
+                    reading
+                }
+            }
+        }
+        .font(font)
+        .lineLimit(1)
+        .minimumScaleFactor(0.6)
+    }
+
+    @ViewBuilder private var label: some View {
         HStack(spacing: 4) {
             if let stationCode {
                 Text(stationCode).foregroundStyle(Color.accentColor).fontWeight(.semibold).widgetAccentable()
@@ -39,8 +60,13 @@ struct ObsReadingLine: View {
             if let element {
                 Text(element).foregroundStyle(Color.accentColor).fontWeight(.semibold).widgetAccentable()
             }
+        }
+    }
+
+    @ViewBuilder private var reading: some View {
+        HStack(spacing: 4) {
             if let value {
-                Text(String(format: valueFormat, value)).foregroundStyle(.primary)
+                Text(value, format: .number.precision(.fractionLength(2))).foregroundStyle(.primary)
                 if let unit { Text(unit).foregroundStyle(.secondary) }
             } else {
                 Text("—").foregroundStyle(.primary)
@@ -49,9 +75,6 @@ struct ObsReadingLine: View {
                 Image(systemName: GeomagWidgetView.trendSymbol(trend)).foregroundStyle(.secondary)
             }
         }
-        .font(font)
-        .lineLimit(1)
-        .minimumScaleFactor(0.6)
     }
 }
 
@@ -72,6 +95,8 @@ struct ObsFieldChart: View {
     var fillsVertically: Bool = false
     var lineWidth: CGFloat = 1.6
     var headerFont: Font = .headline
+    /// Break the header onto two lines (station+element / value+unit+trend) for narrow tiles.
+    var headerStacked: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -93,7 +118,7 @@ struct ObsFieldChart: View {
     private var headerView: some View {
         HStack(spacing: 4) {
             ObsReadingLine(stationCode: stationCode, element: element, value: latestValue,
-                           unit: unit, trend: trend, font: headerFont)
+                           unit: unit, trend: trend, font: headerFont, stacked: headerStacked)
             if fillsVertically, let worst = stormIntervals.map(\.category).max() {
                 Image(systemName: "exclamationmark.triangle.fill")
                     .font(headerFont)

@@ -11,7 +11,6 @@ import WidgetKit
 enum GeomagWidgetStyle {
     case field        // headline value + sparkline
     case chart        // sparkline-dominant
-    case components   // grid of every component's current value
 }
 
 struct GeomagWidgetView: View {
@@ -59,9 +58,6 @@ struct GeomagWidgetView: View {
     private var inlineText: String {
         guard let value = snapshot.primaryValue, let element = snapshot.primaryElement else {
             return "\(snapshot.observatoryCode) —"
-        }
-        if style == .chart, let activity = snapshot.activity {
-            return "\(snapshot.observatoryCode) \(element.code) ±\(Self.compact(activity)) \(element.unit)"
         }
         return "\(snapshot.observatoryCode) \(element.code) \(Self.compact(value)) \(element.unit)"
     }
@@ -140,12 +136,6 @@ struct GeomagWidgetView: View {
             fieldTile
         case .chart:
             chartTile
-        case .components:
-            #if os(iOS) || os(macOS)
-            family == .systemSmall ? AnyView(fieldTile) : AnyView(componentsTile)
-            #else
-            fieldTile
-            #endif
         }
     }
 
@@ -175,10 +165,20 @@ struct GeomagWidgetView: View {
         }
     }
 
-    // Sparkline-dominant tile: the health-style chart carries its own "FRD F 50083.42 nT →"
-    // header (same reading line as the small complication).
+    // Sparkline-dominant tile: the health-style chart carries its own "FRD F 50,083.00 nT →"
+    // header (same reading line as the small complication). On the small ("2×2") tile that
+    // header stacks onto two lines so it isn't squashed.
     private var chartTile: some View {
         fieldChart(showHeader: true)
+    }
+
+    /// The narrow small home-screen tile (absent on watchOS, where `systemSmall` is unavailable).
+    private var isSmallSystemFamily: Bool {
+        #if os(iOS) || os(macOS)
+        return family == .systemSmall
+        #else
+        return false
+        #endif
     }
 
     @ViewBuilder
@@ -197,36 +197,8 @@ struct GeomagWidgetView: View {
                           trend: showHeader ? snapshot.trend : nil,
                           stormIntervals: snapshot.stormIntervals,
                           showHeader: showHeader,
-                          headerFont: .subheadline)
-        }
-    }
-
-    private var componentsTile: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            systemHeader
-            Text(snapshot.observatoryName).font(.caption).foregroundStyle(.secondary).lineLimit(1)
-            if snapshot.components.isEmpty {
-                sparklineOrPlaceholder(fill: false)
-            } else {
-                LazyVGrid(columns: [GridItem(.flexible(), alignment: .leading),
-                                    GridItem(.flexible(), alignment: .leading)], spacing: 8) {
-                    ForEach(snapshot.components) { component in
-                        let index = snapshot.components.firstIndex { $0.id == component.id } ?? 0
-                        // Value on its own line so the number uses the full cell width and
-                        // isn't squashed by the unit; the unit sits small beneath it.
-                        VStack(alignment: .leading, spacing: 0) {
-                            Text(component.element.code)
-                                .font(.caption2.weight(.semibold))
-                                .foregroundStyle(ObsPlotSeriesPalette.color(at: index))
-                            Text(Self.compact(component.value))
-                                .font(.system(.body, design: .rounded).weight(.semibold))
-                                .monospacedDigit().minimumScaleFactor(0.6).lineLimit(1)
-                            Text(component.element.unit).font(.caption2).foregroundStyle(.secondary)
-                        }
-                    }
-                }
-                Spacer(minLength: 0)
-            }
+                          headerFont: .subheadline,
+                          headerStacked: isSmallSystemFamily)
         }
     }
 
