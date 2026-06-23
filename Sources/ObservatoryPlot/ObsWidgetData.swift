@@ -72,8 +72,17 @@ enum GeomagWidgetData {
         var result: GeomagSeriesResult?
         if network {
             result = await withTimeout(seconds: timeout) {
-                try? await repo.series(code: code, from: window.lowerBound, to: window.upperBound,
-                                       maxPoints: 80, now: now)
+                // Compact path: the mirror returns ~80 server-decimated points + storm bands
+                // as a few KB, instead of whole UTC days of IAGA text — a large saving over
+                // the watch radio especially. Falls back to the whole-day repository fetch
+                // when /v1 is unavailable (e.g. OBSERVATORY_BASE_URL points at the raw GIN).
+                if let compact = try? await MirrorClient.shared.series(
+                    code: code, from: window.lowerBound, to: window.upperBound,
+                    maxPoints: 80, storms: true) {
+                    return compact
+                }
+                return try? await repo.series(code: code, from: window.lowerBound, to: window.upperBound,
+                                              maxPoints: 80, now: now)
             } ?? nil
         }
         if result == nil || result?.isEmpty == true {

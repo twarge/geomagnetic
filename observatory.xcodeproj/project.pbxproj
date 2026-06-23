@@ -12,139 +12,143 @@
 		000000000000000000000005 /* GeomagRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000006 /* GeomagRepository.swift */; };
 		000000000000000000000007 /* GeomagStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000008 /* GeomagStore.swift */; };
 		000000000000000000000009 /* IAGA2002Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000A /* IAGA2002Parser.swift */; };
-		00000000000000000000000B /* Observatories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000C /* Observatories.swift */; };
-		00000000000000000000000D /* ObservatoryAppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000E /* ObservatoryAppGroup.swift */; };
-		00000000000000000000000F /* ObservatorySelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000010 /* ObservatorySelection.swift */; };
-		000000000000000000000011 /* StormDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000012 /* StormDetector.swift */; };
-		000000000000000000000013 /* UTCDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000014 /* UTCDate.swift */; };
-		000000000000000000000015 /* GeomagWidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000016 /* GeomagWidgetProvider.swift */; };
-		000000000000000000000017 /* GeomagWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000018 /* GeomagWidgetView.swift */; };
-		000000000000000000000019 /* ObsFieldChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001A /* ObsFieldChart.swift */; };
-		00000000000000000000001B /* ObsGeomagBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001C /* ObsGeomagBridge.swift */; };
-		00000000000000000000001D /* ObsLinePlotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001E /* ObsLinePlotView.swift */; };
-		00000000000000000000001F /* ObsPlotInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000020 /* ObsPlotInteraction.swift */; };
-		000000000000000000000021 /* ObsPlotModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000022 /* ObsPlotModels.swift */; };
-		000000000000000000000023 /* ObsPlotSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000024 /* ObsPlotSupport.swift */; };
-		000000000000000000000025 /* ObsSparkline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000026 /* ObsSparkline.swift */; };
-		000000000000000000000027 /* ObsTimeAxis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000028 /* ObsTimeAxis.swift */; };
-		000000000000000000000029 /* ObsWidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002A /* ObsWidgetData.swift */; };
-		00000000000000000000002B /* ObservatoryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002C /* ObservatoryApp.swift */; };
-		00000000000000000000002D /* ObservatoryDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002E /* ObservatoryDetailView.swift */; };
-		00000000000000000000002F /* ObservatoryDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000030 /* ObservatoryDetailViewModel.swift */; };
-		000000000000000000000031 /* ObservatoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000032 /* ObservatoryListView.swift */; };
-		000000000000000000000033 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000034 /* RootView.swift */; };
-		000000000000000000000035 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000036 /* Assets.xcassets */; };
-		000000000000000000000037 /* GINClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000002 /* GINClient.swift */; };
-		000000000000000000000038 /* GeomagModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000004 /* GeomagModels.swift */; };
-		000000000000000000000039 /* GeomagRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000006 /* GeomagRepository.swift */; };
-		00000000000000000000003A /* GeomagStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000008 /* GeomagStore.swift */; };
-		00000000000000000000003B /* IAGA2002Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000A /* IAGA2002Parser.swift */; };
-		00000000000000000000003C /* Observatories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000C /* Observatories.swift */; };
-		00000000000000000000003D /* ObservatoryAppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000E /* ObservatoryAppGroup.swift */; };
-		00000000000000000000003E /* ObservatorySelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000010 /* ObservatorySelection.swift */; };
-		00000000000000000000003F /* StormDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000012 /* StormDetector.swift */; };
-		000000000000000000000040 /* UTCDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000014 /* UTCDate.swift */; };
-		000000000000000000000041 /* GeomagWidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000016 /* GeomagWidgetProvider.swift */; };
-		000000000000000000000042 /* GeomagWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000018 /* GeomagWidgetView.swift */; };
-		000000000000000000000043 /* ObsFieldChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001A /* ObsFieldChart.swift */; };
-		000000000000000000000044 /* ObsGeomagBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001C /* ObsGeomagBridge.swift */; };
-		000000000000000000000045 /* ObsLinePlotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001E /* ObsLinePlotView.swift */; };
-		000000000000000000000046 /* ObsPlotInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000020 /* ObsPlotInteraction.swift */; };
-		000000000000000000000047 /* ObsPlotModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000022 /* ObsPlotModels.swift */; };
-		000000000000000000000048 /* ObsPlotSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000024 /* ObsPlotSupport.swift */; };
-		000000000000000000000049 /* ObsSparkline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000026 /* ObsSparkline.swift */; };
-		00000000000000000000004A /* ObsTimeAxis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000028 /* ObsTimeAxis.swift */; };
-		00000000000000000000004B /* ObsWidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002A /* ObsWidgetData.swift */; };
-		00000000000000000000004C /* ObservatoryWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000004D /* ObservatoryWidgetBundle.swift */; };
-		00000000000000000000004E /* ObservatoryWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000004F /* ObservatoryWidgets.swift */; };
-		000000000000000000000050 /* GINClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000002 /* GINClient.swift */; };
-		000000000000000000000051 /* GeomagModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000004 /* GeomagModels.swift */; };
-		000000000000000000000052 /* GeomagRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000006 /* GeomagRepository.swift */; };
-		000000000000000000000053 /* GeomagStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000008 /* GeomagStore.swift */; };
-		000000000000000000000054 /* IAGA2002Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000A /* IAGA2002Parser.swift */; };
-		000000000000000000000055 /* Observatories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000C /* Observatories.swift */; };
-		000000000000000000000056 /* ObservatoryAppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000E /* ObservatoryAppGroup.swift */; };
-		000000000000000000000057 /* ObservatorySelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000010 /* ObservatorySelection.swift */; };
-		000000000000000000000058 /* StormDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000012 /* StormDetector.swift */; };
-		000000000000000000000059 /* UTCDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000014 /* UTCDate.swift */; };
-		00000000000000000000005A /* GeomagWidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000016 /* GeomagWidgetProvider.swift */; };
-		00000000000000000000005B /* GeomagWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000018 /* GeomagWidgetView.swift */; };
-		00000000000000000000005C /* ObsFieldChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001A /* ObsFieldChart.swift */; };
-		00000000000000000000005D /* ObsGeomagBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001C /* ObsGeomagBridge.swift */; };
-		00000000000000000000005E /* ObsLinePlotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001E /* ObsLinePlotView.swift */; };
-		00000000000000000000005F /* ObsPlotInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000020 /* ObsPlotInteraction.swift */; };
-		000000000000000000000060 /* ObsPlotModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000022 /* ObsPlotModels.swift */; };
-		000000000000000000000061 /* ObsPlotSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000024 /* ObsPlotSupport.swift */; };
-		000000000000000000000062 /* ObsSparkline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000026 /* ObsSparkline.swift */; };
-		000000000000000000000063 /* ObsTimeAxis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000028 /* ObsTimeAxis.swift */; };
-		000000000000000000000064 /* ObsWidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002A /* ObsWidgetData.swift */; };
-		000000000000000000000065 /* ObservatoryWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000066 /* ObservatoryWatchApp.swift */; };
-		000000000000000000000067 /* WatchObservatoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000068 /* WatchObservatoryListView.swift */; };
-		000000000000000000000069 /* WatchRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000006A /* WatchRootView.swift */; };
-		00000000000000000000006B /* WatchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000006C /* WatchViewModel.swift */; };
-		00000000000000000000006D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000006E /* Assets.xcassets */; };
-		00000000000000000000006F /* GINClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000002 /* GINClient.swift */; };
-		000000000000000000000070 /* GeomagModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000004 /* GeomagModels.swift */; };
-		000000000000000000000071 /* GeomagRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000006 /* GeomagRepository.swift */; };
-		000000000000000000000072 /* GeomagStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000008 /* GeomagStore.swift */; };
-		000000000000000000000073 /* IAGA2002Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000A /* IAGA2002Parser.swift */; };
-		000000000000000000000074 /* Observatories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000C /* Observatories.swift */; };
-		000000000000000000000075 /* ObservatoryAppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000E /* ObservatoryAppGroup.swift */; };
-		000000000000000000000076 /* ObservatorySelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000010 /* ObservatorySelection.swift */; };
-		000000000000000000000077 /* StormDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000012 /* StormDetector.swift */; };
-		000000000000000000000078 /* UTCDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000014 /* UTCDate.swift */; };
-		000000000000000000000079 /* GeomagWidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000016 /* GeomagWidgetProvider.swift */; };
-		00000000000000000000007A /* GeomagWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000018 /* GeomagWidgetView.swift */; };
-		00000000000000000000007B /* ObsFieldChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001A /* ObsFieldChart.swift */; };
-		00000000000000000000007C /* ObsGeomagBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001C /* ObsGeomagBridge.swift */; };
-		00000000000000000000007D /* ObsLinePlotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001E /* ObsLinePlotView.swift */; };
-		00000000000000000000007E /* ObsPlotInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000020 /* ObsPlotInteraction.swift */; };
-		00000000000000000000007F /* ObsPlotModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000022 /* ObsPlotModels.swift */; };
-		000000000000000000000080 /* ObsPlotSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000024 /* ObsPlotSupport.swift */; };
-		000000000000000000000081 /* ObsSparkline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000026 /* ObsSparkline.swift */; };
-		000000000000000000000082 /* ObsTimeAxis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000028 /* ObsTimeAxis.swift */; };
-		000000000000000000000083 /* ObsWidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002A /* ObsWidgetData.swift */; };
-		000000000000000000000084 /* ObservatoryWatchWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000085 /* ObservatoryWatchWidgetBundle.swift */; };
-		000000000000000000000086 /* ObservatoryWidgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 000000000000000000000087 /* ObservatoryWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		000000000000000000000088 /* ObservatoryWatchWidgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 000000000000000000000089 /* ObservatoryWatchWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		00000000000000000000000B /* MirrorClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000C /* MirrorClient.swift */; };
+		00000000000000000000000D /* Observatories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000E /* Observatories.swift */; };
+		00000000000000000000000F /* ObservatoryAppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000010 /* ObservatoryAppGroup.swift */; };
+		000000000000000000000011 /* ObservatorySelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000012 /* ObservatorySelection.swift */; };
+		000000000000000000000013 /* StormDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000014 /* StormDetector.swift */; };
+		000000000000000000000015 /* UTCDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000016 /* UTCDate.swift */; };
+		000000000000000000000017 /* GeomagWidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000018 /* GeomagWidgetProvider.swift */; };
+		000000000000000000000019 /* GeomagWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001A /* GeomagWidgetView.swift */; };
+		00000000000000000000001B /* ObsFieldChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001C /* ObsFieldChart.swift */; };
+		00000000000000000000001D /* ObsGeomagBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001E /* ObsGeomagBridge.swift */; };
+		00000000000000000000001F /* ObsLinePlotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000020 /* ObsLinePlotView.swift */; };
+		000000000000000000000021 /* ObsPlotInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000022 /* ObsPlotInteraction.swift */; };
+		000000000000000000000023 /* ObsPlotModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000024 /* ObsPlotModels.swift */; };
+		000000000000000000000025 /* ObsPlotSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000026 /* ObsPlotSupport.swift */; };
+		000000000000000000000027 /* ObsSparkline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000028 /* ObsSparkline.swift */; };
+		000000000000000000000029 /* ObsTimeAxis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002A /* ObsTimeAxis.swift */; };
+		00000000000000000000002B /* ObsWidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002C /* ObsWidgetData.swift */; };
+		00000000000000000000002D /* ObservatoryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002E /* ObservatoryApp.swift */; };
+		00000000000000000000002F /* ObservatoryDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000030 /* ObservatoryDetailView.swift */; };
+		000000000000000000000031 /* ObservatoryDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000032 /* ObservatoryDetailViewModel.swift */; };
+		000000000000000000000033 /* ObservatoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000034 /* ObservatoryListView.swift */; };
+		000000000000000000000035 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000036 /* RootView.swift */; };
+		000000000000000000000037 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000038 /* Assets.xcassets */; };
+		000000000000000000000039 /* GINClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000002 /* GINClient.swift */; };
+		00000000000000000000003A /* GeomagModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000004 /* GeomagModels.swift */; };
+		00000000000000000000003B /* GeomagRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000006 /* GeomagRepository.swift */; };
+		00000000000000000000003C /* GeomagStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000008 /* GeomagStore.swift */; };
+		00000000000000000000003D /* IAGA2002Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000A /* IAGA2002Parser.swift */; };
+		00000000000000000000003E /* MirrorClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000C /* MirrorClient.swift */; };
+		00000000000000000000003F /* Observatories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000E /* Observatories.swift */; };
+		000000000000000000000040 /* ObservatoryAppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000010 /* ObservatoryAppGroup.swift */; };
+		000000000000000000000041 /* ObservatorySelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000012 /* ObservatorySelection.swift */; };
+		000000000000000000000042 /* StormDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000014 /* StormDetector.swift */; };
+		000000000000000000000043 /* UTCDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000016 /* UTCDate.swift */; };
+		000000000000000000000044 /* GeomagWidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000018 /* GeomagWidgetProvider.swift */; };
+		000000000000000000000045 /* GeomagWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001A /* GeomagWidgetView.swift */; };
+		000000000000000000000046 /* ObsFieldChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001C /* ObsFieldChart.swift */; };
+		000000000000000000000047 /* ObsGeomagBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001E /* ObsGeomagBridge.swift */; };
+		000000000000000000000048 /* ObsLinePlotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000020 /* ObsLinePlotView.swift */; };
+		000000000000000000000049 /* ObsPlotInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000022 /* ObsPlotInteraction.swift */; };
+		00000000000000000000004A /* ObsPlotModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000024 /* ObsPlotModels.swift */; };
+		00000000000000000000004B /* ObsPlotSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000026 /* ObsPlotSupport.swift */; };
+		00000000000000000000004C /* ObsSparkline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000028 /* ObsSparkline.swift */; };
+		00000000000000000000004D /* ObsTimeAxis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002A /* ObsTimeAxis.swift */; };
+		00000000000000000000004E /* ObsWidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002C /* ObsWidgetData.swift */; };
+		00000000000000000000004F /* ObservatoryWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000050 /* ObservatoryWidgetBundle.swift */; };
+		000000000000000000000051 /* ObservatoryWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000052 /* ObservatoryWidgets.swift */; };
+		000000000000000000000053 /* GINClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000002 /* GINClient.swift */; };
+		000000000000000000000054 /* GeomagModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000004 /* GeomagModels.swift */; };
+		000000000000000000000055 /* GeomagRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000006 /* GeomagRepository.swift */; };
+		000000000000000000000056 /* GeomagStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000008 /* GeomagStore.swift */; };
+		000000000000000000000057 /* IAGA2002Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000A /* IAGA2002Parser.swift */; };
+		000000000000000000000058 /* MirrorClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000C /* MirrorClient.swift */; };
+		000000000000000000000059 /* Observatories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000E /* Observatories.swift */; };
+		00000000000000000000005A /* ObservatoryAppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000010 /* ObservatoryAppGroup.swift */; };
+		00000000000000000000005B /* ObservatorySelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000012 /* ObservatorySelection.swift */; };
+		00000000000000000000005C /* StormDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000014 /* StormDetector.swift */; };
+		00000000000000000000005D /* UTCDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000016 /* UTCDate.swift */; };
+		00000000000000000000005E /* GeomagWidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000018 /* GeomagWidgetProvider.swift */; };
+		00000000000000000000005F /* GeomagWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001A /* GeomagWidgetView.swift */; };
+		000000000000000000000060 /* ObsFieldChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001C /* ObsFieldChart.swift */; };
+		000000000000000000000061 /* ObsGeomagBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001E /* ObsGeomagBridge.swift */; };
+		000000000000000000000062 /* ObsLinePlotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000020 /* ObsLinePlotView.swift */; };
+		000000000000000000000063 /* ObsPlotInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000022 /* ObsPlotInteraction.swift */; };
+		000000000000000000000064 /* ObsPlotModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000024 /* ObsPlotModels.swift */; };
+		000000000000000000000065 /* ObsPlotSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000026 /* ObsPlotSupport.swift */; };
+		000000000000000000000066 /* ObsSparkline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000028 /* ObsSparkline.swift */; };
+		000000000000000000000067 /* ObsTimeAxis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002A /* ObsTimeAxis.swift */; };
+		000000000000000000000068 /* ObsWidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002C /* ObsWidgetData.swift */; };
+		000000000000000000000069 /* ObservatoryWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000006A /* ObservatoryWatchApp.swift */; };
+		00000000000000000000006B /* WatchObservatoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000006C /* WatchObservatoryListView.swift */; };
+		00000000000000000000006D /* WatchRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000006E /* WatchRootView.swift */; };
+		00000000000000000000006F /* WatchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000070 /* WatchViewModel.swift */; };
+		000000000000000000000071 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000072 /* Assets.xcassets */; };
+		000000000000000000000073 /* GINClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000002 /* GINClient.swift */; };
+		000000000000000000000074 /* GeomagModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000004 /* GeomagModels.swift */; };
+		000000000000000000000075 /* GeomagRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000006 /* GeomagRepository.swift */; };
+		000000000000000000000076 /* GeomagStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000008 /* GeomagStore.swift */; };
+		000000000000000000000077 /* IAGA2002Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000A /* IAGA2002Parser.swift */; };
+		000000000000000000000078 /* MirrorClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000C /* MirrorClient.swift */; };
+		000000000000000000000079 /* Observatories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000000E /* Observatories.swift */; };
+		00000000000000000000007A /* ObservatoryAppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000010 /* ObservatoryAppGroup.swift */; };
+		00000000000000000000007B /* ObservatorySelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000012 /* ObservatorySelection.swift */; };
+		00000000000000000000007C /* StormDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000014 /* StormDetector.swift */; };
+		00000000000000000000007D /* UTCDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000016 /* UTCDate.swift */; };
+		00000000000000000000007E /* GeomagWidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000018 /* GeomagWidgetProvider.swift */; };
+		00000000000000000000007F /* GeomagWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001A /* GeomagWidgetView.swift */; };
+		000000000000000000000080 /* ObsFieldChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001C /* ObsFieldChart.swift */; };
+		000000000000000000000081 /* ObsGeomagBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001E /* ObsGeomagBridge.swift */; };
+		000000000000000000000082 /* ObsLinePlotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000020 /* ObsLinePlotView.swift */; };
+		000000000000000000000083 /* ObsPlotInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000022 /* ObsPlotInteraction.swift */; };
+		000000000000000000000084 /* ObsPlotModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000024 /* ObsPlotModels.swift */; };
+		000000000000000000000085 /* ObsPlotSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000026 /* ObsPlotSupport.swift */; };
+		000000000000000000000086 /* ObsSparkline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000028 /* ObsSparkline.swift */; };
+		000000000000000000000087 /* ObsTimeAxis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002A /* ObsTimeAxis.swift */; };
+		000000000000000000000088 /* ObsWidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002C /* ObsWidgetData.swift */; };
+		000000000000000000000089 /* ObservatoryWatchWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000008A /* ObservatoryWatchWidgetBundle.swift */; };
+		00000000000000000000008B /* ObservatoryWidgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 00000000000000000000008C /* ObservatoryWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		00000000000000000000008D /* ObservatoryWatchWidgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 00000000000000000000008E /* ObservatoryWatchWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		00000000000000000000008A /* PBXContainerItemProxy */ = {
+		00000000000000000000008F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 00000000000000000000008B /* Project object */;
+			containerPortal = 000000000000000000000090 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 00000000000000000000008C;
+			remoteGlobalIDString = 000000000000000000000091;
 			remoteInfo = ObservatoryWidgets;
 		};
-		00000000000000000000008D /* PBXContainerItemProxy */ = {
+		000000000000000000000092 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 00000000000000000000008B /* Project object */;
+			containerPortal = 000000000000000000000090 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 00000000000000000000008E;
+			remoteGlobalIDString = 000000000000000000000093;
 			remoteInfo = ObservatoryWatchWidgets;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		00000000000000000000008F /* Embed App Extensions */ = {
+		000000000000000000000094 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				000000000000000000000086 /* ObservatoryWidgets.appex in Embed App Extensions */,
+				00000000000000000000008B /* ObservatoryWidgets.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		000000000000000000000090 /* Embed App Extensions */ = {
+		000000000000000000000095 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				000000000000000000000088 /* ObservatoryWatchWidgets.appex in Embed App Extensions */,
+				00000000000000000000008D /* ObservatoryWatchWidgets.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -157,71 +161,72 @@
 		000000000000000000000006 /* GeomagRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GeomagRepository.swift; path = Sources/ObservatoryCore/GeomagRepository.swift; sourceTree = SOURCE_ROOT; };
 		000000000000000000000008 /* GeomagStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GeomagStore.swift; path = Sources/ObservatoryCore/GeomagStore.swift; sourceTree = SOURCE_ROOT; };
 		00000000000000000000000A /* IAGA2002Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = IAGA2002Parser.swift; path = Sources/ObservatoryCore/IAGA2002Parser.swift; sourceTree = SOURCE_ROOT; };
-		00000000000000000000000C /* Observatories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Observatories.swift; path = Sources/ObservatoryCore/Observatories.swift; sourceTree = SOURCE_ROOT; };
-		00000000000000000000000E /* ObservatoryAppGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryAppGroup.swift; path = Sources/ObservatoryCore/ObservatoryAppGroup.swift; sourceTree = SOURCE_ROOT; };
-		000000000000000000000010 /* ObservatorySelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatorySelection.swift; path = Sources/ObservatoryCore/ObservatorySelection.swift; sourceTree = SOURCE_ROOT; };
-		000000000000000000000012 /* StormDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StormDetector.swift; path = Sources/ObservatoryCore/StormDetector.swift; sourceTree = SOURCE_ROOT; };
-		000000000000000000000014 /* UTCDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UTCDate.swift; path = Sources/ObservatoryCore/UTCDate.swift; sourceTree = SOURCE_ROOT; };
-		000000000000000000000016 /* GeomagWidgetProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GeomagWidgetProvider.swift; path = Sources/ObservatoryPlot/GeomagWidgetProvider.swift; sourceTree = SOURCE_ROOT; };
-		000000000000000000000018 /* GeomagWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GeomagWidgetView.swift; path = Sources/ObservatoryPlot/GeomagWidgetView.swift; sourceTree = SOURCE_ROOT; };
-		00000000000000000000001A /* ObsFieldChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObsFieldChart.swift; path = Sources/ObservatoryPlot/ObsFieldChart.swift; sourceTree = SOURCE_ROOT; };
-		00000000000000000000001C /* ObsGeomagBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObsGeomagBridge.swift; path = Sources/ObservatoryPlot/ObsGeomagBridge.swift; sourceTree = SOURCE_ROOT; };
-		00000000000000000000001E /* ObsLinePlotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObsLinePlotView.swift; path = Sources/ObservatoryPlot/ObsLinePlotView.swift; sourceTree = SOURCE_ROOT; };
-		000000000000000000000020 /* ObsPlotInteraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObsPlotInteraction.swift; path = Sources/ObservatoryPlot/ObsPlotInteraction.swift; sourceTree = SOURCE_ROOT; };
-		000000000000000000000022 /* ObsPlotModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObsPlotModels.swift; path = Sources/ObservatoryPlot/ObsPlotModels.swift; sourceTree = SOURCE_ROOT; };
-		000000000000000000000024 /* ObsPlotSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObsPlotSupport.swift; path = Sources/ObservatoryPlot/ObsPlotSupport.swift; sourceTree = SOURCE_ROOT; };
-		000000000000000000000026 /* ObsSparkline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObsSparkline.swift; path = Sources/ObservatoryPlot/ObsSparkline.swift; sourceTree = SOURCE_ROOT; };
-		000000000000000000000028 /* ObsTimeAxis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObsTimeAxis.swift; path = Sources/ObservatoryPlot/ObsTimeAxis.swift; sourceTree = SOURCE_ROOT; };
-		00000000000000000000002A /* ObsWidgetData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObsWidgetData.swift; path = Sources/ObservatoryPlot/ObsWidgetData.swift; sourceTree = SOURCE_ROOT; };
-		00000000000000000000002C /* ObservatoryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryApp.swift; path = Sources/Observatory/ObservatoryApp.swift; sourceTree = SOURCE_ROOT; };
-		00000000000000000000002E /* ObservatoryDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryDetailView.swift; path = Sources/Observatory/ObservatoryDetailView.swift; sourceTree = SOURCE_ROOT; };
-		000000000000000000000030 /* ObservatoryDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryDetailViewModel.swift; path = Sources/Observatory/ObservatoryDetailViewModel.swift; sourceTree = SOURCE_ROOT; };
-		000000000000000000000032 /* ObservatoryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryListView.swift; path = Sources/Observatory/ObservatoryListView.swift; sourceTree = SOURCE_ROOT; };
-		000000000000000000000034 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RootView.swift; path = Sources/Observatory/RootView.swift; sourceTree = SOURCE_ROOT; };
-		000000000000000000000036 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Resources/App/Assets.xcassets; sourceTree = SOURCE_ROOT; };
-		00000000000000000000004D /* ObservatoryWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryWidgetBundle.swift; path = Sources/ObservatoryWidgets/ObservatoryWidgetBundle.swift; sourceTree = SOURCE_ROOT; };
-		00000000000000000000004F /* ObservatoryWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryWidgets.swift; path = Sources/ObservatoryWidgets/ObservatoryWidgets.swift; sourceTree = SOURCE_ROOT; };
-		000000000000000000000066 /* ObservatoryWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryWatchApp.swift; path = Sources/ObservatoryWatch/ObservatoryWatchApp.swift; sourceTree = SOURCE_ROOT; };
-		000000000000000000000068 /* WatchObservatoryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WatchObservatoryListView.swift; path = Sources/ObservatoryWatch/WatchObservatoryListView.swift; sourceTree = SOURCE_ROOT; };
-		00000000000000000000006A /* WatchRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WatchRootView.swift; path = Sources/ObservatoryWatch/WatchRootView.swift; sourceTree = SOURCE_ROOT; };
-		00000000000000000000006C /* WatchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WatchViewModel.swift; path = Sources/ObservatoryWatch/WatchViewModel.swift; sourceTree = SOURCE_ROOT; };
-		00000000000000000000006E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Resources/Watch/Assets.xcassets; sourceTree = SOURCE_ROOT; };
-		000000000000000000000085 /* ObservatoryWatchWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryWatchWidgetBundle.swift; path = Sources/ObservatoryWatchWidgets/ObservatoryWatchWidgetBundle.swift; sourceTree = SOURCE_ROOT; };
-		000000000000000000000087 /* ObservatoryWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ObservatoryWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		000000000000000000000089 /* ObservatoryWatchWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ObservatoryWatchWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		000000000000000000000091 /* Observatory.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Observatory.entitlements; path = Resources/App/Observatory.entitlements; sourceTree = SOURCE_ROOT; };
-		000000000000000000000092 /* ObservatoryWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ObservatoryWatch.entitlements; path = Resources/Watch/ObservatoryWatch.entitlements; sourceTree = SOURCE_ROOT; };
-		000000000000000000000093 /* ObservatoryWatchWidgets-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ObservatoryWatchWidgets-Info.plist"; path = "Resources/WatchWidgets/ObservatoryWatchWidgets-Info.plist"; sourceTree = SOURCE_ROOT; };
-		000000000000000000000094 /* ObservatoryWatchWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ObservatoryWatchWidgets.entitlements; path = Resources/WatchWidgets/ObservatoryWatchWidgets.entitlements; sourceTree = SOURCE_ROOT; };
-		000000000000000000000095 /* ObservatoryWidgets-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ObservatoryWidgets-Info.plist"; path = "Resources/Widgets/ObservatoryWidgets-Info.plist"; sourceTree = SOURCE_ROOT; };
-		000000000000000000000096 /* ObservatoryWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ObservatoryWidgets.entitlements; path = Resources/Widgets/ObservatoryWidgets.entitlements; sourceTree = SOURCE_ROOT; };
-		000000000000000000000097 /* Observatory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Observatory.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		000000000000000000000098 /* ObservatoryWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ObservatoryWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		00000000000000000000000C /* MirrorClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MirrorClient.swift; path = Sources/ObservatoryCore/MirrorClient.swift; sourceTree = SOURCE_ROOT; };
+		00000000000000000000000E /* Observatories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Observatories.swift; path = Sources/ObservatoryCore/Observatories.swift; sourceTree = SOURCE_ROOT; };
+		000000000000000000000010 /* ObservatoryAppGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryAppGroup.swift; path = Sources/ObservatoryCore/ObservatoryAppGroup.swift; sourceTree = SOURCE_ROOT; };
+		000000000000000000000012 /* ObservatorySelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatorySelection.swift; path = Sources/ObservatoryCore/ObservatorySelection.swift; sourceTree = SOURCE_ROOT; };
+		000000000000000000000014 /* StormDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StormDetector.swift; path = Sources/ObservatoryCore/StormDetector.swift; sourceTree = SOURCE_ROOT; };
+		000000000000000000000016 /* UTCDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UTCDate.swift; path = Sources/ObservatoryCore/UTCDate.swift; sourceTree = SOURCE_ROOT; };
+		000000000000000000000018 /* GeomagWidgetProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GeomagWidgetProvider.swift; path = Sources/ObservatoryPlot/GeomagWidgetProvider.swift; sourceTree = SOURCE_ROOT; };
+		00000000000000000000001A /* GeomagWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GeomagWidgetView.swift; path = Sources/ObservatoryPlot/GeomagWidgetView.swift; sourceTree = SOURCE_ROOT; };
+		00000000000000000000001C /* ObsFieldChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObsFieldChart.swift; path = Sources/ObservatoryPlot/ObsFieldChart.swift; sourceTree = SOURCE_ROOT; };
+		00000000000000000000001E /* ObsGeomagBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObsGeomagBridge.swift; path = Sources/ObservatoryPlot/ObsGeomagBridge.swift; sourceTree = SOURCE_ROOT; };
+		000000000000000000000020 /* ObsLinePlotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObsLinePlotView.swift; path = Sources/ObservatoryPlot/ObsLinePlotView.swift; sourceTree = SOURCE_ROOT; };
+		000000000000000000000022 /* ObsPlotInteraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObsPlotInteraction.swift; path = Sources/ObservatoryPlot/ObsPlotInteraction.swift; sourceTree = SOURCE_ROOT; };
+		000000000000000000000024 /* ObsPlotModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObsPlotModels.swift; path = Sources/ObservatoryPlot/ObsPlotModels.swift; sourceTree = SOURCE_ROOT; };
+		000000000000000000000026 /* ObsPlotSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObsPlotSupport.swift; path = Sources/ObservatoryPlot/ObsPlotSupport.swift; sourceTree = SOURCE_ROOT; };
+		000000000000000000000028 /* ObsSparkline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObsSparkline.swift; path = Sources/ObservatoryPlot/ObsSparkline.swift; sourceTree = SOURCE_ROOT; };
+		00000000000000000000002A /* ObsTimeAxis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObsTimeAxis.swift; path = Sources/ObservatoryPlot/ObsTimeAxis.swift; sourceTree = SOURCE_ROOT; };
+		00000000000000000000002C /* ObsWidgetData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObsWidgetData.swift; path = Sources/ObservatoryPlot/ObsWidgetData.swift; sourceTree = SOURCE_ROOT; };
+		00000000000000000000002E /* ObservatoryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryApp.swift; path = Sources/Observatory/ObservatoryApp.swift; sourceTree = SOURCE_ROOT; };
+		000000000000000000000030 /* ObservatoryDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryDetailView.swift; path = Sources/Observatory/ObservatoryDetailView.swift; sourceTree = SOURCE_ROOT; };
+		000000000000000000000032 /* ObservatoryDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryDetailViewModel.swift; path = Sources/Observatory/ObservatoryDetailViewModel.swift; sourceTree = SOURCE_ROOT; };
+		000000000000000000000034 /* ObservatoryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryListView.swift; path = Sources/Observatory/ObservatoryListView.swift; sourceTree = SOURCE_ROOT; };
+		000000000000000000000036 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RootView.swift; path = Sources/Observatory/RootView.swift; sourceTree = SOURCE_ROOT; };
+		000000000000000000000038 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Resources/App/Assets.xcassets; sourceTree = SOURCE_ROOT; };
+		000000000000000000000050 /* ObservatoryWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryWidgetBundle.swift; path = Sources/ObservatoryWidgets/ObservatoryWidgetBundle.swift; sourceTree = SOURCE_ROOT; };
+		000000000000000000000052 /* ObservatoryWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryWidgets.swift; path = Sources/ObservatoryWidgets/ObservatoryWidgets.swift; sourceTree = SOURCE_ROOT; };
+		00000000000000000000006A /* ObservatoryWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryWatchApp.swift; path = Sources/ObservatoryWatch/ObservatoryWatchApp.swift; sourceTree = SOURCE_ROOT; };
+		00000000000000000000006C /* WatchObservatoryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WatchObservatoryListView.swift; path = Sources/ObservatoryWatch/WatchObservatoryListView.swift; sourceTree = SOURCE_ROOT; };
+		00000000000000000000006E /* WatchRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WatchRootView.swift; path = Sources/ObservatoryWatch/WatchRootView.swift; sourceTree = SOURCE_ROOT; };
+		000000000000000000000070 /* WatchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WatchViewModel.swift; path = Sources/ObservatoryWatch/WatchViewModel.swift; sourceTree = SOURCE_ROOT; };
+		000000000000000000000072 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Resources/Watch/Assets.xcassets; sourceTree = SOURCE_ROOT; };
+		00000000000000000000008A /* ObservatoryWatchWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryWatchWidgetBundle.swift; path = Sources/ObservatoryWatchWidgets/ObservatoryWatchWidgetBundle.swift; sourceTree = SOURCE_ROOT; };
+		00000000000000000000008C /* ObservatoryWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ObservatoryWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		00000000000000000000008E /* ObservatoryWatchWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ObservatoryWatchWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		000000000000000000000096 /* Observatory.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Observatory.entitlements; path = Resources/App/Observatory.entitlements; sourceTree = SOURCE_ROOT; };
+		000000000000000000000097 /* ObservatoryWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ObservatoryWatch.entitlements; path = Resources/Watch/ObservatoryWatch.entitlements; sourceTree = SOURCE_ROOT; };
+		000000000000000000000098 /* ObservatoryWatchWidgets-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ObservatoryWatchWidgets-Info.plist"; path = "Resources/WatchWidgets/ObservatoryWatchWidgets-Info.plist"; sourceTree = SOURCE_ROOT; };
+		000000000000000000000099 /* ObservatoryWatchWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ObservatoryWatchWidgets.entitlements; path = Resources/WatchWidgets/ObservatoryWatchWidgets.entitlements; sourceTree = SOURCE_ROOT; };
+		00000000000000000000009A /* ObservatoryWidgets-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ObservatoryWidgets-Info.plist"; path = "Resources/Widgets/ObservatoryWidgets-Info.plist"; sourceTree = SOURCE_ROOT; };
+		00000000000000000000009B /* ObservatoryWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ObservatoryWidgets.entitlements; path = Resources/Widgets/ObservatoryWidgets.entitlements; sourceTree = SOURCE_ROOT; };
+		00000000000000000000009C /* Observatory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Observatory.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		00000000000000000000009D /* ObservatoryWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ObservatoryWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		000000000000000000000099 /* Frameworks */ = {
+		00000000000000000000009E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		00000000000000000000009A /* Frameworks */ = {
+		00000000000000000000009F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		00000000000000000000009B /* Frameworks */ = {
+		0000000000000000000000A0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		00000000000000000000009C /* Frameworks */ = {
+		0000000000000000000000A1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -231,55 +236,55 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		00000000000000000000009D = {
+		0000000000000000000000A2 = {
 			isa = PBXGroup;
 			children = (
-				00000000000000000000009E /* Sources */,
-				00000000000000000000009F /* Resources */,
-				0000000000000000000000A0 /* Products */,
+				0000000000000000000000A3 /* Sources */,
+				0000000000000000000000A4 /* Resources */,
+				0000000000000000000000A5 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		00000000000000000000009E /* Sources */ = {
+		0000000000000000000000A3 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				0000000000000000000000A1 /* ObservatoryCore */,
-				0000000000000000000000A2 /* ObservatoryPlot */,
-				0000000000000000000000A3 /* Observatory */,
-				0000000000000000000000A4 /* ObservatoryWidgets */,
-				0000000000000000000000A5 /* ObservatoryWatch */,
-				0000000000000000000000A6 /* ObservatoryWatchWidgets */,
+				0000000000000000000000A6 /* ObservatoryCore */,
+				0000000000000000000000A7 /* ObservatoryPlot */,
+				0000000000000000000000A8 /* Observatory */,
+				0000000000000000000000A9 /* ObservatoryWidgets */,
+				0000000000000000000000AA /* ObservatoryWatch */,
+				0000000000000000000000AB /* ObservatoryWatchWidgets */,
 			);
 			name = Sources;
 			sourceTree = "<group>";
 		};
-		00000000000000000000009F /* Resources */ = {
+		0000000000000000000000A4 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000036 /* Assets.xcassets */,
-				000000000000000000000091 /* Observatory.entitlements */,
-				000000000000000000000095 /* ObservatoryWidgets-Info.plist */,
-				000000000000000000000096 /* ObservatoryWidgets.entitlements */,
-				00000000000000000000006E /* Assets.xcassets */,
-				000000000000000000000092 /* ObservatoryWatch.entitlements */,
-				000000000000000000000093 /* ObservatoryWatchWidgets-Info.plist */,
-				000000000000000000000094 /* ObservatoryWatchWidgets.entitlements */,
+				000000000000000000000038 /* Assets.xcassets */,
+				000000000000000000000096 /* Observatory.entitlements */,
+				00000000000000000000009A /* ObservatoryWidgets-Info.plist */,
+				00000000000000000000009B /* ObservatoryWidgets.entitlements */,
+				000000000000000000000072 /* Assets.xcassets */,
+				000000000000000000000097 /* ObservatoryWatch.entitlements */,
+				000000000000000000000098 /* ObservatoryWatchWidgets-Info.plist */,
+				000000000000000000000099 /* ObservatoryWatchWidgets.entitlements */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		0000000000000000000000A0 /* Products */ = {
+		0000000000000000000000A5 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000097 /* Observatory.app */,
-				000000000000000000000087 /* ObservatoryWidgets.appex */,
-				000000000000000000000098 /* ObservatoryWatch.app */,
-				000000000000000000000089 /* ObservatoryWatchWidgets.appex */,
+				00000000000000000000009C /* Observatory.app */,
+				00000000000000000000008C /* ObservatoryWidgets.appex */,
+				00000000000000000000009D /* ObservatoryWatch.app */,
+				00000000000000000000008E /* ObservatoryWatchWidgets.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		0000000000000000000000A1 /* ObservatoryCore */ = {
+		0000000000000000000000A6 /* ObservatoryCore */ = {
 			isa = PBXGroup;
 			children = (
 				000000000000000000000002 /* GINClient.swift */,
@@ -287,69 +292,70 @@
 				000000000000000000000006 /* GeomagRepository.swift */,
 				000000000000000000000008 /* GeomagStore.swift */,
 				00000000000000000000000A /* IAGA2002Parser.swift */,
-				00000000000000000000000C /* Observatories.swift */,
-				00000000000000000000000E /* ObservatoryAppGroup.swift */,
-				000000000000000000000010 /* ObservatorySelection.swift */,
-				000000000000000000000012 /* StormDetector.swift */,
-				000000000000000000000014 /* UTCDate.swift */,
+				00000000000000000000000C /* MirrorClient.swift */,
+				00000000000000000000000E /* Observatories.swift */,
+				000000000000000000000010 /* ObservatoryAppGroup.swift */,
+				000000000000000000000012 /* ObservatorySelection.swift */,
+				000000000000000000000014 /* StormDetector.swift */,
+				000000000000000000000016 /* UTCDate.swift */,
 			);
 			name = ObservatoryCore;
 			sourceTree = "<group>";
 		};
-		0000000000000000000000A2 /* ObservatoryPlot */ = {
+		0000000000000000000000A7 /* ObservatoryPlot */ = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000016 /* GeomagWidgetProvider.swift */,
-				000000000000000000000018 /* GeomagWidgetView.swift */,
-				00000000000000000000001A /* ObsFieldChart.swift */,
-				00000000000000000000001C /* ObsGeomagBridge.swift */,
-				00000000000000000000001E /* ObsLinePlotView.swift */,
-				000000000000000000000020 /* ObsPlotInteraction.swift */,
-				000000000000000000000022 /* ObsPlotModels.swift */,
-				000000000000000000000024 /* ObsPlotSupport.swift */,
-				000000000000000000000026 /* ObsSparkline.swift */,
-				000000000000000000000028 /* ObsTimeAxis.swift */,
-				00000000000000000000002A /* ObsWidgetData.swift */,
+				000000000000000000000018 /* GeomagWidgetProvider.swift */,
+				00000000000000000000001A /* GeomagWidgetView.swift */,
+				00000000000000000000001C /* ObsFieldChart.swift */,
+				00000000000000000000001E /* ObsGeomagBridge.swift */,
+				000000000000000000000020 /* ObsLinePlotView.swift */,
+				000000000000000000000022 /* ObsPlotInteraction.swift */,
+				000000000000000000000024 /* ObsPlotModels.swift */,
+				000000000000000000000026 /* ObsPlotSupport.swift */,
+				000000000000000000000028 /* ObsSparkline.swift */,
+				00000000000000000000002A /* ObsTimeAxis.swift */,
+				00000000000000000000002C /* ObsWidgetData.swift */,
 			);
 			name = ObservatoryPlot;
 			sourceTree = "<group>";
 		};
-		0000000000000000000000A3 /* Observatory */ = {
+		0000000000000000000000A8 /* Observatory */ = {
 			isa = PBXGroup;
 			children = (
-				00000000000000000000002C /* ObservatoryApp.swift */,
-				00000000000000000000002E /* ObservatoryDetailView.swift */,
-				000000000000000000000030 /* ObservatoryDetailViewModel.swift */,
-				000000000000000000000032 /* ObservatoryListView.swift */,
-				000000000000000000000034 /* RootView.swift */,
+				00000000000000000000002E /* ObservatoryApp.swift */,
+				000000000000000000000030 /* ObservatoryDetailView.swift */,
+				000000000000000000000032 /* ObservatoryDetailViewModel.swift */,
+				000000000000000000000034 /* ObservatoryListView.swift */,
+				000000000000000000000036 /* RootView.swift */,
 			);
 			name = Observatory;
 			sourceTree = "<group>";
 		};
-		0000000000000000000000A4 /* ObservatoryWidgets */ = {
+		0000000000000000000000A9 /* ObservatoryWidgets */ = {
 			isa = PBXGroup;
 			children = (
-				00000000000000000000004D /* ObservatoryWidgetBundle.swift */,
-				00000000000000000000004F /* ObservatoryWidgets.swift */,
+				000000000000000000000050 /* ObservatoryWidgetBundle.swift */,
+				000000000000000000000052 /* ObservatoryWidgets.swift */,
 			);
 			name = ObservatoryWidgets;
 			sourceTree = "<group>";
 		};
-		0000000000000000000000A5 /* ObservatoryWatch */ = {
+		0000000000000000000000AA /* ObservatoryWatch */ = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000066 /* ObservatoryWatchApp.swift */,
-				000000000000000000000068 /* WatchObservatoryListView.swift */,
-				00000000000000000000006A /* WatchRootView.swift */,
-				00000000000000000000006C /* WatchViewModel.swift */,
+				00000000000000000000006A /* ObservatoryWatchApp.swift */,
+				00000000000000000000006C /* WatchObservatoryListView.swift */,
+				00000000000000000000006E /* WatchRootView.swift */,
+				000000000000000000000070 /* WatchViewModel.swift */,
 			);
 			name = ObservatoryWatch;
 			sourceTree = "<group>";
 		};
-		0000000000000000000000A6 /* ObservatoryWatchWidgets */ = {
+		0000000000000000000000AB /* ObservatoryWatchWidgets */ = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000085 /* ObservatoryWatchWidgetBundle.swift */,
+				00000000000000000000008A /* ObservatoryWatchWidgetBundle.swift */,
 			);
 			name = ObservatoryWatchWidgets;
 			sourceTree = "<group>";
@@ -357,13 +363,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00000000000000000000008C /* ObservatoryWidgets */ = {
+		000000000000000000000091 /* ObservatoryWidgets */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0000000000000000000000AC /* Build configuration list for PBXNativeTarget "ObservatoryWidgets" */;
+			buildConfigurationList = 0000000000000000000000B1 /* Build configuration list for PBXNativeTarget "ObservatoryWidgets" */;
 			buildPhases = (
-				0000000000000000000000AD /* Sources */,
-				00000000000000000000009A /* Frameworks */,
-				0000000000000000000000AE /* Resources */,
+				0000000000000000000000B2 /* Sources */,
+				00000000000000000000009F /* Frameworks */,
+				0000000000000000000000B3 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -371,16 +377,16 @@
 			);
 			name = ObservatoryWidgets;
 			productName = ObservatoryWidgets;
-			productReference = 000000000000000000000087 /* ObservatoryWidgets.appex */;
+			productReference = 00000000000000000000008C /* ObservatoryWidgets.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		00000000000000000000008E /* ObservatoryWatchWidgets */ = {
+		000000000000000000000093 /* ObservatoryWatchWidgets */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0000000000000000000000B4 /* Build configuration list for PBXNativeTarget "ObservatoryWatchWidgets" */;
+			buildConfigurationList = 0000000000000000000000B9 /* Build configuration list for PBXNativeTarget "ObservatoryWatchWidgets" */;
 			buildPhases = (
-				0000000000000000000000B5 /* Sources */,
-				00000000000000000000009C /* Frameworks */,
-				0000000000000000000000B6 /* Resources */,
+				0000000000000000000000BA /* Sources */,
+				0000000000000000000000A1 /* Frameworks */,
+				0000000000000000000000BB /* Resources */,
 			);
 			buildRules = (
 			);
@@ -388,51 +394,51 @@
 			);
 			name = ObservatoryWatchWidgets;
 			productName = ObservatoryWatchWidgets;
-			productReference = 000000000000000000000089 /* ObservatoryWatchWidgets.appex */;
+			productReference = 00000000000000000000008E /* ObservatoryWatchWidgets.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		0000000000000000000000A7 /* Observatory */ = {
+		0000000000000000000000AC /* Observatory */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0000000000000000000000A8 /* Build configuration list for PBXNativeTarget "Observatory" */;
+			buildConfigurationList = 0000000000000000000000AD /* Build configuration list for PBXNativeTarget "Observatory" */;
 			buildPhases = (
-				0000000000000000000000A9 /* Sources */,
-				000000000000000000000099 /* Frameworks */,
-				0000000000000000000000AA /* Resources */,
-				00000000000000000000008F /* Embed App Extensions */,
+				0000000000000000000000AE /* Sources */,
+				00000000000000000000009E /* Frameworks */,
+				0000000000000000000000AF /* Resources */,
+				000000000000000000000094 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				0000000000000000000000AB /* PBXTargetDependency */,
+				0000000000000000000000B0 /* PBXTargetDependency */,
 			);
 			name = Observatory;
 			productName = Observatory;
-			productReference = 000000000000000000000097 /* Observatory.app */;
+			productReference = 00000000000000000000009C /* Observatory.app */;
 			productType = "com.apple.product-type.application";
 		};
-		0000000000000000000000AF /* ObservatoryWatch */ = {
+		0000000000000000000000B4 /* ObservatoryWatch */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0000000000000000000000B0 /* Build configuration list for PBXNativeTarget "ObservatoryWatch" */;
+			buildConfigurationList = 0000000000000000000000B5 /* Build configuration list for PBXNativeTarget "ObservatoryWatch" */;
 			buildPhases = (
-				0000000000000000000000B1 /* Sources */,
-				00000000000000000000009B /* Frameworks */,
-				0000000000000000000000B2 /* Resources */,
-				000000000000000000000090 /* Embed App Extensions */,
+				0000000000000000000000B6 /* Sources */,
+				0000000000000000000000A0 /* Frameworks */,
+				0000000000000000000000B7 /* Resources */,
+				000000000000000000000095 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				0000000000000000000000B3 /* PBXTargetDependency */,
+				0000000000000000000000B8 /* PBXTargetDependency */,
 			);
 			name = ObservatoryWatch;
 			productName = ObservatoryWatch;
-			productReference = 000000000000000000000098 /* ObservatoryWatch.app */;
+			productReference = 00000000000000000000009D /* ObservatoryWatch.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		00000000000000000000008B /* Project object */ = {
+		000000000000000000000090 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
@@ -440,21 +446,21 @@
 				LastUpgradeCheck = 2640;
 				ORGANIZATIONNAME = "Twarge LLC";
 				TargetAttributes = {
-					00000000000000000000008C = {
+					000000000000000000000091 = {
 						CreatedOnToolsVersion = 26.4;
 					};
-					00000000000000000000008E = {
+					000000000000000000000093 = {
 						CreatedOnToolsVersion = 26.4;
 					};
-					0000000000000000000000A7 = {
+					0000000000000000000000AC = {
 						CreatedOnToolsVersion = 26.4;
 					};
-					0000000000000000000000AF = {
+					0000000000000000000000B4 = {
 						CreatedOnToolsVersion = 26.4;
 					};
 				};
 			};
-			buildConfigurationList = 0000000000000000000000B7 /* Build configuration list for PBXProject "observatory" */;
+			buildConfigurationList = 0000000000000000000000BC /* Build configuration list for PBXProject "observatory" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -462,44 +468,44 @@
 				en,
 				Base,
 			);
-			mainGroup = 00000000000000000000009D;
-			productRefGroup = 0000000000000000000000A0 /* Products */;
+			mainGroup = 0000000000000000000000A2;
+			productRefGroup = 0000000000000000000000A5 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				0000000000000000000000A7 /* Observatory */,
-				00000000000000000000008C /* ObservatoryWidgets */,
-				0000000000000000000000AF /* ObservatoryWatch */,
-				00000000000000000000008E /* ObservatoryWatchWidgets */,
+				0000000000000000000000AC /* Observatory */,
+				000000000000000000000091 /* ObservatoryWidgets */,
+				0000000000000000000000B4 /* ObservatoryWatch */,
+				000000000000000000000093 /* ObservatoryWatchWidgets */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		0000000000000000000000AA /* Resources */ = {
+		0000000000000000000000AF /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				000000000000000000000035 /* Assets.xcassets in Resources */,
+				000000000000000000000037 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0000000000000000000000AE /* Resources */ = {
+		0000000000000000000000B3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0000000000000000000000B2 /* Resources */ = {
+		0000000000000000000000B7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00000000000000000000006D /* Assets.xcassets in Resources */,
+				000000000000000000000071 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0000000000000000000000B6 /* Resources */ = {
+		0000000000000000000000BB /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -509,7 +515,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		0000000000000000000000A9 /* Sources */ = {
+		0000000000000000000000AE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -518,138 +524,142 @@
 				000000000000000000000005 /* GeomagRepository.swift in Sources */,
 				000000000000000000000007 /* GeomagStore.swift in Sources */,
 				000000000000000000000009 /* IAGA2002Parser.swift in Sources */,
-				00000000000000000000000B /* Observatories.swift in Sources */,
-				00000000000000000000000D /* ObservatoryAppGroup.swift in Sources */,
-				00000000000000000000000F /* ObservatorySelection.swift in Sources */,
-				000000000000000000000011 /* StormDetector.swift in Sources */,
-				000000000000000000000013 /* UTCDate.swift in Sources */,
-				000000000000000000000015 /* GeomagWidgetProvider.swift in Sources */,
-				000000000000000000000017 /* GeomagWidgetView.swift in Sources */,
-				000000000000000000000019 /* ObsFieldChart.swift in Sources */,
-				00000000000000000000001B /* ObsGeomagBridge.swift in Sources */,
-				00000000000000000000001D /* ObsLinePlotView.swift in Sources */,
-				00000000000000000000001F /* ObsPlotInteraction.swift in Sources */,
-				000000000000000000000021 /* ObsPlotModels.swift in Sources */,
-				000000000000000000000023 /* ObsPlotSupport.swift in Sources */,
-				000000000000000000000025 /* ObsSparkline.swift in Sources */,
-				000000000000000000000027 /* ObsTimeAxis.swift in Sources */,
-				000000000000000000000029 /* ObsWidgetData.swift in Sources */,
-				00000000000000000000002B /* ObservatoryApp.swift in Sources */,
-				00000000000000000000002D /* ObservatoryDetailView.swift in Sources */,
-				00000000000000000000002F /* ObservatoryDetailViewModel.swift in Sources */,
-				000000000000000000000031 /* ObservatoryListView.swift in Sources */,
-				000000000000000000000033 /* RootView.swift in Sources */,
+				00000000000000000000000B /* MirrorClient.swift in Sources */,
+				00000000000000000000000D /* Observatories.swift in Sources */,
+				00000000000000000000000F /* ObservatoryAppGroup.swift in Sources */,
+				000000000000000000000011 /* ObservatorySelection.swift in Sources */,
+				000000000000000000000013 /* StormDetector.swift in Sources */,
+				000000000000000000000015 /* UTCDate.swift in Sources */,
+				000000000000000000000017 /* GeomagWidgetProvider.swift in Sources */,
+				000000000000000000000019 /* GeomagWidgetView.swift in Sources */,
+				00000000000000000000001B /* ObsFieldChart.swift in Sources */,
+				00000000000000000000001D /* ObsGeomagBridge.swift in Sources */,
+				00000000000000000000001F /* ObsLinePlotView.swift in Sources */,
+				000000000000000000000021 /* ObsPlotInteraction.swift in Sources */,
+				000000000000000000000023 /* ObsPlotModels.swift in Sources */,
+				000000000000000000000025 /* ObsPlotSupport.swift in Sources */,
+				000000000000000000000027 /* ObsSparkline.swift in Sources */,
+				000000000000000000000029 /* ObsTimeAxis.swift in Sources */,
+				00000000000000000000002B /* ObsWidgetData.swift in Sources */,
+				00000000000000000000002D /* ObservatoryApp.swift in Sources */,
+				00000000000000000000002F /* ObservatoryDetailView.swift in Sources */,
+				000000000000000000000031 /* ObservatoryDetailViewModel.swift in Sources */,
+				000000000000000000000033 /* ObservatoryListView.swift in Sources */,
+				000000000000000000000035 /* RootView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0000000000000000000000AD /* Sources */ = {
+		0000000000000000000000B2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				000000000000000000000037 /* GINClient.swift in Sources */,
-				000000000000000000000038 /* GeomagModels.swift in Sources */,
-				000000000000000000000039 /* GeomagRepository.swift in Sources */,
-				00000000000000000000003A /* GeomagStore.swift in Sources */,
-				00000000000000000000003B /* IAGA2002Parser.swift in Sources */,
-				00000000000000000000003C /* Observatories.swift in Sources */,
-				00000000000000000000003D /* ObservatoryAppGroup.swift in Sources */,
-				00000000000000000000003E /* ObservatorySelection.swift in Sources */,
-				00000000000000000000003F /* StormDetector.swift in Sources */,
-				000000000000000000000040 /* UTCDate.swift in Sources */,
-				000000000000000000000041 /* GeomagWidgetProvider.swift in Sources */,
-				000000000000000000000042 /* GeomagWidgetView.swift in Sources */,
-				000000000000000000000043 /* ObsFieldChart.swift in Sources */,
-				000000000000000000000044 /* ObsGeomagBridge.swift in Sources */,
-				000000000000000000000045 /* ObsLinePlotView.swift in Sources */,
-				000000000000000000000046 /* ObsPlotInteraction.swift in Sources */,
-				000000000000000000000047 /* ObsPlotModels.swift in Sources */,
-				000000000000000000000048 /* ObsPlotSupport.swift in Sources */,
-				000000000000000000000049 /* ObsSparkline.swift in Sources */,
-				00000000000000000000004A /* ObsTimeAxis.swift in Sources */,
-				00000000000000000000004B /* ObsWidgetData.swift in Sources */,
-				00000000000000000000004C /* ObservatoryWidgetBundle.swift in Sources */,
-				00000000000000000000004E /* ObservatoryWidgets.swift in Sources */,
+				000000000000000000000039 /* GINClient.swift in Sources */,
+				00000000000000000000003A /* GeomagModels.swift in Sources */,
+				00000000000000000000003B /* GeomagRepository.swift in Sources */,
+				00000000000000000000003C /* GeomagStore.swift in Sources */,
+				00000000000000000000003D /* IAGA2002Parser.swift in Sources */,
+				00000000000000000000003E /* MirrorClient.swift in Sources */,
+				00000000000000000000003F /* Observatories.swift in Sources */,
+				000000000000000000000040 /* ObservatoryAppGroup.swift in Sources */,
+				000000000000000000000041 /* ObservatorySelection.swift in Sources */,
+				000000000000000000000042 /* StormDetector.swift in Sources */,
+				000000000000000000000043 /* UTCDate.swift in Sources */,
+				000000000000000000000044 /* GeomagWidgetProvider.swift in Sources */,
+				000000000000000000000045 /* GeomagWidgetView.swift in Sources */,
+				000000000000000000000046 /* ObsFieldChart.swift in Sources */,
+				000000000000000000000047 /* ObsGeomagBridge.swift in Sources */,
+				000000000000000000000048 /* ObsLinePlotView.swift in Sources */,
+				000000000000000000000049 /* ObsPlotInteraction.swift in Sources */,
+				00000000000000000000004A /* ObsPlotModels.swift in Sources */,
+				00000000000000000000004B /* ObsPlotSupport.swift in Sources */,
+				00000000000000000000004C /* ObsSparkline.swift in Sources */,
+				00000000000000000000004D /* ObsTimeAxis.swift in Sources */,
+				00000000000000000000004E /* ObsWidgetData.swift in Sources */,
+				00000000000000000000004F /* ObservatoryWidgetBundle.swift in Sources */,
+				000000000000000000000051 /* ObservatoryWidgets.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0000000000000000000000B1 /* Sources */ = {
+		0000000000000000000000B6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				000000000000000000000050 /* GINClient.swift in Sources */,
-				000000000000000000000051 /* GeomagModels.swift in Sources */,
-				000000000000000000000052 /* GeomagRepository.swift in Sources */,
-				000000000000000000000053 /* GeomagStore.swift in Sources */,
-				000000000000000000000054 /* IAGA2002Parser.swift in Sources */,
-				000000000000000000000055 /* Observatories.swift in Sources */,
-				000000000000000000000056 /* ObservatoryAppGroup.swift in Sources */,
-				000000000000000000000057 /* ObservatorySelection.swift in Sources */,
-				000000000000000000000058 /* StormDetector.swift in Sources */,
-				000000000000000000000059 /* UTCDate.swift in Sources */,
-				00000000000000000000005A /* GeomagWidgetProvider.swift in Sources */,
-				00000000000000000000005B /* GeomagWidgetView.swift in Sources */,
-				00000000000000000000005C /* ObsFieldChart.swift in Sources */,
-				00000000000000000000005D /* ObsGeomagBridge.swift in Sources */,
-				00000000000000000000005E /* ObsLinePlotView.swift in Sources */,
-				00000000000000000000005F /* ObsPlotInteraction.swift in Sources */,
-				000000000000000000000060 /* ObsPlotModels.swift in Sources */,
-				000000000000000000000061 /* ObsPlotSupport.swift in Sources */,
-				000000000000000000000062 /* ObsSparkline.swift in Sources */,
-				000000000000000000000063 /* ObsTimeAxis.swift in Sources */,
-				000000000000000000000064 /* ObsWidgetData.swift in Sources */,
-				000000000000000000000065 /* ObservatoryWatchApp.swift in Sources */,
-				000000000000000000000067 /* WatchObservatoryListView.swift in Sources */,
-				000000000000000000000069 /* WatchRootView.swift in Sources */,
-				00000000000000000000006B /* WatchViewModel.swift in Sources */,
+				000000000000000000000053 /* GINClient.swift in Sources */,
+				000000000000000000000054 /* GeomagModels.swift in Sources */,
+				000000000000000000000055 /* GeomagRepository.swift in Sources */,
+				000000000000000000000056 /* GeomagStore.swift in Sources */,
+				000000000000000000000057 /* IAGA2002Parser.swift in Sources */,
+				000000000000000000000058 /* MirrorClient.swift in Sources */,
+				000000000000000000000059 /* Observatories.swift in Sources */,
+				00000000000000000000005A /* ObservatoryAppGroup.swift in Sources */,
+				00000000000000000000005B /* ObservatorySelection.swift in Sources */,
+				00000000000000000000005C /* StormDetector.swift in Sources */,
+				00000000000000000000005D /* UTCDate.swift in Sources */,
+				00000000000000000000005E /* GeomagWidgetProvider.swift in Sources */,
+				00000000000000000000005F /* GeomagWidgetView.swift in Sources */,
+				000000000000000000000060 /* ObsFieldChart.swift in Sources */,
+				000000000000000000000061 /* ObsGeomagBridge.swift in Sources */,
+				000000000000000000000062 /* ObsLinePlotView.swift in Sources */,
+				000000000000000000000063 /* ObsPlotInteraction.swift in Sources */,
+				000000000000000000000064 /* ObsPlotModels.swift in Sources */,
+				000000000000000000000065 /* ObsPlotSupport.swift in Sources */,
+				000000000000000000000066 /* ObsSparkline.swift in Sources */,
+				000000000000000000000067 /* ObsTimeAxis.swift in Sources */,
+				000000000000000000000068 /* ObsWidgetData.swift in Sources */,
+				000000000000000000000069 /* ObservatoryWatchApp.swift in Sources */,
+				00000000000000000000006B /* WatchObservatoryListView.swift in Sources */,
+				00000000000000000000006D /* WatchRootView.swift in Sources */,
+				00000000000000000000006F /* WatchViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0000000000000000000000B5 /* Sources */ = {
+		0000000000000000000000BA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00000000000000000000006F /* GINClient.swift in Sources */,
-				000000000000000000000070 /* GeomagModels.swift in Sources */,
-				000000000000000000000071 /* GeomagRepository.swift in Sources */,
-				000000000000000000000072 /* GeomagStore.swift in Sources */,
-				000000000000000000000073 /* IAGA2002Parser.swift in Sources */,
-				000000000000000000000074 /* Observatories.swift in Sources */,
-				000000000000000000000075 /* ObservatoryAppGroup.swift in Sources */,
-				000000000000000000000076 /* ObservatorySelection.swift in Sources */,
-				000000000000000000000077 /* StormDetector.swift in Sources */,
-				000000000000000000000078 /* UTCDate.swift in Sources */,
-				000000000000000000000079 /* GeomagWidgetProvider.swift in Sources */,
-				00000000000000000000007A /* GeomagWidgetView.swift in Sources */,
-				00000000000000000000007B /* ObsFieldChart.swift in Sources */,
-				00000000000000000000007C /* ObsGeomagBridge.swift in Sources */,
-				00000000000000000000007D /* ObsLinePlotView.swift in Sources */,
-				00000000000000000000007E /* ObsPlotInteraction.swift in Sources */,
-				00000000000000000000007F /* ObsPlotModels.swift in Sources */,
-				000000000000000000000080 /* ObsPlotSupport.swift in Sources */,
-				000000000000000000000081 /* ObsSparkline.swift in Sources */,
-				000000000000000000000082 /* ObsTimeAxis.swift in Sources */,
-				000000000000000000000083 /* ObsWidgetData.swift in Sources */,
-				000000000000000000000084 /* ObservatoryWatchWidgetBundle.swift in Sources */,
+				000000000000000000000073 /* GINClient.swift in Sources */,
+				000000000000000000000074 /* GeomagModels.swift in Sources */,
+				000000000000000000000075 /* GeomagRepository.swift in Sources */,
+				000000000000000000000076 /* GeomagStore.swift in Sources */,
+				000000000000000000000077 /* IAGA2002Parser.swift in Sources */,
+				000000000000000000000078 /* MirrorClient.swift in Sources */,
+				000000000000000000000079 /* Observatories.swift in Sources */,
+				00000000000000000000007A /* ObservatoryAppGroup.swift in Sources */,
+				00000000000000000000007B /* ObservatorySelection.swift in Sources */,
+				00000000000000000000007C /* StormDetector.swift in Sources */,
+				00000000000000000000007D /* UTCDate.swift in Sources */,
+				00000000000000000000007E /* GeomagWidgetProvider.swift in Sources */,
+				00000000000000000000007F /* GeomagWidgetView.swift in Sources */,
+				000000000000000000000080 /* ObsFieldChart.swift in Sources */,
+				000000000000000000000081 /* ObsGeomagBridge.swift in Sources */,
+				000000000000000000000082 /* ObsLinePlotView.swift in Sources */,
+				000000000000000000000083 /* ObsPlotInteraction.swift in Sources */,
+				000000000000000000000084 /* ObsPlotModels.swift in Sources */,
+				000000000000000000000085 /* ObsPlotSupport.swift in Sources */,
+				000000000000000000000086 /* ObsSparkline.swift in Sources */,
+				000000000000000000000087 /* ObsTimeAxis.swift in Sources */,
+				000000000000000000000088 /* ObsWidgetData.swift in Sources */,
+				000000000000000000000089 /* ObservatoryWatchWidgetBundle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		0000000000000000000000AB /* PBXTargetDependency */ = {
+		0000000000000000000000B0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 00000000000000000000008C /* ObservatoryWidgets */;
-			targetProxy = 00000000000000000000008A /* PBXContainerItemProxy */;
+			target = 000000000000000000000091 /* ObservatoryWidgets */;
+			targetProxy = 00000000000000000000008F /* PBXContainerItemProxy */;
 		};
-		0000000000000000000000B3 /* PBXTargetDependency */ = {
+		0000000000000000000000B8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 00000000000000000000008E /* ObservatoryWatchWidgets */;
-			targetProxy = 00000000000000000000008D /* PBXContainerItemProxy */;
+			target = 000000000000000000000093 /* ObservatoryWatchWidgets */;
+			targetProxy = 000000000000000000000092 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		0000000000000000000000B8 /* Debug */ = {
+		0000000000000000000000BD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -682,7 +692,7 @@
 			};
 			name = Debug;
 		};
-		0000000000000000000000B9 /* Release */ = {
+		0000000000000000000000BE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -710,7 +720,7 @@
 			};
 			name = Release;
 		};
-		0000000000000000000000BA /* Debug */ = {
+		0000000000000000000000BF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -720,7 +730,7 @@
 				DEVELOPMENT_TEAM = 257KW9ZJFP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Observatory;
+				INFOPLIST_KEY_CFBundleDisplayName = Geomagnetic;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright 2026 Twarge LLC.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -739,7 +749,7 @@
 			};
 			name = Debug;
 		};
-		0000000000000000000000BB /* Release */ = {
+		0000000000000000000000C0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -749,7 +759,7 @@
 				DEVELOPMENT_TEAM = 257KW9ZJFP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Observatory;
+				INFOPLIST_KEY_CFBundleDisplayName = Geomagnetic;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright 2026 Twarge LLC.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -768,7 +778,7 @@
 			};
 			name = Release;
 		};
-		0000000000000000000000BC /* Debug */ = {
+		0000000000000000000000C1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Resources/Widgets/ObservatoryWidgets.entitlements;
@@ -799,7 +809,7 @@
 			};
 			name = Debug;
 		};
-		0000000000000000000000BD /* Release */ = {
+		0000000000000000000000C2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Resources/Widgets/ObservatoryWidgets.entitlements;
@@ -830,7 +840,7 @@
 			};
 			name = Release;
 		};
-		0000000000000000000000BE /* Debug */ = {
+		0000000000000000000000C3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -840,7 +850,7 @@
 				DEVELOPMENT_TEAM = 257KW9ZJFP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Observatory;
+				INFOPLIST_KEY_CFBundleDisplayName = Geomagnetic;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright 2026 Twarge LLC.";
 				INFOPLIST_KEY_WKApplication = YES;
 				INFOPLIST_KEY_WKWatchOnly = YES;
@@ -854,7 +864,7 @@
 			};
 			name = Debug;
 		};
-		0000000000000000000000BF /* Release */ = {
+		0000000000000000000000C4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -864,7 +874,7 @@
 				DEVELOPMENT_TEAM = 257KW9ZJFP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Observatory;
+				INFOPLIST_KEY_CFBundleDisplayName = Geomagnetic;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright 2026 Twarge LLC.";
 				INFOPLIST_KEY_WKApplication = YES;
 				INFOPLIST_KEY_WKWatchOnly = YES;
@@ -878,7 +888,7 @@
 			};
 			name = Release;
 		};
-		0000000000000000000000C0 /* Debug */ = {
+		0000000000000000000000C5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Resources/WatchWidgets/ObservatoryWatchWidgets.entitlements;
@@ -901,7 +911,7 @@
 			};
 			name = Debug;
 		};
-		0000000000000000000000C1 /* Release */ = {
+		0000000000000000000000C6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Resources/WatchWidgets/ObservatoryWatchWidgets.entitlements;
@@ -927,52 +937,52 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0000000000000000000000A8 /* Build configuration list for PBXNativeTarget "Observatory" */ = {
+		0000000000000000000000AD /* Build configuration list for PBXNativeTarget "Observatory" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0000000000000000000000BA /* Debug */,
-				0000000000000000000000BB /* Release */,
+				0000000000000000000000BF /* Debug */,
+				0000000000000000000000C0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0000000000000000000000AC /* Build configuration list for PBXNativeTarget "ObservatoryWidgets" */ = {
+		0000000000000000000000B1 /* Build configuration list for PBXNativeTarget "ObservatoryWidgets" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0000000000000000000000BC /* Debug */,
-				0000000000000000000000BD /* Release */,
+				0000000000000000000000C1 /* Debug */,
+				0000000000000000000000C2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0000000000000000000000B0 /* Build configuration list for PBXNativeTarget "ObservatoryWatch" */ = {
+		0000000000000000000000B5 /* Build configuration list for PBXNativeTarget "ObservatoryWatch" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0000000000000000000000BE /* Debug */,
-				0000000000000000000000BF /* Release */,
+				0000000000000000000000C3 /* Debug */,
+				0000000000000000000000C4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0000000000000000000000B4 /* Build configuration list for PBXNativeTarget "ObservatoryWatchWidgets" */ = {
+		0000000000000000000000B9 /* Build configuration list for PBXNativeTarget "ObservatoryWatchWidgets" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0000000000000000000000C0 /* Debug */,
-				0000000000000000000000C1 /* Release */,
+				0000000000000000000000C5 /* Debug */,
+				0000000000000000000000C6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0000000000000000000000B7 /* Build configuration list for PBXProject "observatory" */ = {
+		0000000000000000000000BC /* Build configuration list for PBXProject "observatory" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0000000000000000000000B8 /* Debug */,
-				0000000000000000000000B9 /* Release */,
+				0000000000000000000000BD /* Debug */,
+				0000000000000000000000BE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 00000000000000000000008B /* Project object */;
+	rootObject = 000000000000000000000090 /* Project object */;
 }
