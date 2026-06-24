@@ -64,6 +64,7 @@ enum GeomagWidgetData {
                          range: ObservatoryTimeRange = .day,
                          network: Bool = true,
                          timeout: Double = 18,
+                         maxPoints: Int = 80,
                          now: Date = Date()) async -> GeomagWidgetSnapshot {
         let observatory = Observatories.observatory(code: code) ?? Observatories.default
         let window = range.dateRange(now: now)
@@ -78,16 +79,16 @@ enum GeomagWidgetData {
                 // when /v1 is unavailable (e.g. OBSERVATORY_BASE_URL points at the raw GIN).
                 if let compact = try? await MirrorClient.shared.series(
                     code: code, from: window.lowerBound, to: window.upperBound,
-                    maxPoints: 80, storms: true) {
+                    maxPoints: maxPoints, storms: true) {
                     return compact
                 }
                 return try? await repo.series(code: code, from: window.lowerBound, to: window.upperBound,
-                                              maxPoints: 80, now: now)
+                                              maxPoints: maxPoints, now: now)
             } ?? nil
         }
         if result == nil || result?.isEmpty == true {
             result = await repo.cachedSeries(code: code, from: window.lowerBound,
-                                             to: window.upperBound, maxPoints: 80)
+                                             to: window.upperBound, maxPoints: maxPoints)
         }
 
         guard let result, !result.isEmpty else {

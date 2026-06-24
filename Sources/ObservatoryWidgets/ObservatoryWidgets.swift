@@ -13,7 +13,9 @@ import SwiftUI
 /// rectangular and inline lock-screen accessories.
 struct ObservatoryChartWidget: Widget {
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "ObservatoryChartWidget", provider: GeomagWidgetProvider()) { entry in
+        // Denser sparkline than the lock-screen/watch default — the 2×2 and 2×4 tiles have
+        // the pixels to show finer field detail.
+        StaticConfiguration(kind: "ObservatoryChartWidget", provider: GeomagWidgetProvider(maxPoints: 240)) { entry in
             GeomagWidgetView(snapshot: entry.snapshot, style: .chart)
         }
         .configurationDisplayName("Field Chart")

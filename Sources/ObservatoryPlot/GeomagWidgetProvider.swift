@@ -17,6 +17,9 @@ struct GeomagWidgetProvider: TimelineProvider {
     var range: ObservatoryTimeRange?
     var timeout: Double = 18
     var refreshMinutes: Double = 20
+    /// Sparkline resolution. Small by default to keep the transfer (and the watch radio)
+    /// light; the larger home-screen chart tiles raise it for denser traces.
+    var maxPoints: Int = 80
 
     private var effectiveRange: ObservatoryTimeRange { range ?? ObservatorySettings.timeRange }
 
@@ -30,7 +33,7 @@ struct GeomagWidgetProvider: TimelineProvider {
             return
         }
         Task {
-            let snapshot = await GeomagWidgetData.snapshot(range: effectiveRange, timeout: timeout)
+            let snapshot = await GeomagWidgetData.snapshot(range: effectiveRange, timeout: timeout, maxPoints: maxPoints)
             completion(GeomagEntry(date: Date(), snapshot: snapshot))
         }
     }
@@ -38,7 +41,7 @@ struct GeomagWidgetProvider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<GeomagEntry>) -> Void) {
         Task {
             let now = Date()
-            let snapshot = await GeomagWidgetData.snapshot(range: effectiveRange, timeout: timeout, now: now)
+            let snapshot = await GeomagWidgetData.snapshot(range: effectiveRange, timeout: timeout, maxPoints: maxPoints, now: now)
             let entry = GeomagEntry(date: now, snapshot: snapshot)
             completion(Timeline(entries: [entry], policy: .after(now.addingTimeInterval(refreshMinutes * 60))))
         }
