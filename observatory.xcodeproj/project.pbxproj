@@ -109,29 +109,37 @@
 		000000000000000000000087 /* ObsTimeAxis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002A /* ObsTimeAxis.swift */; };
 		000000000000000000000088 /* ObsWidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002C /* ObsWidgetData.swift */; };
 		000000000000000000000089 /* ObservatoryWatchWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000008A /* ObservatoryWatchWidgetBundle.swift */; };
-		00000000000000000000008B /* ObservatoryWidgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 00000000000000000000008C /* ObservatoryWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		00000000000000000000008D /* ObservatoryWatchWidgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 00000000000000000000008E /* ObservatoryWatchWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		00000000000000000000008B /* ObservatoryWidgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 00000000000000000000008C /* ObservatoryWidgets.appex */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		00000000000000000000008D /* ObservatoryWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 00000000000000000000008E /* ObservatoryWatch.app */; platformFilter = ios; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		00000000000000000000008F /* ObservatoryWatchWidgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 000000000000000000000090 /* ObservatoryWatchWidgets.appex */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		00000000000000000000008F /* PBXContainerItemProxy */ = {
+		000000000000000000000091 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 000000000000000000000090 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 000000000000000000000091;
-			remoteInfo = ObservatoryWidgets;
-		};
-		000000000000000000000092 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 000000000000000000000090 /* Project object */;
+			containerPortal = 000000000000000000000092 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 000000000000000000000093;
+			remoteInfo = ObservatoryWidgets;
+		};
+		000000000000000000000094 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 000000000000000000000092 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 000000000000000000000095;
+			remoteInfo = ObservatoryWatch;
+		};
+		000000000000000000000096 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 000000000000000000000092 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 000000000000000000000097;
 			remoteInfo = ObservatoryWatchWidgets;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		000000000000000000000094 /* Embed App Extensions */ = {
+		000000000000000000000098 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
@@ -142,15 +150,26 @@
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		000000000000000000000095 /* Embed App Extensions */ = {
+		000000000000000000000099 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				00000000000000000000008D /* ObservatoryWatchWidgets.appex in Embed App Extensions */,
+				00000000000000000000008F /* ObservatoryWatchWidgets.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00000000000000000000009A /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				00000000000000000000008D /* ObservatoryWatch.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -193,40 +212,40 @@
 		000000000000000000000072 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Resources/Watch/Assets.xcassets; sourceTree = SOURCE_ROOT; };
 		00000000000000000000008A /* ObservatoryWatchWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryWatchWidgetBundle.swift; path = Sources/ObservatoryWatchWidgets/ObservatoryWatchWidgetBundle.swift; sourceTree = SOURCE_ROOT; };
 		00000000000000000000008C /* ObservatoryWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ObservatoryWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		00000000000000000000008E /* ObservatoryWatchWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ObservatoryWatchWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		000000000000000000000096 /* Observatory.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Observatory.entitlements; path = Resources/App/Observatory.entitlements; sourceTree = SOURCE_ROOT; };
-		000000000000000000000097 /* ObservatoryWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ObservatoryWatch.entitlements; path = Resources/Watch/ObservatoryWatch.entitlements; sourceTree = SOURCE_ROOT; };
-		000000000000000000000098 /* ObservatoryWatchWidgets-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ObservatoryWatchWidgets-Info.plist"; path = "Resources/WatchWidgets/ObservatoryWatchWidgets-Info.plist"; sourceTree = SOURCE_ROOT; };
-		000000000000000000000099 /* ObservatoryWatchWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ObservatoryWatchWidgets.entitlements; path = Resources/WatchWidgets/ObservatoryWatchWidgets.entitlements; sourceTree = SOURCE_ROOT; };
-		00000000000000000000009A /* ObservatoryWidgets-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ObservatoryWidgets-Info.plist"; path = "Resources/Widgets/ObservatoryWidgets-Info.plist"; sourceTree = SOURCE_ROOT; };
-		00000000000000000000009B /* ObservatoryWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ObservatoryWidgets.entitlements; path = Resources/Widgets/ObservatoryWidgets.entitlements; sourceTree = SOURCE_ROOT; };
-		00000000000000000000009C /* Observatory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Observatory.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		00000000000000000000009D /* ObservatoryWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ObservatoryWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		00000000000000000000008E /* ObservatoryWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ObservatoryWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		000000000000000000000090 /* ObservatoryWatchWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ObservatoryWatchWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		00000000000000000000009B /* Observatory.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Observatory.entitlements; path = Resources/App/Observatory.entitlements; sourceTree = SOURCE_ROOT; };
+		00000000000000000000009C /* ObservatoryWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ObservatoryWatch.entitlements; path = Resources/Watch/ObservatoryWatch.entitlements; sourceTree = SOURCE_ROOT; };
+		00000000000000000000009D /* ObservatoryWatchWidgets-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ObservatoryWatchWidgets-Info.plist"; path = "Resources/WatchWidgets/ObservatoryWatchWidgets-Info.plist"; sourceTree = SOURCE_ROOT; };
+		00000000000000000000009E /* ObservatoryWatchWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ObservatoryWatchWidgets.entitlements; path = Resources/WatchWidgets/ObservatoryWatchWidgets.entitlements; sourceTree = SOURCE_ROOT; };
+		00000000000000000000009F /* ObservatoryWidgets-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ObservatoryWidgets-Info.plist"; path = "Resources/Widgets/ObservatoryWidgets-Info.plist"; sourceTree = SOURCE_ROOT; };
+		0000000000000000000000A0 /* ObservatoryWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ObservatoryWidgets.entitlements; path = Resources/Widgets/ObservatoryWidgets.entitlements; sourceTree = SOURCE_ROOT; };
+		0000000000000000000000A1 /* Observatory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Observatory.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		00000000000000000000009E /* Frameworks */ = {
+		0000000000000000000000A2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		00000000000000000000009F /* Frameworks */ = {
+		0000000000000000000000A3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0000000000000000000000A0 /* Frameworks */ = {
+		0000000000000000000000A4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0000000000000000000000A1 /* Frameworks */ = {
+		0000000000000000000000A5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -236,55 +255,55 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0000000000000000000000A2 = {
+		0000000000000000000000A6 = {
 			isa = PBXGroup;
 			children = (
-				0000000000000000000000A3 /* Sources */,
-				0000000000000000000000A4 /* Resources */,
-				0000000000000000000000A5 /* Products */,
+				0000000000000000000000A7 /* Sources */,
+				0000000000000000000000A8 /* Resources */,
+				0000000000000000000000A9 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		0000000000000000000000A3 /* Sources */ = {
+		0000000000000000000000A7 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				0000000000000000000000A6 /* ObservatoryCore */,
-				0000000000000000000000A7 /* ObservatoryPlot */,
-				0000000000000000000000A8 /* Observatory */,
-				0000000000000000000000A9 /* ObservatoryWidgets */,
-				0000000000000000000000AA /* ObservatoryWatch */,
-				0000000000000000000000AB /* ObservatoryWatchWidgets */,
+				0000000000000000000000AA /* ObservatoryCore */,
+				0000000000000000000000AB /* ObservatoryPlot */,
+				0000000000000000000000AC /* Observatory */,
+				0000000000000000000000AD /* ObservatoryWidgets */,
+				0000000000000000000000AE /* ObservatoryWatch */,
+				0000000000000000000000AF /* ObservatoryWatchWidgets */,
 			);
 			name = Sources;
 			sourceTree = "<group>";
 		};
-		0000000000000000000000A4 /* Resources */ = {
+		0000000000000000000000A8 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
 				000000000000000000000038 /* Assets.xcassets */,
-				000000000000000000000096 /* Observatory.entitlements */,
-				00000000000000000000009A /* ObservatoryWidgets-Info.plist */,
-				00000000000000000000009B /* ObservatoryWidgets.entitlements */,
+				00000000000000000000009B /* Observatory.entitlements */,
+				00000000000000000000009F /* ObservatoryWidgets-Info.plist */,
+				0000000000000000000000A0 /* ObservatoryWidgets.entitlements */,
 				000000000000000000000072 /* Assets.xcassets */,
-				000000000000000000000097 /* ObservatoryWatch.entitlements */,
-				000000000000000000000098 /* ObservatoryWatchWidgets-Info.plist */,
-				000000000000000000000099 /* ObservatoryWatchWidgets.entitlements */,
+				00000000000000000000009C /* ObservatoryWatch.entitlements */,
+				00000000000000000000009D /* ObservatoryWatchWidgets-Info.plist */,
+				00000000000000000000009E /* ObservatoryWatchWidgets.entitlements */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		0000000000000000000000A5 /* Products */ = {
+		0000000000000000000000A9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				00000000000000000000009C /* Observatory.app */,
+				0000000000000000000000A1 /* Observatory.app */,
 				00000000000000000000008C /* ObservatoryWidgets.appex */,
-				00000000000000000000009D /* ObservatoryWatch.app */,
-				00000000000000000000008E /* ObservatoryWatchWidgets.appex */,
+				00000000000000000000008E /* ObservatoryWatch.app */,
+				000000000000000000000090 /* ObservatoryWatchWidgets.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		0000000000000000000000A6 /* ObservatoryCore */ = {
+		0000000000000000000000AA /* ObservatoryCore */ = {
 			isa = PBXGroup;
 			children = (
 				000000000000000000000002 /* GINClient.swift */,
@@ -302,7 +321,7 @@
 			name = ObservatoryCore;
 			sourceTree = "<group>";
 		};
-		0000000000000000000000A7 /* ObservatoryPlot */ = {
+		0000000000000000000000AB /* ObservatoryPlot */ = {
 			isa = PBXGroup;
 			children = (
 				000000000000000000000018 /* GeomagWidgetProvider.swift */,
@@ -320,7 +339,7 @@
 			name = ObservatoryPlot;
 			sourceTree = "<group>";
 		};
-		0000000000000000000000A8 /* Observatory */ = {
+		0000000000000000000000AC /* Observatory */ = {
 			isa = PBXGroup;
 			children = (
 				00000000000000000000002E /* ObservatoryApp.swift */,
@@ -332,7 +351,7 @@
 			name = Observatory;
 			sourceTree = "<group>";
 		};
-		0000000000000000000000A9 /* ObservatoryWidgets */ = {
+		0000000000000000000000AD /* ObservatoryWidgets */ = {
 			isa = PBXGroup;
 			children = (
 				000000000000000000000050 /* ObservatoryWidgetBundle.swift */,
@@ -341,7 +360,7 @@
 			name = ObservatoryWidgets;
 			sourceTree = "<group>";
 		};
-		0000000000000000000000AA /* ObservatoryWatch */ = {
+		0000000000000000000000AE /* ObservatoryWatch */ = {
 			isa = PBXGroup;
 			children = (
 				00000000000000000000006A /* ObservatoryWatchApp.swift */,
@@ -352,7 +371,7 @@
 			name = ObservatoryWatch;
 			sourceTree = "<group>";
 		};
-		0000000000000000000000AB /* ObservatoryWatchWidgets */ = {
+		0000000000000000000000AF /* ObservatoryWatchWidgets */ = {
 			isa = PBXGroup;
 			children = (
 				00000000000000000000008A /* ObservatoryWatchWidgetBundle.swift */,
@@ -363,13 +382,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		000000000000000000000091 /* ObservatoryWidgets */ = {
+		000000000000000000000093 /* ObservatoryWidgets */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0000000000000000000000B1 /* Build configuration list for PBXNativeTarget "ObservatoryWidgets" */;
+			buildConfigurationList = 0000000000000000000000B6 /* Build configuration list for PBXNativeTarget "ObservatoryWidgets" */;
 			buildPhases = (
-				0000000000000000000000B2 /* Sources */,
-				00000000000000000000009F /* Frameworks */,
-				0000000000000000000000B3 /* Resources */,
+				0000000000000000000000B7 /* Sources */,
+				0000000000000000000000A3 /* Frameworks */,
+				0000000000000000000000B8 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -380,13 +399,32 @@
 			productReference = 00000000000000000000008C /* ObservatoryWidgets.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		000000000000000000000093 /* ObservatoryWatchWidgets */ = {
+		000000000000000000000095 /* ObservatoryWatch */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0000000000000000000000B9 /* Build configuration list for PBXNativeTarget "ObservatoryWatchWidgets" */;
+			buildConfigurationList = 0000000000000000000000B9 /* Build configuration list for PBXNativeTarget "ObservatoryWatch" */;
 			buildPhases = (
 				0000000000000000000000BA /* Sources */,
-				0000000000000000000000A1 /* Frameworks */,
+				0000000000000000000000A4 /* Frameworks */,
 				0000000000000000000000BB /* Resources */,
+				000000000000000000000099 /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0000000000000000000000BC /* PBXTargetDependency */,
+			);
+			name = ObservatoryWatch;
+			productName = ObservatoryWatch;
+			productReference = 00000000000000000000008E /* ObservatoryWatch.app */;
+			productType = "com.apple.product-type.application";
+		};
+		000000000000000000000097 /* ObservatoryWatchWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0000000000000000000000BD /* Build configuration list for PBXNativeTarget "ObservatoryWatchWidgets" */;
+			buildPhases = (
+				0000000000000000000000BE /* Sources */,
+				0000000000000000000000A5 /* Frameworks */,
+				0000000000000000000000BF /* Resources */,
 			);
 			buildRules = (
 			);
@@ -394,51 +432,34 @@
 			);
 			name = ObservatoryWatchWidgets;
 			productName = ObservatoryWatchWidgets;
-			productReference = 00000000000000000000008E /* ObservatoryWatchWidgets.appex */;
+			productReference = 000000000000000000000090 /* ObservatoryWatchWidgets.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		0000000000000000000000AC /* Observatory */ = {
+		0000000000000000000000B0 /* Observatory */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0000000000000000000000AD /* Build configuration list for PBXNativeTarget "Observatory" */;
+			buildConfigurationList = 0000000000000000000000B1 /* Build configuration list for PBXNativeTarget "Observatory" */;
 			buildPhases = (
-				0000000000000000000000AE /* Sources */,
-				00000000000000000000009E /* Frameworks */,
-				0000000000000000000000AF /* Resources */,
-				000000000000000000000094 /* Embed App Extensions */,
+				0000000000000000000000B2 /* Sources */,
+				0000000000000000000000A2 /* Frameworks */,
+				0000000000000000000000B3 /* Resources */,
+				000000000000000000000098 /* Embed App Extensions */,
+				00000000000000000000009A /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				0000000000000000000000B0 /* PBXTargetDependency */,
+				0000000000000000000000B4 /* PBXTargetDependency */,
+				0000000000000000000000B5 /* PBXTargetDependency */,
 			);
 			name = Observatory;
 			productName = Observatory;
-			productReference = 00000000000000000000009C /* Observatory.app */;
-			productType = "com.apple.product-type.application";
-		};
-		0000000000000000000000B4 /* ObservatoryWatch */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 0000000000000000000000B5 /* Build configuration list for PBXNativeTarget "ObservatoryWatch" */;
-			buildPhases = (
-				0000000000000000000000B6 /* Sources */,
-				0000000000000000000000A0 /* Frameworks */,
-				0000000000000000000000B7 /* Resources */,
-				000000000000000000000095 /* Embed App Extensions */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				0000000000000000000000B8 /* PBXTargetDependency */,
-			);
-			name = ObservatoryWatch;
-			productName = ObservatoryWatch;
-			productReference = 00000000000000000000009D /* ObservatoryWatch.app */;
+			productReference = 0000000000000000000000A1 /* Observatory.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		000000000000000000000090 /* Project object */ = {
+		000000000000000000000092 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
@@ -446,21 +467,21 @@
 				LastUpgradeCheck = 2640;
 				ORGANIZATIONNAME = "Twarge LLC";
 				TargetAttributes = {
-					000000000000000000000091 = {
-						CreatedOnToolsVersion = 26.4;
-					};
 					000000000000000000000093 = {
 						CreatedOnToolsVersion = 26.4;
 					};
-					0000000000000000000000AC = {
+					000000000000000000000095 = {
 						CreatedOnToolsVersion = 26.4;
 					};
-					0000000000000000000000B4 = {
+					000000000000000000000097 = {
+						CreatedOnToolsVersion = 26.4;
+					};
+					0000000000000000000000B0 = {
 						CreatedOnToolsVersion = 26.4;
 					};
 				};
 			};
-			buildConfigurationList = 0000000000000000000000BC /* Build configuration list for PBXProject "observatory" */;
+			buildConfigurationList = 0000000000000000000000C0 /* Build configuration list for PBXProject "observatory" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -468,21 +489,21 @@
 				en,
 				Base,
 			);
-			mainGroup = 0000000000000000000000A2;
-			productRefGroup = 0000000000000000000000A5 /* Products */;
+			mainGroup = 0000000000000000000000A6;
+			productRefGroup = 0000000000000000000000A9 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				0000000000000000000000AC /* Observatory */,
-				000000000000000000000091 /* ObservatoryWidgets */,
-				0000000000000000000000B4 /* ObservatoryWatch */,
-				000000000000000000000093 /* ObservatoryWatchWidgets */,
+				0000000000000000000000B0 /* Observatory */,
+				000000000000000000000093 /* ObservatoryWidgets */,
+				000000000000000000000095 /* ObservatoryWatch */,
+				000000000000000000000097 /* ObservatoryWatchWidgets */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		0000000000000000000000AF /* Resources */ = {
+		0000000000000000000000B3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -490,14 +511,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0000000000000000000000B3 /* Resources */ = {
+		0000000000000000000000B8 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0000000000000000000000B7 /* Resources */ = {
+		0000000000000000000000BB /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -505,7 +526,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0000000000000000000000BB /* Resources */ = {
+		0000000000000000000000BF /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -515,7 +536,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		0000000000000000000000AE /* Sources */ = {
+		0000000000000000000000B2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -549,7 +570,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0000000000000000000000B2 /* Sources */ = {
+		0000000000000000000000B7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -580,7 +601,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0000000000000000000000B6 /* Sources */ = {
+		0000000000000000000000BA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -613,7 +634,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0000000000000000000000BA /* Sources */ = {
+		0000000000000000000000BE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -646,20 +667,26 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		0000000000000000000000B0 /* PBXTargetDependency */ = {
+		0000000000000000000000B4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 000000000000000000000091 /* ObservatoryWidgets */;
-			targetProxy = 00000000000000000000008F /* PBXContainerItemProxy */;
+			target = 000000000000000000000093 /* ObservatoryWidgets */;
+			targetProxy = 000000000000000000000091 /* PBXContainerItemProxy */;
 		};
-		0000000000000000000000B8 /* PBXTargetDependency */ = {
+		0000000000000000000000B5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 000000000000000000000093 /* ObservatoryWatchWidgets */;
-			targetProxy = 000000000000000000000092 /* PBXContainerItemProxy */;
+			platformFilter = ios;
+			target = 000000000000000000000095 /* ObservatoryWatch */;
+			targetProxy = 000000000000000000000094 /* PBXContainerItemProxy */;
+		};
+		0000000000000000000000BC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 000000000000000000000097 /* ObservatoryWatchWidgets */;
+			targetProxy = 000000000000000000000096 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		0000000000000000000000BD /* Debug */ = {
+		0000000000000000000000C1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -692,7 +719,7 @@
 			};
 			name = Debug;
 		};
-		0000000000000000000000BE /* Release */ = {
+		0000000000000000000000C2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -720,147 +747,34 @@
 			};
 			name = Release;
 		};
-		0000000000000000000000BF /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Resources/App/Observatory.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 257KW9ZJFP;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Geomagnetic;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright 2026 Twarge LLC.";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				"LD_RUNPATH_SEARCH_PATHS[sdk=iphoneos*]" = "@executable_path/Frameworks";
-				"LD_RUNPATH_SEARCH_PATHS[sdk=iphonesimulator*]" = "@executable_path/Frameworks";
-				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.twarge.observatory;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		0000000000000000000000C0 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Resources/App/Observatory.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 257KW9ZJFP;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Geomagnetic;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright 2026 Twarge LLC.";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				"LD_RUNPATH_SEARCH_PATHS[sdk=iphoneos*]" = "@executable_path/Frameworks";
-				"LD_RUNPATH_SEARCH_PATHS[sdk=iphonesimulator*]" = "@executable_path/Frameworks";
-				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.twarge.observatory;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		0000000000000000000000C1 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = Resources/Widgets/ObservatoryWidgets.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 257KW9ZJFP;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = "Resources/Widgets/ObservatoryWidgets-Info.plist";
-				"LD_RUNPATH_SEARCH_PATHS[sdk=iphoneos*]" = (
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				"LD_RUNPATH_SEARCH_PATHS[sdk=iphonesimulator*]" = (
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
-					"@executable_path/../Frameworks",
-					"@executable_path/../../../../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.twarge.observatory.widgets;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = auto;
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		0000000000000000000000C2 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = Resources/Widgets/ObservatoryWidgets.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 257KW9ZJFP;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = "Resources/Widgets/ObservatoryWidgets-Info.plist";
-				"LD_RUNPATH_SEARCH_PATHS[sdk=iphoneos*]" = (
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				"LD_RUNPATH_SEARCH_PATHS[sdk=iphonesimulator*]" = (
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
-					"@executable_path/../Frameworks",
-					"@executable_path/../../../../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.twarge.observatory.widgets;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = auto;
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 		0000000000000000000000C3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Resources/Watch/ObservatoryWatch.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Resources/App/Observatory.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 257KW9ZJFP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Geomagnetic;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright 2026 Twarge LLC.";
-				INFOPLIST_KEY_WKApplication = YES;
-				INFOPLIST_KEY_WKWatchOnly = YES;
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.twarge.observatory.watch;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=iphoneos*]" = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=iphonesimulator*]" = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.twarge.observatory;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = watchos;
-				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				TARGETED_DEVICE_FAMILY = 4;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -869,38 +783,170 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Resources/Watch/ObservatoryWatch.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Resources/App/Observatory.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 257KW9ZJFP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Geomagnetic;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright 2026 Twarge LLC.";
-				INFOPLIST_KEY_WKApplication = YES;
-				INFOPLIST_KEY_WKWatchOnly = YES;
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.twarge.observatory.watch;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=iphoneos*]" = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=iphonesimulator*]" = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.twarge.observatory;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = watchos;
-				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				TARGETED_DEVICE_FAMILY = 4;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
 		0000000000000000000000C5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Resources/Widgets/ObservatoryWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 4;
+				DEVELOPMENT_TEAM = 257KW9ZJFP;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Resources/Widgets/ObservatoryWidgets-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Geomagnetic;
+				"LD_RUNPATH_SEARCH_PATHS[sdk=iphoneos*]" = (
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=iphonesimulator*]" = (
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.twarge.observatory.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		0000000000000000000000C6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Resources/Widgets/ObservatoryWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 4;
+				DEVELOPMENT_TEAM = 257KW9ZJFP;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Resources/Widgets/ObservatoryWidgets-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Geomagnetic;
+				"LD_RUNPATH_SEARCH_PATHS[sdk=iphoneos*]" = (
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=iphonesimulator*]" = (
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.twarge.observatory.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		0000000000000000000000C7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Resources/Watch/ObservatoryWatch.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 4;
+				DEVELOPMENT_TEAM = 257KW9ZJFP;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Geomagnetic;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright 2026 Twarge LLC.";
+				INFOPLIST_KEY_WKApplication = YES;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.twarge.observatory;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.twarge.observatory.watch;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+			};
+			name = Debug;
+		};
+		0000000000000000000000C8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Resources/Watch/ObservatoryWatch.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 4;
+				DEVELOPMENT_TEAM = 257KW9ZJFP;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Geomagnetic;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright 2026 Twarge LLC.";
+				INFOPLIST_KEY_WKApplication = YES;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.twarge.observatory;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.twarge.observatory.watch;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+			};
+			name = Release;
+		};
+		0000000000000000000000C9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Resources/WatchWidgets/ObservatoryWatchWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 257KW9ZJFP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Resources/WatchWidgets/ObservatoryWatchWidgets-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Geomagnetic;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.twarge.observatory.watch.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -911,19 +957,22 @@
 			};
 			name = Debug;
 		};
-		0000000000000000000000C6 /* Release */ = {
+		0000000000000000000000CA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Resources/WatchWidgets/ObservatoryWatchWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 257KW9ZJFP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Resources/WatchWidgets/ObservatoryWatchWidgets-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Geomagnetic;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.twarge.observatory.watch.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -937,25 +986,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0000000000000000000000AD /* Build configuration list for PBXNativeTarget "Observatory" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				0000000000000000000000BF /* Debug */,
-				0000000000000000000000C0 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		0000000000000000000000B1 /* Build configuration list for PBXNativeTarget "ObservatoryWidgets" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				0000000000000000000000C1 /* Debug */,
-				0000000000000000000000C2 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		0000000000000000000000B5 /* Build configuration list for PBXNativeTarget "ObservatoryWatch" */ = {
+		0000000000000000000000B1 /* Build configuration list for PBXNativeTarget "Observatory" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0000000000000000000000C3 /* Debug */,
@@ -964,7 +995,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0000000000000000000000B9 /* Build configuration list for PBXNativeTarget "ObservatoryWatchWidgets" */ = {
+		0000000000000000000000B6 /* Build configuration list for PBXNativeTarget "ObservatoryWidgets" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0000000000000000000000C5 /* Debug */,
@@ -973,16 +1004,34 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0000000000000000000000BC /* Build configuration list for PBXProject "observatory" */ = {
+		0000000000000000000000B9 /* Build configuration list for PBXNativeTarget "ObservatoryWatch" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0000000000000000000000BD /* Debug */,
-				0000000000000000000000BE /* Release */,
+				0000000000000000000000C7 /* Debug */,
+				0000000000000000000000C8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0000000000000000000000BD /* Build configuration list for PBXNativeTarget "ObservatoryWatchWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0000000000000000000000C9 /* Debug */,
+				0000000000000000000000CA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0000000000000000000000C0 /* Build configuration list for PBXProject "observatory" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0000000000000000000000C1 /* Debug */,
+				0000000000000000000000C2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 000000000000000000000090 /* Project object */;
+	rootObject = 000000000000000000000092 /* Project object */;
 }

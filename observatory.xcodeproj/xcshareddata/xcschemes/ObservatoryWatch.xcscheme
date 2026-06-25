@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "0000000000000000000000B4"
+               BlueprintIdentifier = "000000000000000000000095"
                BuildableName = "ObservatoryWatch.app"
                BlueprintName = "ObservatoryWatch"
                ReferencedContainer = "container:observatory.xcodeproj">
@@ -44,7 +44,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "0000000000000000000000B4"
+            BlueprintIdentifier = "000000000000000000000095"
             BuildableName = "ObservatoryWatch.app"
             BlueprintName = "ObservatoryWatch"
             ReferencedContainer = "container:observatory.xcodeproj">
@@ -61,7 +61,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "0000000000000000000000B4"
+            BlueprintIdentifier = "000000000000000000000095"
             BuildableName = "ObservatoryWatch.app"
             BlueprintName = "ObservatoryWatch"
             ReferencedContainer = "container:observatory.xcodeproj">

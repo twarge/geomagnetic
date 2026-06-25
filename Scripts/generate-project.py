@@ -12,7 +12,7 @@
 #   Targets
 #     Observatory               iOS + macOS app             (Sources/Observatory)
 #     ObservatoryWidgets        iOS + macOS widget ext      (Sources/ObservatoryWidgets)      -> embedded in app
-#     ObservatoryWatch          watchOS app                 (Sources/ObservatoryWatch)
+#     ObservatoryWatch          watchOS app                 (Sources/ObservatoryWatch)        -> embedded in app (companion, iOS only)
 #     ObservatoryWatchWidgets   watchOS widget ext          (Sources/ObservatoryWatchWidgets) -> embedded in watch app
 #
 #   All targets also compile the shared Sources/ObservatoryCore and Sources/ObservatoryPlot.
@@ -130,7 +130,7 @@ TARGETS = [
         "type": "com.apple.product-type.application",
         "product": "Observatory.app", "product_filetype": "wrapper.application",
         "sources": ["core", "plot", "app"], "assets": ["app_assets"],
-        "embeds": ["widgets"], "deps": ["widgets"],
+        "embeds": ["widgets"], "deps": ["widgets"], "embeds_watch": ["watch"],
         "settings": {
             "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIcon",
             "ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME": "AccentColor",
@@ -196,11 +196,17 @@ TARGETS = [
             "INFOPLIST_KEY_CFBundleDisplayName": "Geomagnetic",
             "INFOPLIST_KEY_NSHumanReadableCopyright": "Copyright 2026 Twarge LLC.",
             "INFOPLIST_KEY_WKApplication": "YES",
-            "INFOPLIST_KEY_WKWatchOnly": "YES",
+            # Companion (not WKWatchOnly): the watch app is embedded in the iOS app and ships
+            # with it, so a single iOS upload distributes the watch app to paired watches.
+            "INFOPLIST_KEY_WKCompanionAppBundleIdentifier": "com.twarge.observatory",
             "LD_RUNPATH_SEARCH_PATHS": "@executable_path/Frameworks",
             "PRODUCT_BUNDLE_IDENTIFIER": "com.twarge.observatory.watch",
             "PRODUCT_NAME": "$(TARGET_NAME)",
             "SDKROOT": "watchos",
+            # Embedded (companion), never installed standalone — otherwise the archive gets a
+            # second app in Products/Applications and Xcode files it under "Other Items"
+            # instead of recognizing it as an iOS App Archive.
+            "SKIP_INSTALL": "YES",
             "SUPPORTED_PLATFORMS": WATCH_PLATFORMS,
             "SWIFT_EMIT_LOC_STRINGS": "YES",
             "TARGETED_DEVICE_FAMILY": "4",
@@ -232,6 +238,14 @@ TARGETS = [
 
 TARGET_BY_KEY = {t["key"]: t for t in TARGETS}
 
+def deps_with_filters(t):
+    """(depKey, platformFilter) for every target dependency: the normal extension deps (all
+    platforms) plus the watch companion (iOS-only, via platformFilter, so building the app for
+    macOS neither builds nor embeds the watchOS app)."""
+    pairs = [(dk, None) for dk in t["deps"]]
+    pairs += [(wk, "ios") for wk in t.get("embeds_watch", [])]
+    return pairs
+
 ASSET_FILES = {
     "app_assets": "Resources/App/Assets.xcassets",
     "watch_assets": "Resources/Watch/Assets.xcassets",
@@ -254,6 +268,7 @@ def product_ref(key):          return gid("product:" + key)
 def src_build_file(tk, path):  return gid("buildfile:" + tk + ":" + path)
 def res_build_file(tk, path):  return gid("buildfile:" + tk + ":" + path)
 def embed_build_file(tk, ek):  return gid("embed:" + tk + ":" + ek)
+def embed_watch_build_file(tk, wk): return gid("embedwatch:" + tk + ":" + wk)
 def proxy_id(tk, dk):          return gid("proxy:" + tk + ":" + dk)
 def dep_id(tk, dk):            return gid("dependency:" + tk + ":" + dk)
 def target_id(key):            return gid("target:" + key)
@@ -302,14 +317,18 @@ def build():
     for t in TARGETS:
         for ek in t["embeds"]:
             et = TARGET_BY_KEY[ek]
-            w("\t\t%s /* %s in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = %s /* %s */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };"
+            w("\t\t%s /* %s in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = %s /* %s */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, CodeSignOnCopy, ); }; };"
               % (embed_build_file(t["key"], ek), et["product"], product_ref(ek), et["product"]))
+        for wk in t.get("embeds_watch", []):
+            wt = TARGET_BY_KEY[wk]
+            w("\t\t%s /* %s in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = %s /* %s */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, CodeSignOnCopy, ); }; };"
+              % (embed_watch_build_file(t["key"], wk), wt["product"], product_ref(wk), wt["product"]))
     w("/* End PBXBuildFile section */")
 
     # ----- PBXContainerItemProxy
     w("\n/* Begin PBXContainerItemProxy section */")
     for t in TARGETS:
-        for dk in t["deps"]:
+        for dk, _pf in deps_with_filters(t):
             dt = TARGET_BY_KEY[dk]
             w("\t\t%s /* PBXContainerItemProxy */ = {" % proxy_id(t["key"], dk))
             w("\t\t\tisa = PBXContainerItemProxy;")
@@ -336,6 +355,24 @@ def build():
             w("\t\t\t\t%s /* %s in Embed App Extensions */," % (embed_build_file(t["key"], ek), et["product"]))
         w("\t\t\t);")
         w('\t\t\tname = "Embed App Extensions";')
+        w("\t\t\trunOnlyForDeploymentPostprocessing = 0;")
+        w("\t\t};")
+    # A watch app embeds into the host app's Watch/ folder (not PlugIns/). The contained
+    # build files are platformFilter=ios, so this phase is a no-op for the macOS build.
+    for t in TARGETS:
+        if not t.get("embeds_watch"):
+            continue
+        w("\t\t%s /* Embed Watch Content */ = {" % gid("copyphase_watch:" + t["key"]))
+        w("\t\t\tisa = PBXCopyFilesBuildPhase;")
+        w("\t\t\tbuildActionMask = 2147483647;")
+        w('\t\t\tdstPath = "$(CONTENTS_FOLDER_PATH)/Watch";')
+        w("\t\t\tdstSubfolderSpec = 16;")
+        w("\t\t\tfiles = (")
+        for wk in t["embeds_watch"]:
+            wt = TARGET_BY_KEY[wk]
+            w("\t\t\t\t%s /* %s in Embed Watch Content */," % (embed_watch_build_file(t["key"], wk), wt["product"]))
+        w("\t\t\t);")
+        w('\t\t\tname = "Embed Watch Content";')
         w("\t\t\trunOnlyForDeploymentPostprocessing = 0;")
         w("\t\t};")
     w("/* End PBXCopyFilesBuildPhase section */")
@@ -426,11 +463,13 @@ def build():
         w("\t\t\t\t%s /* Resources */," % gid("resources:" + tk))
         if t["embeds"]:
             w("\t\t\t\t%s /* Embed App Extensions */," % gid("copyphase:" + tk))
+        if t.get("embeds_watch"):
+            w("\t\t\t\t%s /* Embed Watch Content */," % gid("copyphase_watch:" + tk))
         w("\t\t\t);")
         w("\t\t\tbuildRules = (")
         w("\t\t\t);")
         w("\t\t\tdependencies = (")
-        for dk in t["deps"]:
+        for dk, _pf in deps_with_filters(t):
             w("\t\t\t\t%s /* PBXTargetDependency */," % dep_id(tk, dk))
         w("\t\t\t);")
         w("\t\t\tname = %s;" % q(t["name"]))
@@ -509,9 +548,11 @@ def build():
     # ----- PBXTargetDependency
     w("\n/* Begin PBXTargetDependency section */")
     for t in TARGETS:
-        for dk in t["deps"]:
+        for dk, pf in deps_with_filters(t):
             w("\t\t%s /* PBXTargetDependency */ = {" % dep_id(t["key"], dk))
             w("\t\t\tisa = PBXTargetDependency;")
+            if pf:
+                w("\t\t\tplatformFilter = %s;" % pf)
             w("\t\t\ttarget = %s /* %s */;" % (target_id(dk), TARGET_BY_KEY[dk]["name"]))
             w("\t\t\ttargetProxy = %s /* PBXContainerItemProxy */;" % proxy_id(t["key"], dk))
             w("\t\t};")
