@@ -15,6 +15,7 @@ final class ObservatoryDetailViewModel: ObservableObject {
         didSet {
             guard timeRange != oldValue else { return }
             ObservatorySettings.timeRange = timeRange
+            ObsWidgetRefresh.requestReload()   // widgets follow the app's chosen window
         }
     }
 

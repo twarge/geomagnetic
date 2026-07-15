@@ -28,7 +28,10 @@ struct RootView: View {
             }
         }
         .onChange(of: selection) { _, newValue in
-            if let newValue { ObservatorySettings.observatoryCode = newValue }
+            if let newValue {
+                ObservatorySettings.observatoryCode = newValue
+                ObsWidgetRefresh.requestReload()   // widgets follow the selected observatory
+            }
         }
     }
 }

@@ -1,15 +1,17 @@
 // SPDX-FileCopyrightText: 2026 Twarge LLC
 // SPDX-License-Identifier: Apache-2.0
 //
-// The watch complication set. Both share GeomagWidgetProvider (fixed to the 1-day window
-// with a tight timeout, since complications run on a small budget) and the adaptive
-// GeomagWidgetView.
+// The watch complication set. Both share GeomagWidgetProvider (following the app's chosen
+// time window, with a tight timeout since complications run on a small budget) and the
+// adaptive GeomagWidgetView.
 
 import WidgetKit
 import SwiftUI
 
 private func watchProvider() -> GeomagWidgetProvider {
-    GeomagWidgetProvider(range: .day, timeout: 10, refreshMinutes: 30)
+    // range nil = follow ObservatorySettings.timeRange, so the complication tracks the
+    // window selected in the watch app (the app reloads timelines whenever it changes).
+    GeomagWidgetProvider(range: nil, timeout: 10, refreshMinutes: 30)
 }
 
 /// Value-focused complication for the small families.

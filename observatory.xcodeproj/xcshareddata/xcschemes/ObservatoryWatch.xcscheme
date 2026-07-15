@@ -46,7 +46,6 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "000000000000000000000095"
             BuildableName = "ObservatoryWatch.app"
-            BlueprintName = "ObservatoryWatch"
             ReferencedContainer = "container:observatory.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -63,7 +62,6 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "000000000000000000000095"
             BuildableName = "ObservatoryWatch.app"
-            BlueprintName = "ObservatoryWatch"
             ReferencedContainer = "container:observatory.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

@@ -14,6 +14,9 @@ public struct ParsedIAGA: Sendable {
     public var dataType: String?       // Definitive / Adjusted / Reported / Provisional / Variation
     public var elements: [String]      // component letters in column order
     public var rows: [(time: Double, values: [Float])]
+    /// Baseline declination (DECBAS header comment, tenth-arcmin East). Variation-mode HDZ
+    /// files report the D column relative to this baseline.
+    public var decbas: Double?
 }
 
 /// Parser for IAGA-2002 timeseries text.
@@ -42,6 +45,7 @@ public enum IAGA2002Parser {
         var dataType: String?
         var reported: String?
         var headerElements: [String]?
+        var decbas: Double?
 
         var rows: [(time: Double, values: [Float])] = []
         rows.reserveCapacity(1_500)
@@ -58,6 +62,18 @@ public enum IAGA2002Parser {
 
             let trimmed = rawLine.trimmingCharacters(in: .whitespaces)
             if trimmed.isEmpty { return }
+
+            // "# DECBAS  209690 (Baseline declination value in tenth-minutes East)" — the
+            // one comment we care about; everything else starting with # is skipped.
+            if trimmed.hasPrefix("#") {
+                if decbas == nil, let range = trimmed.range(of: "DECBAS") {
+                    decbas = trimmed[range.upperBound...]
+                        .split(whereSeparator: { !"-0123456789.".contains($0) })
+                        .compactMap { Double($0) }
+                        .first
+                }
+                return
+            }
 
             // Column header marks the boundary between metadata and data.
             if trimmed.hasPrefix("DATE") && trimmed.contains("TIME") {
@@ -97,7 +113,8 @@ public enum IAGA2002Parser {
             elevation: elevation,
             dataType: dataType,
             elements: elements,
-            rows: rows
+            rows: rows,
+            decbas: decbas
         )
     }
 

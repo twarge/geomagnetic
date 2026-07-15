@@ -18,6 +18,10 @@ struct ObsLinePlotView: View {
     /// The full horizontal extent (the loaded window), retained so panning/zooming clamps
     /// to the data the caller fetched rather than the currently visible slice.
     let fullXRange: ObsPlotRange?
+    /// Optional wider horizontal clamp for pan/zoom. Letting a pinch-out exceed the loaded
+    /// window (into empty margin) is what gives the host a signal to switch to a longer
+    /// time range and fetch data that fills the view. nil ⇒ clamp to `fullXRange` as usual.
+    let xZoomLimit: ObsPlotRange?
 
     @State private var dragSelectionRect: CGRect?
     @State private var activeZoomUndoStart: ObsPlotViewport?
@@ -29,7 +33,8 @@ struct ObsLinePlotView: View {
          yAxisLabel: String,
          visibleXRange: Binding<ObsPlotRange?>,
          visibleYRange: Binding<ObsPlotRange?>,
-         fullXRange: ObsPlotRange? = nil) {
+         fullXRange: ObsPlotRange? = nil,
+         xZoomLimit: ObsPlotRange? = nil) {
         self.series = series
         self.xAxis = xAxis
         self.xAxisLabel = xAxisLabel
@@ -37,6 +42,7 @@ struct ObsLinePlotView: View {
         _visibleXRange = visibleXRange
         _visibleYRange = visibleYRange
         self.fullXRange = fullXRange
+        self.xZoomLimit = xZoomLimit
     }
 
     var body: some View {
@@ -44,24 +50,27 @@ struct ObsLinePlotView: View {
             let size = proxy.size
             let plotRect = ObsPlotLayout.plotRect(for: size)
             let fullXRange = (self.fullXRange ?? Self.fullXRange(for: series))
+            // Pan/zoom clamp horizontally to the (possibly wider) zoom limit; the default
+            // view (viewport nil) still shows exactly the loaded window.
+            let xClampRange = (xZoomLimit ?? fullXRange)
             let fullYRange = Self.fullYRange(for: series)
-            let xRange = (visibleXRange ?? fullXRange).clamped(to: fullXRange)
+            let xRange = (visibleXRange ?? fullXRange).clamped(to: xClampRange)
             let yRange = (visibleYRange ?? fullYRange).clamped(to: fullYRange)
 
             Canvas { context, canvasSize in
                 drawPlot(context: context, size: canvasSize,
                          plotRect: ObsPlotLayout.plotRect(for: canvasSize),
-                         xRange: xRange, yRange: yRange)
+                         xRange: xRange, yRange: yRange, hatchDomain: xClampRange)
             }
             .contentShape(Rectangle())
             .overlay {
                 ObsPlotInteractionOverlay(
                     onPan: { translation in
                         pan(translation: translation, plotRect: plotRect,
-                            fullXRange: fullXRange, fullYRange: fullYRange)
+                            fullXRange: xClampRange, fullYRange: fullYRange)
                     },
                     onZoom: { request in
-                        zoom(request, fullXRange: fullXRange, fullYRange: fullYRange)
+                        zoom(request, fullXRange: xClampRange, fullYRange: fullYRange)
                     },
                     onContinuousZoomBegan: beginZoomUndoAction,
                     onContinuousZoomEnded: endZoomUndoAction,
@@ -71,7 +80,7 @@ struct ObsLinePlotView: View {
                     },
                     onZoomSelectionEnded: { selection in
                         zoom(to: selection, plotRect: plotRect, xRange: xRange, yRange: yRange,
-                             fullXRange: fullXRange, fullYRange: fullYRange)
+                             fullXRange: xClampRange, fullYRange: fullYRange)
                         dragSelectionRect = nil
                     }
                 )
@@ -103,10 +112,12 @@ struct ObsLinePlotView: View {
     // MARK: - Drawing
 
     private func drawPlot(context: GraphicsContext, size: CGSize, plotRect: CGRect,
-                          xRange: ObsPlotRange, yRange: ObsPlotRange) {
+                          xRange: ObsPlotRange, yRange: ObsPlotRange, hatchDomain: ObsPlotRange) {
         let drawableSeries = series.filter { $0.points.count >= 2 }
         guard !drawableSeries.isEmpty, size.width > 0, size.height > 0 else { return }
 
+        drawMissingDataHatch(context: context, plotRect: plotRect,
+                             xRange: xRange, domain: hatchDomain, series: drawableSeries)
         drawAxes(context: context, size: size, plotRect: plotRect, xRange: xRange, yRange: yRange)
 
         func point(for plotPoint: ObsPlotPoint) -> CGPoint {
@@ -133,6 +144,27 @@ struct ObsLinePlotView: View {
                     let rect = CGRect(x: center.x - 1.6, y: center.y - 1.6, width: 3.2, height: 3.2)
                     clippedContext.fill(Path(ellipseIn: rect), with: .color(color))
                 }
+            }
+        }
+    }
+
+    /// Diagonal stripes over stretches of the pannable domain with no data — a gap in the
+    /// record, or a region beyond the loaded window that hasn't been fetched yet (revealed
+    /// while pinching out, before the automatic range switch fills it). Coverage is the
+    /// union across the drawn series.
+    private func drawMissingDataHatch(context: GraphicsContext, plotRect: CGRect,
+                                      xRange: ObsPlotRange, domain: ObsPlotRange,
+                                      series drawableSeries: [ObsLineSeries]) {
+        guard domain.span > 0, plotRect.width > 0 else { return }
+        let xs = drawableSeries.flatMap { $0.points.map(\.x) }.sorted()
+        for gap in ObsPlotHatch.missingIntervals(sampleTimes: xs, domain: domain.minimum...domain.maximum) {
+            let x0 = plotRect.minX + plotRect.width * CGFloat(xRange.unclampedRatio(for: gap.lowerBound))
+            let x1 = plotRect.minX + plotRect.width * CGFloat(xRange.unclampedRatio(for: gap.upperBound))
+            let clamped0 = min(max(x0, plotRect.minX), plotRect.maxX)
+            let clamped1 = min(max(x1, plotRect.minX), plotRect.maxX)
+            if clamped1 - clamped0 > 0.5 {
+                ObsPlotHatch.draw(context, in: CGRect(x: clamped0, y: plotRect.minY,
+                                                      width: clamped1 - clamped0, height: plotRect.height))
             }
         }
     }

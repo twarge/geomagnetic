@@ -6,14 +6,25 @@ import Foundation
 /// On-disk cache of per-day geomagnetic records, shared across the app and its extensions
 /// via the App Group container.
 ///
-/// Layout: `<container>/GeomagCache/<CODE>/<yyyy-MM-dd>.plist`, one binary-plist-encoded
+/// Layout: `<container>/GeomagCache3/<CODE>/<yyyy-MM-dd>.plist`, one binary-plist-encoded
 /// `GeomagDay` per file. Per-day granularity is what makes "only fetch new data" cheap:
 /// a finalized past day is a single file that never has to be re-downloaded.
+///
+/// The directory name is versioned: bump it when cached days become untrustworthy en masse
+/// (v2: days wrongly finalized while incomplete; v3: HDZ days now normalized to XYZ with
+/// the DECBAS baseline applied). Old directories are deleted on init.
 public struct GeomagStore: Sendable {
     private let root: URL
 
-    public init(root: URL = ObservatoryAppGroup.containerURL.appendingPathComponent("GeomagCache", isDirectory: true)) {
+    public init(root: URL = ObservatoryAppGroup.containerURL.appendingPathComponent("GeomagCache3", isDirectory: true)) {
         self.root = root
+        // Sweep previous cache generations so stale/poisoned days can't linger.
+        for legacyName in ["GeomagCache", "GeomagCache2"] {
+            let legacy = ObservatoryAppGroup.containerURL.appendingPathComponent(legacyName, isDirectory: true)
+            if FileManager.default.fileExists(atPath: legacy.path) {
+                try? FileManager.default.removeItem(at: legacy)
+            }
+        }
     }
 
     private func directory(for code: String) -> URL {

@@ -10,6 +10,11 @@ struct ObservatoryDetailView: View {
     @State private var visibleXRange: ObsPlotRange?
     @State private var visibleYRange: ObsPlotRange?
     @State private var isFavorite: Bool
+    @State private var autoRangeTask: Task<Void, Never>?
+    /// Set by automatic (zoom-driven) range switches so the user's view survives the
+    /// reload — the gesture continues smoothly and the fetch fills in around it. Manual
+    /// picker changes leave this false and reset the viewport as before.
+    @State private var preserveViewportOnRangeChange = false
 
     init(observatory: GeomagObservatory) {
         _model = StateObject(wrappedValue: ObservatoryDetailViewModel(observatory: observatory))
@@ -32,7 +37,14 @@ struct ObservatoryDetailView: View {
         #endif
         .toolbar { toolbarContent }
         .task(id: model.timeRange) { await model.load() }
-        .onChange(of: model.timeRange) { _, _ in resetViewport() }
+        .onChange(of: model.timeRange) { _, _ in
+            if preserveViewportOnRangeChange {
+                preserveViewportOnRangeChange = false
+            } else {
+                resetViewport()
+            }
+        }
+        .onChange(of: visibleXRange) { _, newValue in scheduleAutoRange(for: newValue) }
         #if os(iOS)
         .refreshable { await model.load(force: true) }
         #endif
@@ -130,7 +142,8 @@ struct ObservatoryDetailView: View {
                     yAxisLabel: model.yAxisLabel,
                     visibleXRange: $visibleXRange,
                     visibleYRange: $visibleYRange,
-                    fullXRange: model.fullXRange
+                    fullXRange: model.fullXRange,
+                    xZoomLimit: zoomOutLimit
                 )
                 .padding(6)
             } else if model.isLoading {
@@ -205,5 +218,57 @@ struct ObservatoryDetailView: View {
     private func resetViewport() {
         visibleXRange = nil
         visibleYRange = nil
+    }
+
+    // MARK: - Automatic time-range switching (pinch to change timescale)
+
+    /// How far past the loaded window a pinch-out may go (× the window). Gives the gesture
+    /// room to exceed the window, which is the signal to step up to a longer range.
+    private static let zoomOutHeadroom = 1.6
+
+    private var zoomOutLimit: ObsPlotRange? {
+        guard let window = model.fullXRange, window.span > 0 else { return nil }
+        return ObsPlotRange(minimum: window.maximum - window.span * Self.zoomOutHeadroom,
+                            maximum: window.maximum)
+    }
+
+    /// Debounce so a switch fires once per gesture pause, not on every pinch tick.
+    private func scheduleAutoRange(for visible: ObsPlotRange?) {
+        autoRangeTask?.cancel()
+        guard let visible else { return }
+        autoRangeTask = Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 300_000_000)
+            guard !Task.isCancelled else { return }
+            applyAutoRange(visible: visible)
+        }
+    }
+
+    /// Pick the time range that fits what the user zoomed to. Zooming out past the loaded
+    /// window steps up one range; zooming in near the trailing edge steps down to the
+    /// smallest range containing the view. Both keep the viewport — the fetch fills the
+    /// hatched not-yet-loaded margin (zoom out) or refills the same view at higher density
+    /// (zoom in); only picking a range by hand resets the view.
+    private func applyAutoRange(visible: ObsPlotRange) {
+        guard !model.isLoading, let window = model.fullXRange, window.span > 0,
+              visible.span.isFinite, visible.span > 0 else { return }
+        let ranges = ObservatoryTimeRange.allCases   // ascending by duration
+        let current = model.timeRange
+
+        // Pinched out beyond the loaded data → one step up.
+        if visible.span > window.span * 1.02 {
+            guard let index = ranges.firstIndex(of: current), index + 1 < ranges.count else { return }
+            preserveViewportOnRangeChange = true
+            model.timeRange = ranges[index + 1]
+            return
+        }
+
+        // Pinched in on the trailing slice → smallest range that still contains the view
+        // (measured back from the window's end, since ranges always end at "now").
+        let required = window.maximum - visible.minimum
+        if let target = ranges.first(where: { $0.duration >= required * 0.999 }),
+           target.duration < current.duration {
+            preserveViewportOnRangeChange = true
+            model.timeRange = target
+        }
     }
 }

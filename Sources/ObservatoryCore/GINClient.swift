@@ -59,6 +59,10 @@ public struct GINClient: Sendable {
             URLQueryItem(name: "testObsys", value: "0"),
             URLQueryItem(name: "observatoryIagaCode", value: code.uppercased()),
             URLQueryItem(name: "samplesPerDay", value: String(cadence.rawValue)),
+            // Native orientation, normalized to XYZ locally (see normalizedToXYZ). Asking
+            // the GIN to convert (orientation=XYZS) is subtly wrong for variation-mode HDZ
+            // files: it ignores the DECBAS baseline declination, producing X/Y that jump
+            // by thousands of nT against the observatory's absolute (adjusted) days.
             URLQueryItem(name: "orientation", value: "Native"),
             URLQueryItem(name: "publicationState", value: publicationState),
             URLQueryItem(name: "recordTermination", value: "UNIX"),
@@ -81,10 +85,19 @@ public struct GINClient: Sendable {
         return text
     }
 
+    /// A past day whose data is still incomplete keeps being re-fetched (data fills in as
+    /// the observatory publishes); after this age it finalizes as-is, gaps and all.
+    public static let finalizeIncompleteAfter: TimeInterval = 45 * UTCDate.secondsPerDay
+
+    /// Fraction of a day's sample slots that must hold data before a past day is considered
+    /// complete (and therefore immutable). Real "final" days routinely miss a few minutes.
+    public static let finalCoverageFraction = 0.99
+
     /// Fetch and split a contiguous run of days into per-day records.
     ///
-    /// `today` (a UTC day-start epoch) decides which produced days are immutable: any day
-    /// strictly before today is marked `isFinal`.
+    /// `today` (a UTC day-start epoch) decides which produced days can be immutable: a day
+    /// strictly before today is `isFinal` once its data is essentially complete (or once
+    /// it is so old that what's there is all there will be).
     public func fetchDays(code: String, startDayEpoch: Double, durationDays: Int,
                           cadence: Cadence = .minute, today: Double,
                           now: Date) async throws -> [GeomagDay] {
@@ -95,11 +108,43 @@ public struct GINClient: Sendable {
                                 today: today, now: now)
     }
 
+    /// Convert an HDZ-oriented file to XYZ so every cached day carries the same element set
+    /// regardless of how the observatory publishes (FRD: HDZF reported, XYZF adjusted).
+    /// D is minutes of arc east — relative to the DECBAS baseline when one is declared —
+    /// so X = H·cos(D₀+D), Y = H·sin(D₀+D). Files already in XYZ pass through untouched.
+    static func normalizedToXYZ(_ parsed: ParsedIAGA) -> ParsedIAGA {
+        guard let hIndex = parsed.elements.firstIndex(of: "H"),
+              let dIndex = parsed.elements.firstIndex(of: "D"),
+              !parsed.elements.contains("X"), !parsed.elements.contains("Y") else { return parsed }
+
+        let baselineArcmin = (parsed.decbas ?? 0) / 10   // DECBAS is tenth-arcmin
+        var normalized = parsed
+        normalized.elements[hIndex] = "X"
+        normalized.elements[dIndex] = "Y"
+        normalized.rows = parsed.rows.map { row in
+            var values = row.values
+            if values.count > max(hIndex, dIndex) {
+                let h = values[hIndex], d = values[dIndex]
+                if h.isFinite, d.isFinite {
+                    let radians = (Double(baselineArcmin) + Double(d)) / 60 * .pi / 180
+                    values[hIndex] = h * Float(cos(radians))
+                    values[dIndex] = h * Float(sin(radians))
+                } else {
+                    values[hIndex] = .nan
+                    values[dIndex] = .nan
+                }
+            }
+            return (time: row.time, values: values)
+        }
+        return normalized
+    }
+
     /// Group parsed rows into per-UTC-day `GeomagDay` records on a fixed sample grid.
     /// Rows are placed at `round((time - dayStart) / cadence)`; missing grid slots are
     /// `Float.nan`, which keeps the time axis uniform and gaps visible.
-    static func bucketByDay(_ parsed: ParsedIAGA, requestedCode: String,
+    static func bucketByDay(_ rawParsed: ParsedIAGA, requestedCode: String,
                             cadence: Cadence, today: Double, now: Date) -> [GeomagDay] {
+        let parsed = normalizedToXYZ(rawParsed)
         let elements = parsed.elements
         guard !elements.isEmpty else { return [] }
 
@@ -127,13 +172,22 @@ public struct GINClient: Sendable {
         }
 
         return dayColumns.map { dayStart, columns in
-            GeomagDay(
+            // A past day is immutable only once it's essentially complete: a slot counts as
+            // covered when any element has a finite value there. Incomplete past days stay
+            // refreshable (upstream fills them in over hours/days) until they age out.
+            var covered = 0
+            for slot in 0..<samplesPerDay where columns.contains(where: { $0[slot].isFinite }) {
+                covered += 1
+            }
+            let complete = Double(covered) >= Double(samplesPerDay) * Self.finalCoverageFraction
+            let agedOut = now.timeIntervalSince1970 - dayStart > Self.finalizeIncompleteAfter
+            return GeomagDay(
                 observatoryCode: code,
                 dayStart: dayStart,
                 cadence: cadenceSeconds,
                 elements: elements,
                 values: columns,
-                isFinal: dayStart < today,
+                isFinal: dayStart < today && (complete || agedOut),
                 fetchedAt: now,
                 stationName: parsed.stationName,
                 source: parsed.source

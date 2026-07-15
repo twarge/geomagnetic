@@ -24,9 +24,6 @@ public actor GeomagRepository {
     /// How long a non-final cached day is trusted before re-fetching.
     public var minRefreshInterval: TimeInterval = 300
 
-    /// A data-less day older than this is finalized (stop retrying a permanent gap).
-    private let finalizeEmptyAfter: TimeInterval = 45 * UTCDate.secondsPerDay
-
     public init(client: GINClient = GINClient(),
                 store: GeomagStore = GeomagStore(),
                 cadence: GINClient.Cadence = .minute) {
@@ -157,7 +154,7 @@ public actor GeomagRepository {
 
     private func emptyDay(code: String, dayStart: Double, today: Double, now: Date) -> GeomagDay {
         let age = now.timeIntervalSince1970 - dayStart
-        let isFinal = dayStart < today && age > finalizeEmptyAfter
+        let isFinal = dayStart < today && age > GINClient.finalizeIncompleteAfter
         return GeomagDay(observatoryCode: code.uppercased(), dayStart: dayStart,
                          cadence: cadence.seconds, elements: [], values: [],
                          isFinal: isFinal, fetchedAt: now)
@@ -185,8 +182,14 @@ public actor GeomagRepository {
     static func buildSeries(days: [GeomagDay], requestedRange: ClosedRange<Double>,
                             requestedElements: [String]?, maxPoints: Int,
                             code: String) -> GeomagSeriesResult {
-        // Canonical element order from the first day that has data.
-        let available = days.first(where: { !$0.elements.isEmpty })?.elements ?? []
+        // Canonical element order: the union across days, first-seen first. (Taking only the
+        // first day's list used to hide elements when cached days had mixed orientations.)
+        var available: [String] = []
+        for day in days {
+            for element in day.elements where !available.contains(element) {
+                available.append(element)
+            }
+        }
         let elements: [String]
         if let requestedElements {
             let wanted = requestedElements.map { $0.uppercased() }
@@ -216,7 +219,7 @@ public actor GeomagRepository {
             }
             samples.sort { $0.time < $1.time }
             let storms = StormDetector.intervals(from: samples)   // from full-res, before decimation
-            let recentChange = netChange(samples, window: StormDetector.windowSeconds)
+            let recentChange = netChange(samples, window: Self.trendWindowSeconds)
             let decimated = decimate(samples, maxPoints: maxPoints)
             seriesList.append(GeomagSeries(element: GeomagElement(element), samples: decimated,
                                            stormIntervals: storms, recentChange: recentChange))
@@ -230,6 +233,10 @@ public actor GeomagRepository {
                                   requestedRange: requestedRange, coveredRange: covered,
                                   fromCacheOnly: fromCacheOnly, stationName: stationName, source: source)
     }
+
+    /// Trailing window for the headline trend arrow: the field's trajectory over the last
+    /// 30 minutes (kept separate from the storm window even though they currently agree).
+    public static let trendWindowSeconds: Double = 30 * 60
 
     /// Net change between the latest sample and the finite sample nearest to `window`
     /// seconds before it — the field's trajectory over the trailing window.

@@ -51,6 +51,9 @@ final class WatchViewModel: ObservableObject {
             result = try await GeomagRepository.shared.series(
                 code: code, from: window.lowerBound, to: window.upperBound,
                 maxPoints: 360, forceRefresh: force)
+            // Fresh data is now in the shared cache — have the complications pick it up
+            // right away rather than waiting out their scheduled refresh.
+            ObsWidgetRefresh.requestReload()
         } catch {
             errorMessage = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
         }
@@ -62,12 +65,14 @@ final class WatchViewModel: ObservableObject {
         code = newCode
         ObservatorySettings.observatoryCode = newCode
         result = nil
+        ObsWidgetRefresh.requestReload()   // complications follow the selected observatory
     }
 
     func setRange(_ newRange: ObservatoryTimeRange) {
         guard newRange != range else { return }
         range = newRange
         ObservatorySettings.timeRange = newRange
+        ObsWidgetRefresh.requestReload()
     }
 
     var primary: (element: GeomagElement, sample: GeomagSample)? {

@@ -30,6 +30,14 @@ struct GeomagWidgetSnapshot: Sendable {
     var stormIntervals: [StormInterval]
     var range: ObservatoryTimeRange
     var isPlaceholder: Bool
+    /// Intended window in epoch seconds ([now − range, now]); lets the chart place cached data
+    /// at its true time and hatch the stretch that's missing when offline. nil ⇒ fit to data.
+    var windowStart: Double? = nil
+    var windowEnd: Double? = nil
+    /// True when the newest available measurement is old enough that we're effectively
+    /// offline (or the source has stopped publishing); complications flag it with a
+    /// broken-link symbol next to the station/element label.
+    var isStale: Bool = false
 
     var hasData: Bool { primaryValue != nil && !sparkline.isEmpty }
 
@@ -42,6 +50,10 @@ struct GeomagWidgetSnapshot: Sendable {
 }
 
 enum GeomagWidgetData {
+    /// Newest measurement older than this ⇒ the snapshot is marked stale. Matches the
+    /// chart's no-data hatch floor, so ordinary publication latency never trips it.
+    static let staleAfterSeconds: Double = 40 * 60
+
     static func placeholder(code: String = ObservatorySettings.observatoryCode,
                             range: ObservatoryTimeRange = .day) -> GeomagWidgetSnapshot {
         let observatory = Observatories.observatory(code: code) ?? Observatories.default
@@ -51,11 +63,14 @@ enum GeomagWidgetData {
             GeomagWidgetComponent(element: GeomagElement("Z"), value: 45_100),
             GeomagWidgetComponent(element: GeomagElement("F"), value: 50_083),
         ]
+        let window = range.dateRange()
         return GeomagWidgetSnapshot(
             observatoryCode: observatory.code, observatoryName: observatory.name,
             primaryElement: GeomagElement("F"), primaryValue: 50_083, primaryTime: nil,
             trend: -6, sparkline: [Self.demoSeries(range: range)], components: components, activity: 24,
-            stormIntervals: [], range: range, isPlaceholder: true)
+            stormIntervals: [], range: range, isPlaceholder: true,
+            windowStart: window.lowerBound.timeIntervalSince1970,
+            windowEnd: window.upperBound.timeIntervalSince1970)
     }
 
     /// Load a snapshot, fetching only the recent window and falling back to cache on
@@ -99,6 +114,9 @@ enum GeomagWidgetData {
             empty.components = []
             empty.activity = nil
             empty.stormIntervals = []
+            empty.windowStart = window.lowerBound.timeIntervalSince1970
+            empty.windowEnd = window.upperBound.timeIntervalSince1970
+            empty.isStale = true   // nothing fetched and nothing cached — flag as offline
             return empty
         }
 
@@ -115,6 +133,8 @@ enum GeomagWidgetData {
             s.latest.map { GeomagWidgetComponent(element: s.element, value: $0.value) }
         }
 
+        let latestTime = primarySeries?.latest?.time
+        let isStale = latestTime.map { now.timeIntervalSince1970 - $0 > staleAfterSeconds } ?? true
         return GeomagWidgetSnapshot(
             observatoryCode: observatory.code, observatoryName: observatory.name,
             primaryElement: primarySeries?.element,
@@ -122,7 +142,10 @@ enum GeomagWidgetData {
             primaryTime: primarySeries?.latest.map { Date(timeIntervalSince1970: $0.time) },
             trend: trend, sparkline: spark, components: components, activity: activity,
             stormIntervals: primarySeries?.stormIntervals ?? [],
-            range: range, isPlaceholder: false)
+            range: range, isPlaceholder: false,
+            windowStart: window.lowerBound.timeIntervalSince1970,
+            windowEnd: window.upperBound.timeIntervalSince1970,
+            isStale: isStale)
     }
 
     private static func demoSeries(range: ObservatoryTimeRange, now: Date = Date()) -> ObsLineSeries {

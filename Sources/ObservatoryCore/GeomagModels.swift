@@ -124,8 +124,9 @@ public struct GeomagSeries: Sendable, Identifiable {
     public let element: GeomagElement
     public let samples: [GeomagSample]
     public let stormIntervals: [StormInterval]
-    /// Net field change over the last 30 minutes of available data (latest minus the value
-    /// ~30 min earlier), computed from full-resolution samples. nil if unknown.
+    /// Net field change over the trailing trend window (latest minus the value
+    /// ~30 min earlier; see GeomagRepository.trendWindowSeconds), computed from
+    /// full-resolution samples. nil if unknown.
     public let recentChange: Double?
 
     public init(element: GeomagElement, samples: [GeomagSample],

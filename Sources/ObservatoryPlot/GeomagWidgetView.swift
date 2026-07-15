@@ -35,7 +35,7 @@ struct GeomagWidgetView: View {
     private var content: some View {
         switch family {
         case .accessoryInline:
-            Text(inlineText)
+            inlineLabel
         case .accessoryCircular:
             circular
         case .accessoryRectangular:
@@ -55,24 +55,34 @@ struct GeomagWidgetView: View {
 
     // MARK: - Accessory families
 
-    private var inlineText: String {
-        guard let value = snapshot.primaryValue, let element = snapshot.primaryElement else {
-            return "\(snapshot.observatoryCode) —"
-        }
-        return "\(snapshot.observatoryCode) \(element.code) \(Self.compact(value)) \(element.unit)"
+    /// "FRD F" (plus the broken-link symbol when the reading is stale/offline) as a single
+    /// Text, so it stays one line and inherits the accent styling wherever it's used.
+    private var stationElementLabel: Text {
+        let station = "\(snapshot.observatoryCode) \(snapshot.primaryElement?.code ?? "")"
+        guard snapshot.isStale else { return Text(station) }
+        return Text("\(station) \(Image(systemName: ObsReadingLine.staleSymbol))")
+    }
+
+    private var inlineLabel: Text {
+        let station = "\(snapshot.observatoryCode) \(snapshot.primaryElement?.code ?? "")"
+        let reading = snapshot.primaryValue.map {
+            "\(Self.compact($0)) \(snapshot.primaryElement?.unit ?? "nT")"
+        } ?? "—"
+        guard snapshot.isStale else { return Text("\(station) \(reading)") }
+        return Text("\(station) \(Image(systemName: ObsReadingLine.staleSymbol)) \(reading)")
     }
 
     private var circular: some View {
         ZStack {
             AccessoryWidgetBackground()
             VStack(spacing: 0) {
-                Text("\(snapshot.observatoryCode) \(snapshot.primaryElement?.code ?? "")")
+                stationElementLabel
                     .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(Color.accentColor)
                     .widgetAccentable()
                     .minimumScaleFactor(0.7)
                     .lineLimit(1)
-                // The full 5-digit reading in nT, no decimals.
+                // The full 5-digit reading in nT, no decimals — always the latest measurement.
                 Text(snapshot.primaryValue.map { String(Int($0.rounded())) } ?? "—")
                     .font(.system(size: 18, weight: .semibold, design: .rounded))
                     .minimumScaleFactor(0.4)
@@ -88,11 +98,14 @@ struct GeomagWidgetView: View {
     private var rectangularChart: some View {
         if snapshot.sparkline.isEmpty {
             HStack(spacing: 4) {
-                Text(snapshot.observatoryCode).foregroundStyle(Color.accentColor).fontWeight(.semibold)
-                Text(snapshot.primaryValue.map { Self.compact($0) } ?? "—")
+                ObsReadingLine(stationCode: snapshot.observatoryCode,
+                               element: snapshot.primaryElement?.code,
+                               value: snapshot.primaryValue,
+                               unit: snapshot.primaryElement?.unit,
+                               font: .footnote,
+                               stale: snapshot.isStale)
                 Spacer(minLength: 0)
             }
-            .font(.footnote)
         } else {
             ObsFieldChart(series: snapshot.sparkline,
                           stationCode: snapshot.observatoryCode,
@@ -103,17 +116,21 @@ struct GeomagWidgetView: View {
                           stormIntervals: snapshot.stormIntervals,
                           showHeader: true,
                           fillsVertically: true,
-                          headerFont: .footnote)
+                          headerFont: .footnote,
+                          headerStale: snapshot.isStale,
+                          windowStart: snapshot.windowStart,
+                          windowEnd: snapshot.windowEnd)
         }
     }
 
     #if os(watchOS)
     private var corner: some View {
-        // "F" over "FRD" at the inner corner; the reading curves around the dial.
+        // "F" over "FRD" at the inner corner (broken-link symbol beside "FRD" when stale);
+        // the reading curves around the dial.
         VStack(spacing: -2) {
             Text(snapshot.primaryElement?.code ?? "")
                 .font(.system(size: 17, weight: .bold))
-            Text(snapshot.observatoryCode)
+            cornerStationLabel
                 .font(.system(size: 13, weight: .semibold))
         }
         .foregroundStyle(Color.accentColor)
@@ -124,6 +141,11 @@ struct GeomagWidgetView: View {
             Text(snapshot.primaryValue.map { String(format: "%.2f nT", $0) } ?? "—")
                 .foregroundStyle(.primary)
         }
+    }
+
+    private var cornerStationLabel: Text {
+        guard snapshot.isStale else { return Text(snapshot.observatoryCode) }
+        return Text("\(snapshot.observatoryCode) \(Image(systemName: ObsReadingLine.staleSymbol))")
     }
     #endif
 
@@ -198,7 +220,9 @@ struct GeomagWidgetView: View {
                           stormIntervals: snapshot.stormIntervals,
                           showHeader: showHeader,
                           headerFont: .subheadline,
-                          headerStacked: isSmallSystemFamily)
+                          headerStacked: isSmallSystemFamily,
+                          windowStart: snapshot.windowStart,
+                          windowEnd: snapshot.windowEnd)
         }
     }
 

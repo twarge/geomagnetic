@@ -6,6 +6,52 @@
 
 import SwiftUI
 
+/// The subtle diagonal-stripe fill marking a stretch of a chart with no data (a gap in the
+/// record, or a region not fetched yet). Shared by the compact field chart and the
+/// interactive plot so "no data" reads the same everywhere.
+enum ObsPlotHatch {
+    static func draw(_ context: GraphicsContext, in rect: CGRect) {
+        context.drawLayer { layer in
+            layer.clip(to: Path(rect))
+            layer.fill(Path(rect), with: .color(.secondary.opacity(0.06)))
+            var lines = Path()
+            var x = rect.minX - rect.height
+            while x < rect.maxX {
+                lines.move(to: CGPoint(x: x, y: rect.maxY))
+                lines.addLine(to: CGPoint(x: x + rect.height, y: rect.minY))
+                x += 6
+            }
+            layer.stroke(lines, with: .color(.secondary.opacity(0.22)), lineWidth: 0.75)
+        }
+    }
+
+    /// Sub-ranges of `domain` with no data, given the union of sample times across the
+    /// visible series: the stretch before the first sample, after the last, and interior
+    /// gaps much wider than the typical spacing (with a floor so ordinary latency and
+    /// decimation never hatch).
+    static func missingIntervals(sampleTimes xs: [Double], domain: ClosedRange<Double>,
+                                 minimumGap: Double = 2_400) -> [ClosedRange<Double>] {
+        guard domain.upperBound > domain.lowerBound else { return [] }
+        guard xs.count >= 2 else { return [domain] }
+        var deltas: [Double] = []
+        deltas.reserveCapacity(xs.count - 1)
+        for i in 1..<xs.count { deltas.append(xs[i] - xs[i - 1]) }
+        let typical = deltas.sorted()[deltas.count / 2]
+        let threshold = max(typical * 4, minimumGap)
+        var gaps: [ClosedRange<Double>] = []
+        if let first = xs.first, first - domain.lowerBound > threshold {
+            gaps.append(domain.lowerBound...first)
+        }
+        for i in 1..<xs.count where xs[i] - xs[i - 1] > threshold {
+            gaps.append(xs[i - 1]...xs[i])
+        }
+        if let last = xs.last, domain.upperBound - last > threshold {
+            gaps.append(last...domain.upperBound)
+        }
+        return gaps
+    }
+}
+
 enum ObsPlotLayout {
     static func plotRect(for size: CGSize) -> CGRect {
         let leftMargin = min(112, max(72, size.width * 0.18))

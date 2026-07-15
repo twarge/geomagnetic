@@ -45,7 +45,11 @@ struct WatchRootView: View {
 
     // A plain, non-interactive graph card (tapping does nothing for now).
     private func graphCard(_ graph: WatchElementGraph) -> some View {
-        ObsFieldChart(series: graph.sparkline,
+        // Anchor the axis to the current window (ending now) so cached data — the last we
+        // fetched before losing signal — sits at its true time and the un-covered stretch
+        // hatches, instead of stale data being stretched to look current.
+        let window = model.range.dateRange()
+        return ObsFieldChart(series: graph.sparkline,
                       stationCode: model.code,
                       element: graph.element.code,
                       latestValue: graph.value,
@@ -53,7 +57,9 @@ struct WatchRootView: View {
                       trend: graph.trend,
                       stormIntervals: graph.storms,
                       showHeader: true,
-                      headerFont: .footnote)
+                      headerFont: .footnote,
+                      windowStart: window.lowerBound.timeIntervalSince1970,
+                      windowEnd: window.upperBound.timeIntervalSince1970)
             .frame(height: 104)
             .padding(8)
             .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 12, style: .continuous))

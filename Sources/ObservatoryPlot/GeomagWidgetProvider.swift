@@ -12,6 +12,17 @@ struct GeomagEntry: TimelineEntry {
     let snapshot: GeomagWidgetSnapshot
 }
 
+/// Ask WidgetKit to rebuild every widget/complication timeline on this device. The apps call
+/// it when the user changes the observatory or time range — and the watch app after a
+/// successful fetch — so glanceable surfaces track the app instead of waiting out their
+/// scheduled refresh. (Reloads are budgeted by the system; tying them to explicit user
+/// actions keeps us comfortably inside it.)
+enum ObsWidgetRefresh {
+    static func requestReload() {
+        WidgetCenter.shared.reloadAllTimelines()
+    }
+}
+
 struct GeomagWidgetProvider: TimelineProvider {
     /// nil follows the app's last-chosen range; a fixed value (e.g. complications) overrides.
     var range: ObservatoryTimeRange?
