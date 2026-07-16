@@ -47,6 +47,13 @@ final class WatchViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         let window = range.dateRange()
+        // Render the cached data immediately (the charts hatch the not-yet-loaded stretch
+        // up to now); the fetch below replaces it when the network cooperates.
+        if !force {
+            let cached = await GeomagRepository.shared.cachedSeries(
+                code: code, from: window.lowerBound, to: window.upperBound, maxPoints: 360)
+            if !cached.isEmpty { result = cached }
+        }
         do {
             result = try await GeomagRepository.shared.series(
                 code: code, from: window.lowerBound, to: window.upperBound,

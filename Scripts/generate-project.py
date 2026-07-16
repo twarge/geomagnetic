@@ -2,7 +2,7 @@
 # SPDX-FileCopyrightText: 2026 Twarge LLC
 # SPDX-License-Identifier: Apache-2.0
 #
-# Generates observatory.xcodeproj/project.pbxproj for the Observatory app.
+# Generates Geomagnetic.xcodeproj/project.pbxproj for the Geomagnetic app.
 #
 # A small, project-specific project generator (in the spirit of XcodeGen, but with zero
 # external dependencies). It globs the Sources/* directories, so adding a Swift file just
@@ -22,7 +22,7 @@ import re
 import glob
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PROJECT_NAME = "observatory"
+PROJECT_NAME = "Geomagnetic"
 ORG = "Twarge LLC"
 
 # ---------------------------------------------------------------------------- IDs
@@ -104,6 +104,7 @@ COMMON_RELEASE = {
 
 PROJECT_COMMON = {
     "ALWAYS_SEARCH_USER_PATHS": "NO",
+    "DEVELOPMENT_TEAM": "257KW9ZJFP",
     "ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES",
     "CLANG_ANALYZER_NONNULL": "YES",
     "CLANG_ENABLE_MODULES": "YES",
@@ -126,9 +127,12 @@ WATCH_PLATFORMS = "watchos watchsimulator"
 
 TARGETS = [
     {
+        # Target stays "Observatory" (code-level name); the PRODUCT is "Geomagnetic" so the
+        # .app bundle, Finder name, and the macOS menu-bar name (CFBundleName) all match the
+        # user-facing display name. Bundle id is unchanged.
         "key": "app", "name": "Observatory",
         "type": "com.apple.product-type.application",
-        "product": "Observatory.app", "product_filetype": "wrapper.application",
+        "product": "Geomagnetic.app", "product_filetype": "wrapper.application",
         "sources": ["core", "plot", "app"], "assets": ["app_assets"],
         "embeds": ["widgets"], "deps": ["widgets"], "embeds_watch": ["watch"],
         "settings": {
@@ -138,10 +142,16 @@ TARGETS = [
             "CODE_SIGN_STYLE": "Automatic",
             "ENABLE_PREVIEWS": "YES",
             "GENERATE_INFOPLIST_FILE": "YES",
+            # Partial plist merged into the generated one: registers the geomagnetic://
+            # scheme for widget deep links.
+            "INFOPLIST_FILE": "Resources/App/Observatory-Info.plist",
             "INFOPLIST_KEY_CFBundleDisplayName": "Geomagnetic",
             "INFOPLIST_KEY_LSApplicationCategoryType": "public.app-category.utilities",
             "INFOPLIST_KEY_NSHumanReadableCopyright": "Copyright 2026 Twarge LLC.",
             "INFOPLIST_KEY_UIApplicationSceneManifest_Generation": "YES",
+            # Multiple windows on iPadOS (Split View / Stage Manager); WindowGroup already
+            # supports additional scenes once the manifest allows them.
+            "INFOPLIST_KEY_UIApplicationSupportsMultipleScenes": "YES",
             "INFOPLIST_KEY_UILaunchScreen_Generation": "YES",
             "INFOPLIST_KEY_UISupportedInterfaceOrientations": "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
             "INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad": "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight",
@@ -149,7 +159,7 @@ TARGETS = [
             "LD_RUNPATH_SEARCH_PATHS[sdk=iphonesimulator*]": "@executable_path/Frameworks",
             "LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]": "@executable_path/../Frameworks",
             "PRODUCT_BUNDLE_IDENTIFIER": "com.twarge.observatory",
-            "PRODUCT_NAME": "$(TARGET_NAME)",
+            "PRODUCT_NAME": "Geomagnetic",
             "SDKROOT": "auto",
             "SUPPORTED_PLATFORMS": APPLE_PLATFORMS,
             "SWIFT_EMIT_LOC_STRINGS": "YES",
@@ -253,6 +263,7 @@ ASSET_FILES = {
 
 NAV_RESOURCES = [
     "Resources/App/Assets.xcassets",
+    "Resources/App/Observatory-Info.plist",
     "Resources/App/Observatory.entitlements",
     "Resources/Widgets/ObservatoryWidgets-Info.plist",
     "Resources/Widgets/ObservatoryWidgets.entitlements",

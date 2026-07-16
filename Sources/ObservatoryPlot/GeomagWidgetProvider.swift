@@ -5,6 +5,7 @@
 // set is driven by a single bounded fetch.
 
 import WidgetKit
+import AppIntents
 import Foundation
 
 struct GeomagEntry: TimelineEntry {
@@ -56,5 +57,49 @@ struct GeomagWidgetProvider: TimelineProvider {
             let entry = GeomagEntry(date: now, snapshot: snapshot)
             completion(Timeline(entries: [entry], policy: .after(now.addingTimeInterval(refreshMinutes * 60))))
         }
+    }
+}
+
+/// Intent-configured variant (iOS/macOS home-screen and desktop widgets): right-click →
+/// Edit Widget picks the observatory and field component; unset parameters follow the app.
+struct GeomagConfiguredProvider: AppIntentTimelineProvider {
+    var timeout: Double = 18
+    var refreshMinutes: Double = 20
+    var maxPoints: Int = 240
+
+    func placeholder(in context: Context) -> GeomagEntry {
+        GeomagEntry(date: Date(), snapshot: GeomagWidgetData.placeholder(range: ObservatorySettings.timeRange))
+    }
+
+    func snapshot(for configuration: ObservatoryWidgetConfigIntent, in context: Context) async -> GeomagEntry {
+        if context.isPreview {
+            return placeholder(in: context)
+        }
+        return await entry(for: configuration)
+    }
+
+    func timeline(for configuration: ObservatoryWidgetConfigIntent, in context: Context) async -> Timeline<GeomagEntry> {
+        let entry = await entry(for: configuration)
+        return Timeline(entries: [entry], policy: .after(entry.date.addingTimeInterval(refreshMinutes * 60)))
+    }
+
+    #if os(watchOS)
+    // Required by the watchOS flavor of the protocol (complication gallery presets); the
+    // watch currently ships static complications, so a single follow-the-app entry suffices.
+    func recommendations() -> [AppIntentRecommendation<ObservatoryWidgetConfigIntent>] {
+        [AppIntentRecommendation(intent: ObservatoryWidgetConfigIntent(), description: "Field Chart")]
+    }
+    #endif
+
+    private func entry(for configuration: ObservatoryWidgetConfigIntent) async -> GeomagEntry {
+        let now = Date()
+        let snapshot = await GeomagWidgetData.snapshot(
+            code: configuration.station?.id ?? ObservatorySettings.observatoryCode,
+            range: ObservatorySettings.timeRange,
+            timeout: timeout,
+            maxPoints: maxPoints,
+            preferredElement: configuration.component?.rawValue,
+            now: now)
+        return GeomagEntry(date: now, snapshot: snapshot)
     }
 }

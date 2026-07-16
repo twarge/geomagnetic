@@ -96,11 +96,26 @@ struct ObsLinePlotView: View {
                 }
             }
             #if os(iOS) || os(macOS)
-            .overlay(alignment: .bottomLeading) {
-                ObsPlotResetControls(onResetHorizontal: resetHorizontalViewport,
-                                     onResetVertical: resetVerticalViewport)
-                    .padding(.leading, plotRect.minX + 8)
-                    .padding(.bottom, max(2, size.height - plotRect.maxY - 30))
+            // Axis-reset buttons, each living in its axis's margin and appearing only once
+            // that axis has been zoomed/panned: vertical in the upper-left of the y-axis
+            // area, horizontal in the lower-right of the x-axis area.
+            .overlay(alignment: .topLeading) {
+                if visibleYRange != nil {
+                    ObsPlotResetButton(systemImage: "arrow.up.and.down",
+                                       help: "Reset Vertical",
+                                       action: resetVerticalViewport)
+                        .padding(.leading, 4)
+                        .padding(.top, plotRect.minY)
+                }
+            }
+            .overlay(alignment: .bottomTrailing) {
+                if visibleXRange != nil {
+                    ObsPlotResetButton(systemImage: "arrow.left.and.right",
+                                       help: "Reset Horizontal",
+                                       action: resetHorizontalViewport)
+                        .padding(.trailing, 16)
+                        .padding(.bottom, 2)
+                }
             }
             #endif
         }

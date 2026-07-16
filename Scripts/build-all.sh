@@ -10,7 +10,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT_DIR"
 
-PROJECT="observatory.xcodeproj"
+PROJECT="Geomagnetic.xcodeproj"
 DERIVED="build/DerivedData"
 IOS_SIM="${IOS_SIM:-iPhone 17 Pro}"
 WATCH_SIM="${WATCH_SIM:-Apple Watch Series 11 (46mm)}"

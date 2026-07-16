@@ -47,6 +47,18 @@ final class ObservatoryDetailViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         let range = timeRange.dateRange(now: now)
+        // Render whatever is already cached immediately — the plot hatches the stretch up
+        // to now that hasn't loaded — then let the network fetch below replace it.
+        if !force {
+            let cached = await repository.cachedSeries(
+                code: observatory.code, from: range.lowerBound, to: range.upperBound,
+                elements: nil, maxPoints: timeRange.maxPoints)
+            if !cached.isEmpty {
+                self.result = cached
+                availableElements = cached.series.map { $0.element.code }
+                reconcileSelection()
+            }
+        }
         do {
             let result = try await repository.series(
                 code: observatory.code, from: range.lowerBound, to: range.upperBound,
@@ -84,15 +96,6 @@ final class ObservatoryDetailViewModel: ObservableObject {
         return Set(available.prefix(1))
     }
 
-    func toggle(_ element: String) {
-        if selectedElements.contains(element) {
-            // Keep at least one element on the plot.
-            if selectedElements.count > 1 { selectedElements.remove(element) }
-        } else {
-            selectedElements.insert(element)
-        }
-    }
-
     func paletteIndex(of element: String) -> Int {
         availableElements.firstIndex(of: element) ?? 0
     }
@@ -106,11 +109,11 @@ final class ObservatoryDetailViewModel: ObservableObject {
         }
     }
 
+    /// Always the *requested* window ending at the current time — not at the last
+    /// successful fetch — so when the network is away the stretch between the end of the
+    /// data record and "now" is part of the domain and renders as the no-data hatch.
     var fullXRange: ObsPlotRange? {
-        let range = timeRange.dateRange(now: lastUpdated ?? Date())
-        if let covered = result?.coveredRange, covered.upperBound > covered.lowerBound {
-            return ObsPlotRange(minimum: covered.lowerBound, maximum: covered.upperBound)
-        }
+        let range = timeRange.dateRange(now: Date())
         return ObsPlotRange(minimum: range.lowerBound.timeIntervalSince1970,
                             maximum: range.upperBound.timeIntervalSince1970)
     }

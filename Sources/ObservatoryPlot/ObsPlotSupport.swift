@@ -26,9 +26,11 @@ enum ObsPlotHatch {
     }
 
     /// Sub-ranges of `domain` with no data, given the union of sample times across the
-    /// visible series: the stretch before the first sample, after the last, and interior
-    /// gaps much wider than the typical spacing (with a floor so ordinary latency and
-    /// decimation never hatch).
+    /// visible series. Interior gaps must beat several times the typical spacing (decimated
+    /// series have irregular spacing that must not hatch). The domain's *edges* use only the
+    /// fixed floor: the decimator always preserves the true first/last samples, so a leading
+    /// or trailing gap — e.g. stale data ending hours before "now" while offline — is real
+    /// no matter how coarse the decimation.
     static func missingIntervals(sampleTimes xs: [Double], domain: ClosedRange<Double>,
                                  minimumGap: Double = 2_400) -> [ClosedRange<Double>] {
         guard domain.upperBound > domain.lowerBound else { return [] }
@@ -37,15 +39,15 @@ enum ObsPlotHatch {
         deltas.reserveCapacity(xs.count - 1)
         for i in 1..<xs.count { deltas.append(xs[i] - xs[i - 1]) }
         let typical = deltas.sorted()[deltas.count / 2]
-        let threshold = max(typical * 4, minimumGap)
+        let interiorThreshold = max(typical * 4, minimumGap)
         var gaps: [ClosedRange<Double>] = []
-        if let first = xs.first, first - domain.lowerBound > threshold {
+        if let first = xs.first, first - domain.lowerBound > minimumGap {
             gaps.append(domain.lowerBound...first)
         }
-        for i in 1..<xs.count where xs[i] - xs[i - 1] > threshold {
+        for i in 1..<xs.count where xs[i] - xs[i - 1] > interiorThreshold {
             gaps.append(xs[i - 1]...xs[i])
         }
-        if let last = xs.last, domain.upperBound - last > threshold {
+        if let last = xs.last, domain.upperBound - last > minimumGap {
             gaps.append(last...domain.upperBound)
         }
         return gaps
@@ -55,8 +57,10 @@ enum ObsPlotHatch {
 enum ObsPlotLayout {
     static func plotRect(for size: CGSize) -> CGRect {
         let leftMargin = min(112, max(72, size.width * 0.18))
-        let topMargin: CGFloat = size.height < 200 ? 28 : 56
-        let bottomMargin = min(74, max(48, size.height * 0.18))
+        // Just enough headroom for the topmost y tick label…
+        let topMargin: CGFloat = 14
+        // …and below: tick labels (~21pt) + the axis title (~18pt) with a small gap.
+        let bottomMargin: CGFloat = 44
         return CGRect(
             x: leftMargin,
             y: topMargin,
@@ -119,46 +123,33 @@ struct ObsPlotLegend: View {
     }
 }
 
-struct ObsPlotResetControls: View {
-    let onResetHorizontal: () -> Void
-    let onResetVertical: () -> Void
+/// A single axis-reset button, shown in the axis margin only while that axis is zoomed
+/// or panned away from the full view.
+struct ObsPlotResetButton: View {
+    let systemImage: String
+    let help: String
+    let action: () -> Void
 
     var body: some View {
-        HStack(spacing: Self.spacing) {
-            Button(action: onResetHorizontal) {
-                Image(systemName: "arrow.left.and.right")
-                    .frame(width: Self.tapTarget, height: Self.tapTarget)
-                    .contentShape(Rectangle())
-            }
-            .help("Reset Horizontal")
-
-            Button(action: onResetVertical) {
-                Image(systemName: "arrow.up.and.down")
-                    .frame(width: Self.tapTarget, height: Self.tapTarget)
-                    .contentShape(Rectangle())
-            }
-            .help("Reset Vertical")
+        Button(action: action) {
+            Image(systemName: systemImage)
+                .frame(width: Self.tapTarget, height: Self.tapTarget)
+                .contentShape(Circle())
         }
+        .help(help)
+        .accessibilityLabel(help)
         .buttonStyle(.borderless)
         .controlSize(.regular)
         .font(Self.iconFont)
-        .padding(.horizontal, Self.horizontalPadding)
-        .padding(.vertical, Self.verticalPadding)
-        .background(.regularMaterial, in: Capsule())
+        .background(.regularMaterial, in: Circle())
     }
 
     #if os(iOS)
-    private static let iconFont: Font = .title3
-    private static let tapTarget: CGFloat? = 40
-    private static let spacing: CGFloat = 8
-    private static let horizontalPadding: CGFloat = 8
-    private static let verticalPadding: CGFloat = 4
-    #else
     private static let iconFont: Font = .body
-    private static let tapTarget: CGFloat? = nil
-    private static let spacing: CGFloat = 4
-    private static let horizontalPadding: CGFloat = 7
-    private static let verticalPadding: CGFloat = 5
+    private static let tapTarget: CGFloat? = 36
+    #else
+    private static let iconFont: Font = .callout
+    private static let tapTarget: CGFloat? = 26
     #endif
 }
 

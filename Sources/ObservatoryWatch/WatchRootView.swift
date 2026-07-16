@@ -71,7 +71,7 @@ struct WatchRootView: View {
             if let source = model.sourceText {
                 Text(source)
             }
-            Text("INTERMAGNET")
+            Text("Via INTERMAGNET · intermagnet.org · CC BY-NC 4.0")
         }
         .font(.caption2)
         .foregroundStyle(.secondary)

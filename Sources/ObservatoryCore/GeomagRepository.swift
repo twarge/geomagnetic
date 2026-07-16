@@ -89,6 +89,11 @@ public actor GeomagRepository {
             // days fetched/saved by earlier runs are retained.
         }
 
+        // New days were stored — re-apply the retention caps for this station.
+        if !needed.isEmpty {
+            store.prune(code: code, now: now)
+        }
+
         return wanted.compactMap { cached[$0] }.filter { !$0.isEmpty }.sorted { $0.dayStart < $1.dayStart }
     }
 

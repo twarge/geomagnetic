@@ -26,6 +26,19 @@ struct ObservatoryFieldComplication: Widget {
     }
 }
 
+/// Rate-of-change complication: ±nT/hr from the trailing trend window, for watchers who
+/// care about activity rather than the absolute field level.
+struct ObservatoryTrendComplication: Widget {
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: "ObservatoryTrendComplication", provider: watchProvider()) { entry in
+            GeomagWidgetView(snapshot: entry.snapshot, style: .trend)
+        }
+        .configurationDisplayName("Field Trend")
+        .description("How fast the field is changing (nT per hour).")
+        .supportedFamilies([.accessoryCircular, .accessoryCorner])
+    }
+}
+
 /// The large rectangular complication uses the same chart style as the watch app.
 struct ObservatoryChartComplication: Widget {
     var body: some WidgetConfiguration {
@@ -43,6 +56,7 @@ struct ObservatoryChartComplication: Widget {
 struct ObservatoryWatchWidgetBundle: WidgetBundle {
     var body: some Widget {
         ObservatoryFieldComplication()
+        ObservatoryTrendComplication()
         ObservatoryChartComplication()
     }
 }

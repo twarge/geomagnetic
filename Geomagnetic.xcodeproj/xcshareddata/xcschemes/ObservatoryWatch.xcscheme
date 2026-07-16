@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "000000000000000000000095"
+               BlueprintIdentifier = "00000000000000000000009C"
                BuildableName = "ObservatoryWatch.app"
                BlueprintName = "ObservatoryWatch"
-               ReferencedContainer = "container:observatory.xcodeproj">
+               ReferencedContainer = "container:Geomagnetic.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -44,9 +44,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "000000000000000000000095"
+            BlueprintIdentifier = "00000000000000000000009C"
             BuildableName = "ObservatoryWatch.app"
-            ReferencedContainer = "container:observatory.xcodeproj">
+            ReferencedContainer = "container:Geomagnetic.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -60,9 +60,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "000000000000000000000095"
+            BlueprintIdentifier = "00000000000000000000009C"
             BuildableName = "ObservatoryWatch.app"
-            ReferencedContainer = "container:observatory.xcodeproj">
+            ReferencedContainer = "container:Geomagnetic.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -15,6 +15,9 @@ struct RootView: View {
         NavigationSplitView(preferredCompactColumn: $preferredColumn) {
             ObservatoryListView(selection: $selection)
                 .navigationTitle("Observatories")
+                // ~50% wider than the platform default minimum (~180pt), so code + name +
+                // country + star fit without truncation.
+                .navigationSplitViewColumnWidth(min: 270, ideal: 300)
         } detail: {
             NavigationStack {
                 if let code = selection, let observatory = Observatories.observatory(code: code) {
@@ -33,5 +36,18 @@ struct RootView: View {
                 ObsWidgetRefresh.requestReload()   // widgets follow the selected observatory
             }
         }
+        // Widget taps arrive as "geomagnetic://CODE?range=…": select that station (the range
+        // is applied to settings first, so a freshly created detail opens on it) and make
+        // sure the detail column is showing. Reuse an existing window rather than opening a
+        // new one per tap.
+        .onOpenURL { url in
+            guard let link = GeomagDeepLink.parse(url) else { return }
+            if let range = link.range { ObservatorySettings.timeRange = range }
+            if Observatories.observatory(code: link.code) != nil {
+                selection = link.code
+            }
+            preferredColumn = .detail
+        }
+        .handlesExternalEvents(preferring: ["*"], allowing: ["*"])
     }
 }

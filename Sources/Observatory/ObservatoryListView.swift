@@ -34,10 +34,10 @@ struct ObservatoryListView: View {
     }
 
     private func row(_ observatory: GeomagObservatory) -> some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 6) {
             Text(observatory.code)
                 .font(.system(.subheadline, design: .monospaced).weight(.semibold))
-                .frame(width: 44, alignment: .leading)
+                .frame(width: 36, alignment: .leading)
             VStack(alignment: .leading, spacing: 1) {
                 Text(observatory.name).lineLimit(1)
                 Text(observatory.country)

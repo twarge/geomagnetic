@@ -126,3 +126,22 @@ public enum ObservatorySettings {
         favorites.contains(code.uppercased())
     }
 }
+
+/// Deep link carried by every widget/complication ("geomagnetic://FRD?range=week") so a tap
+/// opens the app showing the same observatory and window. On macOS the URL is what makes a
+/// widget click actually present a window (plain activation shows nothing when none exist).
+public enum GeomagDeepLink {
+    public static let scheme = "geomagnetic"
+
+    public static func url(code: String, range: ObservatoryTimeRange) -> URL? {
+        URL(string: "\(scheme)://\(code.uppercased())?range=\(range.rawValue)")
+    }
+
+    /// (station code, range) from a deep link; nil if the URL isn't ours.
+    public static func parse(_ url: URL) -> (code: String, range: ObservatoryTimeRange?)? {
+        guard url.scheme?.lowercased() == scheme, let host = url.host, !host.isEmpty else { return nil }
+        let raw = URLComponents(url: url, resolvingAgainstBaseURL: false)?
+            .queryItems?.first(where: { $0.name == "range" })?.value
+        return (host.uppercased(), raw.flatMap(ObservatoryTimeRange.init(rawValue:)))
+    }
+}

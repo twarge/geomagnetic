@@ -21,13 +21,35 @@ struct ObservatoryDetailView: View {
         _isFavorite = State(initialValue: ObservatorySettings.isFavorite(observatory.code))
     }
 
+    /// Wide windows (iPad, resized Mac windows, Stage Manager) put the pickers beside the
+    /// measurements; narrow ones stack them beneath.
+    @State private var layoutWidth: CGFloat = 0
+    private var isWideLayout: Bool { layoutWidth >= 640 }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            header
-            rangePicker
-            if !model.availableElements.isEmpty { elementChips }
+            if isWideLayout {
+                HStack(alignment: .top, spacing: 16) {
+                    header
+                    Spacer(minLength: 12)
+                    VStack(alignment: .trailing, spacing: 8) {
+                        rangePicker.fixedSize()
+                        if !model.availableElements.isEmpty { elementPicker.fixedSize() }
+                    }
+                }
+            } else {
+                header
+                rangePicker
+                if !model.availableElements.isEmpty { elementPicker }
+            }
             plot
+            attribution
             footer
+        }
+        .onGeometryChange(for: CGFloat.self) { proxy in
+            proxy.size.width
+        } action: { width in
+            layoutWidth = width
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -36,7 +58,25 @@ struct ObservatoryDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         #endif
         .toolbar { toolbarContent }
-        .task(id: model.timeRange) { await model.load() }
+        // Load, then keep the view alive: refresh every 5 minutes (matching the repository's
+        // staleness window) so new readings appear — and, when the network is away, so the
+        // domain's "now" edge advances and the no-data hatch visibly grows.
+        .task(id: model.timeRange) {
+            await model.load()
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(300))
+                guard !Task.isCancelled else { break }
+                await model.load()
+            }
+        }
+        // A widget tap for the station that's already on screen: jump to the tapped range
+        // (RootView handles selection; a new detail picks the range up from settings).
+        .onOpenURL { url in
+            guard let link = GeomagDeepLink.parse(url),
+                  link.code == model.observatory.code,
+                  let range = link.range else { return }
+            model.timeRange = range
+        }
         .onChange(of: model.timeRange) { _, _ in
             if preserveViewportOnRangeChange {
                 preserveViewportOnRangeChange = false
@@ -102,30 +142,21 @@ struct ObservatoryDetailView: View {
         .labelsHidden()
     }
 
-    private var elementChips: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                ForEach(model.availableElements, id: \.self) { code in
-                    let selected = model.selectedElements.contains(code)
-                    let color = ObsPlotSeriesPalette.color(at: model.paletteIndex(of: code))
-                    Button {
-                        model.toggle(code)
-                    } label: {
-                        Text(code)
-                            .font(.subheadline.weight(.semibold))
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .background(selected ? color.opacity(0.22) : Color.secondary.opacity(0.12),
-                                        in: Capsule())
-                            .foregroundStyle(selected ? color : .secondary)
-                            .overlay(Capsule().stroke(selected ? color : .clear, lineWidth: 1))
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("\(GeomagElement(code).displayName), \(selected ? "shown" : "hidden")")
-                }
+    /// Single-element selection as a segmented control, matching the time-range picker.
+    /// (One autoscaled trace at a time — a shared axis would flatten every component.)
+    private var elementPicker: some View {
+        Picker("Element", selection: Binding(
+            get: {
+                model.availableElements.first(where: { model.selectedElements.contains($0) })
+                    ?? model.availableElements.first ?? ""
+            },
+            set: { model.selectedElements = [$0] })) {
+            ForEach(model.availableElements, id: \.self) { code in
+                Text(code).tag(code)
             }
-            .padding(.vertical, 1)
         }
+        .pickerStyle(.segmented)
+        .labelsHidden()
     }
 
     // MARK: - Plot
@@ -173,6 +204,31 @@ struct ObservatoryDetailView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
+    // MARK: - Attribution
+
+    /// INTERMAGNET's conditions of use (CC BY-NC 4.0) ask that the operating institute and
+    /// INTERMAGNET be credited; the wording follows their suggested acknowledgement.
+    private var attribution: some View {
+        // No fixedSize here: a vertically-fixed wrapping Text answers the window's
+        // minimum-size probe (width 0) with its one-glyph-per-line height, forcing an
+        // absurd minimum window height on macOS. Plain Text in a VStack wraps fine.
+        VStack(alignment: .leading, spacing: 1) {
+            Text(stationCredit)
+            Text("Made available through [INTERMAGNET](https://intermagnet.org), promoting high standards of magnetic observatory practice · CC BY-NC 4.0")
+        }
+        .font(.caption2)
+        .foregroundStyle(.secondary)
+        .tint(.secondary)
+    }
+
+    private var stationCredit: String {
+        let station = model.result?.stationName ?? model.observatory.name
+        if let source = model.result?.source, !source.isEmpty {
+            return "Data collected at \(station) (\(model.observatory.code)) by \(source)."
+        }
+        return "Data collected at \(station) (\(model.observatory.code))."
+    }
+
     // MARK: - Footer
 
     private var footer: some View {
@@ -184,9 +240,6 @@ struct ObservatoryDetailView: View {
                 Label("Cached", systemImage: "internaldrive")
             }
             Spacer()
-            Text("Drag to zoom · double-tap to reset")
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
         }
         .font(.caption2)
         .foregroundStyle(.secondary)

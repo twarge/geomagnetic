@@ -11,6 +11,8 @@ import WidgetKit
 enum GeomagWidgetStyle {
     case field        // headline value + sparkline
     case chart        // sparkline-dominant
+    case trend        // rate of change (±nT/hr) instead of the absolute field
+    case components   // every element: value + hourly trend
 }
 
 struct GeomagWidgetView: View {
@@ -28,6 +30,9 @@ struct GeomagWidgetView: View {
                      ? EdgeInsets(top: 0, leading: contentMargins.leading,
                                   bottom: contentMargins.bottom, trailing: contentMargins.trailing)
                      : EdgeInsets())
+            // Tapping any widget opens the app on the same observatory + window (and on
+            // macOS the URL is what makes the click present a window at all).
+            .widgetURL(GeomagDeepLink.url(code: snapshot.observatoryCode, range: snapshot.range))
             .containerBackground(for: .widget) { background }
     }
 
@@ -37,15 +42,15 @@ struct GeomagWidgetView: View {
         case .accessoryInline:
             inlineLabel
         case .accessoryCircular:
-            circular
+            style == .trend ? AnyView(trendCircular) : AnyView(circular)
         case .accessoryRectangular:
             rectangularChart
         default:
             #if os(watchOS)
             if family == .accessoryCorner {
-                corner
+                style == .trend ? AnyView(trendCorner) : AnyView(corner)
             } else {
-                circular
+                style == .trend ? AnyView(trendCircular) : AnyView(circular)
             }
             #else
             systemTile
@@ -91,6 +96,54 @@ struct GeomagWidgetView: View {
             .padding(.horizontal, 1)
         }
     }
+
+    // MARK: - Trend faces (±nT/hr instead of the absolute field)
+
+    private var trendRateText: String {
+        snapshot.trendPerHour.map { String(format: "%+.0f", $0) } ?? "—"
+    }
+
+    private var trendCircular: some View {
+        ZStack {
+            AccessoryWidgetBackground()
+            VStack(spacing: -1) {
+                stationElementLabel
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundStyle(Color.accentColor)
+                    .widgetAccentable()
+                    .minimumScaleFactor(0.7)
+                    .lineLimit(1)
+                Text(trendRateText)
+                    .font(.system(size: 17, weight: .semibold, design: .rounded))
+                    .minimumScaleFactor(0.4)
+                    .lineLimit(1)
+                Text("nT/hr")
+                    .font(.system(size: 9))
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.horizontal, 1)
+        }
+    }
+
+    #if os(watchOS)
+    private var trendCorner: some View {
+        // Trend arrow over "FRD" at the inner corner; the hourly rate curves around the dial.
+        VStack(spacing: -1) {
+            Image(systemName: snapshot.trend.map(Self.trendSymbol) ?? "arrow.right")
+                .font(.system(size: 16, weight: .bold))
+            cornerStationLabel
+                .font(.system(size: 13, weight: .semibold))
+        }
+        .foregroundStyle(Color.accentColor)
+        .widgetAccentable()
+        .minimumScaleFactor(0.5)
+        .lineLimit(1)
+        .widgetLabel {
+            Text(snapshot.trendPerHour.map { String(format: "%+.1f nT/hr", $0) } ?? "—")
+                .foregroundStyle(.primary)
+        }
+    }
+    #endif
 
     // The largest accessory family — the watch rectangular complication and the iOS
     // lock-screen rectangular — uses the same chart style as the watch app.
@@ -154,10 +207,59 @@ struct GeomagWidgetView: View {
     @ViewBuilder
     private var systemTile: some View {
         switch style {
-        case .field:
+        case .field, .trend:
             fieldTile
         case .chart:
             chartTile
+        case .components:
+            componentsTile
+        }
+    }
+
+    // Every reported element on one tile: "F 50,083.42 nT   −30 nT/hr".
+    private var stationOnlyLabel: Text {
+        guard snapshot.isStale else { return Text(snapshot.observatoryCode) }
+        return Text("\(snapshot.observatoryCode) \(Image(systemName: ObsReadingLine.staleSymbol))")
+    }
+
+    private var componentsTile: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            HStack(spacing: 4) {
+                stationOnlyLabel
+                    .fontWeight(.semibold)
+                    .foregroundStyle(Color.accentColor)
+                    .widgetAccentable()
+                Spacer()
+                Text(snapshot.range.shortLabel).foregroundStyle(.secondary)
+            }
+            .font(.caption)
+            if snapshot.components.isEmpty {
+                Text("No recent data").font(.caption2).foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                ForEach(snapshot.components) { component in
+                    let index = snapshot.components.firstIndex { $0.id == component.id } ?? 0
+                    HStack(spacing: 4) {
+                        Text(component.element.code)
+                            .font(.system(.caption, design: .monospaced).weight(.semibold))
+                            .foregroundStyle(ObsPlotSeriesPalette.color(at: index))
+                            .frame(width: 14, alignment: .leading)
+                        Text(component.value, format: .number.precision(.fractionLength(2)))
+                            .monospacedDigit()
+                        Text(component.element.unit).foregroundStyle(.secondary)
+                        Spacer(minLength: 2)
+                        Text(component.trendPerHour.map {
+                            String(format: "%+.0f %@/hr", $0, component.element.unit)
+                        } ?? "—")
+                            .monospacedDigit()
+                            .foregroundStyle(.secondary)
+                    }
+                    .font(.caption)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                }
+                Spacer(minLength: 0)
+            }
         }
     }
 

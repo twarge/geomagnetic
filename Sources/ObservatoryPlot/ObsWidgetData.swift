@@ -7,11 +7,17 @@
 
 import Foundation
 
-/// Latest reading for one element, used by the multi-component widget.
+/// Latest reading (and trailing trend) for one element, used by the multi-component widget.
 struct GeomagWidgetComponent: Sendable, Identifiable {
     var element: GeomagElement
     var value: Double
+    var trend: Double?     // net change over the trailing trend window
     var id: String { element.code }
+
+    /// Trend as a rate per hour (the trend window is currently 30 minutes).
+    var trendPerHour: Double? {
+        trend.map { $0 * 3_600 / GeomagRepository.trendWindowSeconds }
+    }
 }
 
 /// A compact snapshot for glanceable surfaces: the primary element's recent trace plus its
@@ -41,6 +47,12 @@ struct GeomagWidgetSnapshot: Sendable {
 
     var hasData: Bool { primaryValue != nil && !sparkline.isEmpty }
 
+    /// The trend expressed as a rate: nT per hour (trend covers the repository's trailing
+    /// trend window, currently 30 minutes, so this rescales it to a full hour).
+    var trendPerHour: Double? {
+        trend.map { $0 * 3_600 / GeomagRepository.trendWindowSeconds }
+    }
+
     /// Min…max of the primary element over the window (for the corner range gauge).
     var primaryRange: ClosedRange<Double>? {
         let values = sparkline.first?.points.map(\.y) ?? []
@@ -58,10 +70,10 @@ enum GeomagWidgetData {
                             range: ObservatoryTimeRange = .day) -> GeomagWidgetSnapshot {
         let observatory = Observatories.observatory(code: code) ?? Observatories.default
         let components = [
-            GeomagWidgetComponent(element: GeomagElement("X"), value: 21_320),
-            GeomagWidgetComponent(element: GeomagElement("Y"), value: -3_980),
-            GeomagWidgetComponent(element: GeomagElement("Z"), value: 45_100),
-            GeomagWidgetComponent(element: GeomagElement("F"), value: 50_083),
+            GeomagWidgetComponent(element: GeomagElement("F"), value: 50_083, trend: -15),
+            GeomagWidgetComponent(element: GeomagElement("X"), value: 21_320, trend: 2),
+            GeomagWidgetComponent(element: GeomagElement("Y"), value: -3_980, trend: -1),
+            GeomagWidgetComponent(element: GeomagElement("Z"), value: 45_100, trend: 6),
         ]
         let window = range.dateRange()
         return GeomagWidgetSnapshot(
@@ -80,6 +92,7 @@ enum GeomagWidgetData {
                          network: Bool = true,
                          timeout: Double = 18,
                          maxPoints: Int = 80,
+                         preferredElement: String? = nil,
                          now: Date = Date()) async -> GeomagWidgetSnapshot {
         let observatory = Observatories.observatory(code: code) ?? Observatories.default
         let window = range.dateRange(now: now)
@@ -120,7 +133,10 @@ enum GeomagWidgetData {
             return empty
         }
 
-        let primaryCode = ObservatoryElementPreference.primary(from: result.series.map { $0.element.code })
+        let reported = result.series.map { $0.element.code }
+        // A widget configured to a specific component wins; otherwise the F-first preference.
+        let primaryCode = preferredElement.flatMap { reported.contains($0) ? $0 : nil }
+            ?? ObservatoryElementPreference.primary(from: reported)
         let primarySeries = result.series.first { $0.element.code == primaryCode }
         let trend = primarySeries?.recentChange   // field trajectory over the last 30 minutes
         let activity: Double? = primarySeries.flatMap { s in
@@ -129,8 +145,12 @@ enum GeomagWidgetData {
             return hi - lo
         }
         let spark = primarySeries.map { [$0.obsLineSeries(index: 0)] } ?? []
-        let components = result.series.compactMap { s in
-            s.latest.map { GeomagWidgetComponent(element: s.element, value: $0.value) }
+        // F first, then the rest in reported order — matching the app's headline ordering.
+        let ordered = result.series.sorted {
+            ($0.element.code == primaryCode ? 0 : 1) < ($1.element.code == primaryCode ? 0 : 1)
+        }
+        let components = ordered.compactMap { s in
+            s.latest.map { GeomagWidgetComponent(element: s.element, value: $0.value, trend: s.recentChange) }
         }
 
         let latestTime = primarySeries?.latest?.time
