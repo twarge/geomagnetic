@@ -30,6 +30,9 @@ struct GeomagWidgetView: View {
                      ? EdgeInsets(top: 0, leading: contentMargins.leading,
                                   bottom: contentMargins.bottom, trailing: contentMargins.trailing)
                      : EdgeInsets())
+            // Public geophysical data — never redact it. Without this, wrist-down Always-On
+            // replaces the reading (e.g. the corner's curved label) with "—".
+            .privacySensitive(false)
             // Tapping any widget opens the app on the same observatory + window (and on
             // macOS the URL is what makes the click present a window at all).
             .widgetURL(GeomagDeepLink.url(code: snapshot.observatoryCode, range: snapshot.range))
@@ -141,6 +144,7 @@ struct GeomagWidgetView: View {
         .widgetLabel {
             Text(snapshot.trendPerHour.map { String(format: "%+.1f nT/hr", $0) } ?? "—")
                 .foregroundStyle(.primary)
+                .privacySensitive(false)
         }
     }
     #endif
@@ -193,6 +197,7 @@ struct GeomagWidgetView: View {
         .widgetLabel {
             Text(snapshot.primaryValue.map { String(format: "%.2f nT", $0) } ?? "—")
                 .foregroundStyle(.primary)
+                .privacySensitive(false)
         }
     }
 
