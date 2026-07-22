@@ -95,7 +95,7 @@ struct GeomagConfiguredProvider: AppIntentTimelineProvider {
         let now = Date()
         let snapshot = await GeomagWidgetData.snapshot(
             code: configuration.station?.id ?? ObservatorySettings.observatoryCode,
-            range: ObservatorySettings.timeRange,
+            range: configuration.range ?? ObservatorySettings.timeRange,
             timeout: timeout,
             maxPoints: maxPoints,
             preferredElement: configuration.component?.rawValue,

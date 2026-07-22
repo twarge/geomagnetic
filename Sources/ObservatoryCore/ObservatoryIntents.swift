@@ -78,6 +78,20 @@ public enum FieldComponent: String, AppEnum, Sendable {
     ]
 }
 
+// MARK: - Time range (AppEnum)
+
+extension ObservatoryTimeRange: AppEnum {
+    public static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Time Range")
+    public static let caseDisplayRepresentations: [ObservatoryTimeRange: DisplayRepresentation] = [
+        .threeHours: "3 Hours",
+        .sixHours: "6 Hours",
+        .day: "1 Day",
+        .threeDays: "3 Days",
+        .week: "1 Week",
+        .month: "1 Month",
+    ]
+}
+
 // MARK: - "What's the field?" (Siri / Shortcuts)
 
 public struct CurrentFieldIntent: AppIntent {
@@ -156,6 +170,10 @@ public struct ObservatoryWidgetConfigIntent: WidgetConfigurationIntent {
     /// nil ⇒ the app's usual preference (F first).
     @Parameter(title: "Component")
     public var component: FieldComponent?
+
+    /// nil ⇒ follow the time range selected in the app.
+    @Parameter(title: "Time Range")
+    public var range: ObservatoryTimeRange?
 
     public init() {}
 }
