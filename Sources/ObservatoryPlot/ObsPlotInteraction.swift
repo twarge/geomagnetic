@@ -2,8 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 // Pan/zoom interaction, ported from HiDeF. macOS uses trackpad scroll + magnify + drag
-// selection; iOS uses two-finger pan + pinch + double-tap reset. watchOS gets a static
-// plot (the overlay collapses to an empty layer).
+// selection; iOS pans with a one-finger drag (two fingers also work) plus pinch to zoom
+// and a two-finger double-tap reset. watchOS gets a static plot (the overlay collapses to
+// an empty layer).
 
 import SwiftUI
 
@@ -350,8 +351,11 @@ private final class ObsIOSPlotInteractionUIView: UIView, UIGestureRecognizerDele
         backgroundColor = .clear
         isMultipleTouchEnabled = true
 
+        // Single-finger drag pans the plot (two-finger drag still works, and combines
+        // naturally with pinch). Nothing else claims one-finger drags here: selection-zoom
+        // is macOS-only and the reset tap needs two fingers.
         let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
-        pan.minimumNumberOfTouches = 2
+        pan.minimumNumberOfTouches = 1
         pan.delegate = self
         addGestureRecognizer(pan)
 
@@ -420,9 +424,19 @@ private final class ObsIOSPlotInteractionUIView: UIView, UIGestureRecognizerDele
         if recognizer.state == .recognized { onReset?() }
     }
 
+    // Pan + pinch (both ours) may run together, but never alongside gestures from outside
+    // this view — otherwise a one-finger pan also drives the navigation back-swipe and
+    // drags the whole page.
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
                            shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        true
+        gestureRecognizer.view === self && otherGestureRecognizer.view === self
+    }
+
+    // The plot consumes touches that start on it: outside recognizers (the navigation
+    // pop/collapse swipe) must wait for ours to fail, which a drag on the plot never does.
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
+                           shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        gestureRecognizer.view === self && otherGestureRecognizer.view !== self
     }
 
     private static let verticalOrientationFactor: CGFloat = 2
