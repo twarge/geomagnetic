@@ -3,16 +3,18 @@
 
 import Foundation
 
-/// Retention caps for cached station data — the client-side mirror of the worker's
-/// MAX_TIME / MAX_DATA_SIZE vars. The phone/Mac keep as much as the mirror serves; the
-/// watch keeps just enough for its largest displayable range (1 month) plus slack.
+/// Retention caps for cached station data. A minute-cadence day (4 elements) is ~45 KB on
+/// disk, so a month per station is ~1.3 MB. The overall budget is enforced by evicting the
+/// least-recently-used *station*; only when a single station remains do its oldest days go.
 public enum GeomagRetention {
     #if os(watchOS)
     public static let maxAge: TimeInterval = 35 * UTCDate.secondsPerDay
-    public static let maxBytesPerStation: Int64 = 8 * 1_048_576
+    /// ≈ one station × one month, plus slack.
+    public static let maxTotalBytes: Int64 = 1_572_864
     #else
     public static let maxAge: TimeInterval = 366 * UTCDate.secondsPerDay
-    public static let maxBytesPerStation: Int64 = 64 * 1_048_576
+    /// ≈ two stations × one month, plus slack.
+    public static let maxTotalBytes: Int64 = 3_145_728
     #endif
 }
 
@@ -43,41 +45,83 @@ public struct GeomagStore: Sendable {
 
     // MARK: - Retention
 
-    /// Apply the retention caps to one station: drop days older than the age limit, then —
-    /// oldest first — until the station fits its byte budget. Filenames are yyyy-MM-dd, so
-    /// lexicographic order is chronological.
+    /// Age-prune one station (drop days beyond the retention age), then re-apply the global
+    /// byte budget. Filenames are yyyy-MM-dd, so lexicographic order is chronological.
     public func prune(code: String, now: Date = Date()) {
         let fm = FileManager.default
         let dir = directory(for: code)
-        guard let names = try? fm.contentsOfDirectory(atPath: dir.path) else { return }
-        let cutoffStamp = UTCDate.dayString(now.timeIntervalSince1970 - GeomagRetention.maxAge)
-
-        var kept: [(name: String, size: Int64)] = []
-        var total: Int64 = 0
-        for name in names.filter({ $0.hasSuffix(".plist") }).sorted() {
-            let url = dir.appendingPathComponent(name)
-            if String(name.dropLast(6)) < cutoffStamp {
-                try? fm.removeItem(at: url)
-                continue
+        if let names = try? fm.contentsOfDirectory(atPath: dir.path) {
+            let cutoffStamp = UTCDate.dayString(now.timeIntervalSince1970 - GeomagRetention.maxAge)
+            for name in names where name.hasSuffix(".plist") && String(name.dropLast(6)) < cutoffStamp {
+                try? fm.removeItem(at: dir.appendingPathComponent(name))
             }
-            let size = ((try? fm.attributesOfItem(atPath: url.path))?[.size] as? NSNumber)?.int64Value ?? 0
-            kept.append((name, size))
-            total += size
         }
-        // Over budget: shed oldest days, always keeping the newest one.
-        var index = 0
-        while total > GeomagRetention.maxBytesPerStation, index < kept.count - 1 {
-            try? fm.removeItem(at: dir.appendingPathComponent(kept[index].name))
-            total -= kept[index].size
-            index += 1
-        }
+        enforceGlobalBudget()
     }
 
     /// Retention sweep across every cached station (run once at startup).
     public func pruneAll(now: Date = Date()) {
         guard let codes = try? FileManager.default.contentsOfDirectory(atPath: root.path) else { return }
         for code in codes where !code.hasPrefix(".") {
-            prune(code: code, now: now)
+            let dir = directory(for: code)
+            if let names = try? FileManager.default.contentsOfDirectory(atPath: dir.path) {
+                let cutoffStamp = UTCDate.dayString(now.timeIntervalSince1970 - GeomagRetention.maxAge)
+                for name in names where name.hasSuffix(".plist") && String(name.dropLast(6)) < cutoffStamp {
+                    try? FileManager.default.removeItem(at: dir.appendingPathComponent(name))
+                }
+            }
+        }
+        enforceGlobalBudget()
+    }
+
+    /// Keep the whole cache inside `GeomagRetention.maxTotalBytes`: evict the
+    /// least-recently-*fetched* station outright while more than one remains, then — if a
+    /// single station alone still exceeds the budget — shed its oldest days. Recency is the
+    /// newest file modification time in a station's directory, which tracks actual use (the
+    /// station being viewed refreshes its "today" file constantly).
+    private func enforceGlobalBudget() {
+        let fm = FileManager.default
+        guard let codes = try? fm.contentsOfDirectory(atPath: root.path) else { return }
+
+        struct Station { let code: String; var bytes: Int64; var lastUsed: Date }
+        var stations: [Station] = []
+        for code in codes where !code.hasPrefix(".") {
+            let dir = directory(for: code)
+            guard let names = try? fm.contentsOfDirectory(atPath: dir.path) else { continue }
+            var bytes: Int64 = 0
+            var newest = Date.distantPast
+            for name in names {
+                let attrs = try? fm.attributesOfItem(atPath: dir.appendingPathComponent(name).path)
+                bytes += ((attrs?[.size] as? NSNumber)?.int64Value ?? 0)
+                if let modified = attrs?[.modificationDate] as? Date, modified > newest {
+                    newest = modified
+                }
+            }
+            stations.append(Station(code: code, bytes: bytes, lastUsed: newest))
+        }
+
+        var total = stations.reduce(0) { $0 + $1.bytes }
+        stations.sort { $0.lastUsed < $1.lastUsed }   // least recently used first
+
+        // Evict whole stations, LRU first, never the most recently used one.
+        while total > GeomagRetention.maxTotalBytes, stations.count > 1 {
+            let victim = stations.removeFirst()
+            try? fm.removeItem(at: directory(for: victim.code))
+            total -= victim.bytes
+        }
+
+        // A single station over budget on its own: shed oldest days, keep the newest.
+        if total > GeomagRetention.maxTotalBytes, let last = stations.first {
+            let dir = directory(for: last.code)
+            guard let names = try? fm.contentsOfDirectory(atPath: dir.path) else { return }
+            let days = names.filter { $0.hasSuffix(".plist") }.sorted()
+            for name in days.dropLast() {
+                guard total > GeomagRetention.maxTotalBytes else { break }
+                let url = dir.appendingPathComponent(name)
+                let size = ((try? fm.attributesOfItem(atPath: url.path))?[.size] as? NSNumber)?.int64Value ?? 0
+                try? fm.removeItem(at: url)
+                total -= size
+            }
         }
     }
 
