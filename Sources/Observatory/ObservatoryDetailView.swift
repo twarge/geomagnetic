@@ -15,6 +15,10 @@ struct ObservatoryDetailView: View {
     /// reload — the gesture continues smoothly and the fetch fills in around it. Manual
     /// picker changes leave this false and reset the viewport as before.
     @State private var preserveViewportOnRangeChange = false
+    /// Span at the previous auto-range evaluation; a step *down* requires the span to have
+    /// shrunk (a real zoom-in). Without this, panning back toward "now" stepped the range
+    /// down, discarding the loaded window and re-loading it on the next pan left.
+    @State private var previousEvaluatedSpan: Double?
 
     init(observatory: GeomagObservatory) {
         _model = StateObject(wrappedValue: ObservatoryDetailViewModel(observatory: observatory))
@@ -82,6 +86,7 @@ struct ObservatoryDetailView: View {
                 preserveViewportOnRangeChange = false
             } else {
                 resetViewport()
+                previousEvaluatedSpan = nil
             }
         }
         .onChange(of: visibleXRange) { _, newValue in scheduleAutoRange(for: newValue) }
@@ -306,9 +311,13 @@ struct ObservatoryDetailView: View {
               visible.span.isFinite, visible.span > 0 else { return }
         let ranges = ObservatoryTimeRange.allCases   // ascending by duration
         let current = model.timeRange
+        let spanShrank = previousEvaluatedSpan.map { visible.span < $0 * 0.98 } ?? false
+        previousEvaluatedSpan = visible.span
 
-        // Pinched out beyond the loaded data → one step up.
-        if visible.span > window.span * 1.02 {
+        // Pinched out beyond the loaded data, or panned left into the unloaded (hatched)
+        // margin → one step up; the longer range's fetch fills the view in place.
+        let pannedIntoPast = visible.minimum < window.minimum - window.span * 0.01
+        if visible.span > window.span * 1.02 || pannedIntoPast {
             guard let index = ranges.firstIndex(of: current), index + 1 < ranges.count else { return }
             preserveViewportOnRangeChange = true
             model.timeRange = ranges[index + 1]
@@ -316,7 +325,10 @@ struct ObservatoryDetailView: View {
         }
 
         // Pinched in on the trailing slice → smallest range that still contains the view
-        // (measured back from the window's end, since ranges always end at "now").
+        // (measured back from the window's end, since ranges always end at "now"). Only an
+        // actual zoom-in qualifies: panning must never shrink the loaded window, or a
+        // left-right pan cycle re-loads the same history over and over.
+        guard spanShrank else { return }
         let required = window.maximum - visible.minimum
         if let target = ranges.first(where: { $0.duration >= required * 0.999 }),
            target.duration < current.duration {
