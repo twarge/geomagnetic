@@ -228,7 +228,7 @@ struct GeomagWidgetView: View {
     }
 
     private var componentsTile: some View {
-        VStack(alignment: .leading, spacing: 3) {
+        VStack(alignment: .leading, spacing: 1) {
             HStack(spacing: 4) {
                 stationOnlyLabel
                     .fontWeight(.semibold)
@@ -251,7 +251,7 @@ struct GeomagWidgetView: View {
                             .font(.system(.caption, design: .monospaced).weight(.semibold))
                             .foregroundStyle(ObsPlotSeriesPalette.color(at: index))
                             .frame(width: 14, alignment: .leading)
-                        VStack(alignment: .leading, spacing: 0) {
+                        VStack(alignment: .leading, spacing: -2) {
                             HStack(spacing: 3) {
                                 Text(component.value, format: .number.precision(.fractionLength(2)))
                                     .monospacedDigit()
@@ -260,7 +260,7 @@ struct GeomagWidgetView: View {
                             Text(component.trendPerHour.map {
                                 String(format: "%+.0f %@/hr", $0, component.element.unit)
                             } ?? "—")
-                                .font(.caption2)
+                                .font(.system(size: 10))
                                 .monospacedDigit()
                                 .foregroundStyle(.secondary)
                         }
