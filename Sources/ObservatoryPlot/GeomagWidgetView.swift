@@ -242,26 +242,31 @@ struct GeomagWidgetView: View {
                 Text("No recent data").font(.caption2).foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
+                // Trend sits under the value rather than beside it, so neither line ever
+                // has to compress to fit the small tile.
                 ForEach(snapshot.components) { component in
                     let index = snapshot.components.firstIndex { $0.id == component.id } ?? 0
-                    HStack(spacing: 4) {
+                    HStack(alignment: .firstTextBaseline, spacing: 4) {
                         Text(component.element.code)
                             .font(.system(.caption, design: .monospaced).weight(.semibold))
                             .foregroundStyle(ObsPlotSeriesPalette.color(at: index))
                             .frame(width: 14, alignment: .leading)
-                        Text(component.value, format: .number.precision(.fractionLength(2)))
-                            .monospacedDigit()
-                        Text(component.element.unit).foregroundStyle(.secondary)
-                        Spacer(minLength: 2)
-                        Text(component.trendPerHour.map {
-                            String(format: "%+.0f %@/hr", $0, component.element.unit)
-                        } ?? "—")
-                            .monospacedDigit()
-                            .foregroundStyle(.secondary)
+                        VStack(alignment: .leading, spacing: 0) {
+                            HStack(spacing: 3) {
+                                Text(component.value, format: .number.precision(.fractionLength(2)))
+                                    .monospacedDigit()
+                                Text(component.element.unit).foregroundStyle(.secondary)
+                            }
+                            Text(component.trendPerHour.map {
+                                String(format: "%+.0f %@/hr", $0, component.element.unit)
+                            } ?? "—")
+                                .font(.caption2)
+                                .monospacedDigit()
+                                .foregroundStyle(.secondary)
+                        }
                     }
                     .font(.caption)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.6)
                 }
                 Spacer(minLength: 0)
             }
