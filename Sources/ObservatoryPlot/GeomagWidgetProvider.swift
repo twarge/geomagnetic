@@ -55,8 +55,15 @@ struct GeomagWidgetProvider: TimelineProvider {
             let now = Date()
             let snapshot = await GeomagWidgetData.snapshot(range: effectiveRange, timeout: timeout, maxPoints: maxPoints, now: now)
             let entry = GeomagEntry(date: now, snapshot: snapshot)
-            completion(Timeline(entries: [entry], policy: .after(now.addingTimeInterval(refreshMinutes * 60))))
+            completion(Timeline(entries: [entry],
+                                policy: .after(now.addingTimeInterval(Self.nextRefresh(after: snapshot, normal: refreshMinutes)))))
         }
+    }
+
+    /// Stale or empty snapshots retry sooner than the normal cadence, so a complication
+    /// recovers within minutes of connectivity returning instead of waiting a full cycle.
+    static func nextRefresh(after snapshot: GeomagWidgetSnapshot, normal minutes: Double) -> TimeInterval {
+        (snapshot.isStale || !snapshot.hasData ? min(minutes, 10) : minutes) * 60
     }
 }
 
@@ -80,7 +87,8 @@ struct GeomagConfiguredProvider: AppIntentTimelineProvider {
 
     func timeline(for configuration: ObservatoryWidgetConfigIntent, in context: Context) async -> Timeline<GeomagEntry> {
         let entry = await entry(for: configuration)
-        return Timeline(entries: [entry], policy: .after(entry.date.addingTimeInterval(refreshMinutes * 60)))
+        let next = GeomagWidgetProvider.nextRefresh(after: entry.snapshot, normal: refreshMinutes)
+        return Timeline(entries: [entry], policy: .after(entry.date.addingTimeInterval(next)))
     }
 
     #if os(watchOS)

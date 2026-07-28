@@ -7,6 +7,7 @@ import SwiftUI
 /// interactive plot. Loads exactly the visible window through the repository.
 struct ObservatoryDetailView: View {
     @StateObject private var model: ObservatoryDetailViewModel
+    @Environment(\.scenePhase) private var scenePhase
     @State private var visibleXRange: ObsPlotRange?
     @State private var visibleYRange: ObsPlotRange?
     @State private var isFavorite: Bool
@@ -90,6 +91,14 @@ struct ObservatoryDetailView: View {
             }
         }
         .onChange(of: visibleXRange) { _, newValue in scheduleAutoRange(for: newValue) }
+        // Returning to the foreground fetches immediately — the periodic loop above is
+        // suspended while backgrounded, so without this the view showed stale data until
+        // the next tick or a manual refresh.
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active {
+                Task { await model.load() }
+            }
+        }
         #if os(iOS)
         .refreshable { await model.load(force: true) }
         #endif

@@ -5,6 +5,7 @@ import SwiftUI
 
 struct WatchRootView: View {
     @StateObject private var model = WatchViewModel()
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         NavigationStack {
@@ -21,7 +22,24 @@ struct WatchRootView: View {
                 }
                 .padding(.horizontal, 4)
             }
-            .task(id: TaskKey(code: model.code, range: model.range)) { await model.load() }
+            // Load now, then keep refreshing every 5 minutes while the view lives (the
+            // repository's own staleness window makes repeats cheap).
+            .task(id: TaskKey(code: model.code, range: model.range)) {
+                await model.load()
+                while !Task.isCancelled {
+                    try? await Task.sleep(for: .seconds(300))
+                    guard !Task.isCancelled else { break }
+                    await model.load()
+                }
+            }
+            // .task(id:) does NOT re-fire when the app is re-activated with an unchanged
+            // id — without this, reopening the app (e.g. from a complication tap) showed
+            // stale data until a manual Refresh.
+            .onChange(of: scenePhase) { _, phase in
+                if phase == .active {
+                    Task { await model.load() }
+                }
+            }
         }
     }
 
