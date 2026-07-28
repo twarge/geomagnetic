@@ -88,6 +88,8 @@ struct WatchRootView: View {
             }
         }
         .pickerStyle(.navigationLink)
+        // Span the leading-aligned stack so the control centers like the Refresh button.
+        .frame(maxWidth: .infinity)
     }
 
     private var observatoryLink: some View {
@@ -95,6 +97,7 @@ struct WatchRootView: View {
             WatchObservatoryListView(model: model)
         } label: {
             Label("Observatory", systemImage: "globe")
+                .frame(maxWidth: .infinity)
         }
     }
 
