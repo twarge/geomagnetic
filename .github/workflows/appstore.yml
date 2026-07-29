@@ -9,7 +9,7 @@ name: App Store
 #   ASC_ISSUER_ID  App Store Connect issuer ID
 #   ASC_KEY_P8     Contents of the AuthKey_<KEYID>.p8 file
 # Create the key at App Store Connect → Users and Access → Integrations →
-# App Store Connect API, with the App Manager role (needed for cloud signing).
+# App Store Connect API, with the Admin role (needed for cloud signing).
 #
 # Signing is fully cloud-managed: xcodebuild uses the API key to create and
 # fetch distribution certificates and profiles, and
@@ -34,8 +34,13 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  build:
+    name: CI prerequisite
+    uses: ./.github/workflows/ci.yml
+
   upload:
     name: Upload (${{ matrix.name }})
+    needs: build
     runs-on: macos-26
     timeout-minutes: 60
     strategy:
@@ -126,11 +131,6 @@ jobs:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
         run: |
-          # Sign the archive with the cloud-managed Apple Distribution identity directly.
-          # The default (Apple Development at archive, re-sign at export) mints a fresh
-          # Development certificate on every ephemeral runner until the account hits
-          # Apple's certificate cap; the managed Distribution certificate is created once
-          # and reused by every run.
           xcodebuild archive \
             -project Geomagnetic.xcodeproj \
             -scheme Observatory \
@@ -138,7 +138,6 @@ jobs:
             -destination '${{ matrix.destination }}' \
             -archivePath '${{ matrix.archive }}' \
             MARKETING_VERSION='${{ steps.version.outputs.version }}' \
-            CODE_SIGN_IDENTITY='Apple Distribution' \
             -allowProvisioningUpdates \
             -authenticationKeyPath ~/private_keys/AuthKey_"$ASC_KEY_ID".p8 \
             -authenticationKeyID "$ASC_KEY_ID" \

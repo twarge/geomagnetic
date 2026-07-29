@@ -1,12 +1,14 @@
 name: CI
 
-# Build checks on every push/PR. Unsigned (ephemeral runners have no signing identity);
-# distribution builds are signed by the App Store workflow instead.
+# Build checks on every push/PR and when reused as a release prerequisite.
+# Unsigned (ephemeral runners have no signing identity); distribution builds
+# are signed by the App Store workflow instead.
 
 on:
   push:
     branches: [main]
   pull_request:
+  workflow_call:
 
 permissions:
   contents: read
