@@ -1,0 +1,25 @@
+Geomagnetic
+Copyright 2026 Twarge LLC
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+Portions are derived from HiDeF (Copyright Twarge LLC), also under Apache-2.0.
+
+================================================================================
+Geomagnetic data
+================================================================================
+This app displays geomagnetic observatory data from INTERMAGNET
+(https://intermagnet.org). That data is NOT covered by the Apache License above
+and is not owned by Twarge LLC.
+
+INTERMAGNET data is provided by the operating institutes and made available
+under the Creative Commons Attribution-NonCommercial 4.0 International License
+(CC BY-NC 4.0):
+
+  * Non-commercial use only.
+  * Attribute the operating institute(s) and INTERMAGNET; cite the relevant
+    observatory DOIs.
+  * Commercial use, sale, or bulk redistribution to third parties requires
+    written permission from the operating institute(s).
+
+Conditions of use:
+https://intermagnet.org/data-donnee/data-conditions-eng.php
