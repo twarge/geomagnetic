@@ -895,6 +895,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Resources/Widgets/ObservatoryWidgets-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Geomagnetic;
 				"LD_RUNPATH_SEARCH_PATHS[sdk=iphoneos*]" = (
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
@@ -929,6 +930,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Resources/Widgets/ObservatoryWidgets-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Geomagnetic;
 				"LD_RUNPATH_SEARCH_PATHS[sdk=iphoneos*]" = (
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
@@ -1014,6 +1016,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Resources/WatchWidgets/ObservatoryWatchWidgets-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Geomagnetic;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
@@ -1038,6 +1041,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "Resources/WatchWidgets/ObservatoryWatchWidgets-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Geomagnetic;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
