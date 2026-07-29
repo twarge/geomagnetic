@@ -1,59 +1,61 @@
-# Archives Geomagnetic and uploads it to App Store Connect (TestFlight), for iOS
-# (which carries the watch companion) and macOS — all through xcodebuild, exactly
-# like Product ▸ Archive ▸ Distribute in Xcode.
-#
-# Signing: cloud-managed via an App Store Connect API key; no certificates or
-# profiles live in the repo. One-time setup:
-#   1. App Store Connect ▸ Users and Access ▸ Integrations ▸ Team Keys →
-#      generate a key with the App Manager role; note the Key ID and Issuer ID
-#      and download the .p8 (downloadable only once).
-#   2. Add repository secrets:
-#        APP_STORE_CONNECT_KEY_ID      – the 10-char key id
-#        APP_STORE_CONNECT_ISSUER_ID   – the issuer UUID
-#        APP_STORE_CONNECT_KEY_P8      – contents of the .p8, base64-encoded
-#      (e.g.  base64 -i AuthKey_XXXX.p8 | gh secret set APP_STORE_CONNECT_KEY_P8)
-#   3. The app record (com.twarge.observatory, iOS + macOS platforms) must exist
-#      in App Store Connect.
-#
-# The build number is the workflow run number, overriding the project's
-# CURRENT_PROJECT_VERSION so every upload is unique and ascending.
-
 name: App Store
+
+# Archives and uploads the apps to App Store Connect (TestFlight / review): the iOS app
+# (which carries the watch companion and widget extensions) and the macOS app. Run it
+# manually from the Actions tab, or push a version tag like v1.2.
+#
+# Required repository secrets (Settings → Secrets and variables → Actions):
+#   ASC_KEY_ID     App Store Connect API key ID
+#   ASC_ISSUER_ID  App Store Connect issuer ID
+#   ASC_KEY_P8     Contents of the AuthKey_<KEYID>.p8 file
+# Create the key at App Store Connect → Users and Access → Integrations →
+# App Store Connect API, with the App Manager role (needed for cloud signing).
+#
+# Signing is fully cloud-managed: xcodebuild uses the API key to create and fetch
+# distribution certificates and profiles, and manageAppVersionAndBuildNumber lets it bump
+# CFBundleVersion past whatever App Store Connect already has, so uploads never collide.
 
 on:
   workflow_dispatch:
   push:
-    tags: ['v*']
+    tags: ["v*"]
+
+permissions:
+  contents: read
 
 concurrency:
-  group: appstore-${{ github.ref }}
+  group: ${{ github.workflow }}
   cancel-in-progress: false
-
-env:
-  AUTH_ARGS: >-
-    -authenticationKeyPath ${{ github.workspace }}/../AuthKey.p8
-    -authenticationKeyID ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
-    -authenticationKeyIssuerID ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-    -allowProvisioningUpdates
 
 jobs:
   upload:
+    name: Upload (${{ matrix.name }})
     runs-on: macos-26
-    timeout-minutes: 90
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: iOS
+            destination: generic/platform=iOS
+            archive: build/Geomagnetic-iOS.xcarchive
+          - name: macOS
+            destination: generic/platform=macOS
+            archive: build/Geomagnetic-macOS.xcarchive
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Show Xcode
-        run: xcodebuild -version
+      - uses: actions/checkout@v5
 
       - name: Install App Store Connect API key
+        env:
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
         run: |
-          echo "${{ secrets.APP_STORE_CONNECT_KEY_P8 }}" | base64 --decode \
-            > "${{ github.workspace }}/../AuthKey.p8"
+          mkdir -p ~/private_keys
+          printf '%s' "$ASC_KEY_P8" > ~/private_keys/AuthKey_"$ASC_KEY_ID".p8
 
       - name: Write export options
         run: |
-          cat > "$RUNNER_TEMP/ExportOptions.plist" <<'EOF'
+          cat > build-exportOptions.plist <<'PLIST'
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
@@ -64,50 +66,39 @@ jobs:
             <string>upload</string>
             <key>signingStyle</key>
             <string>automatic</string>
-            <key>teamID</key>
-            <string>257KW9ZJFP</string>
+            <key>uploadSymbols</key>
+            <true/>
             <key>manageAppVersionAndBuildNumber</key>
-            <false/>
+            <true/>
           </dict>
           </plist>
-          EOF
+          PLIST
 
-      - name: Archive iOS (with watch companion)
+      - name: Archive
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
         run: |
-          xcodebuild -project Geomagnetic.xcodeproj -scheme Observatory \
-            -destination 'generic/platform=iOS' \
-            -archivePath "$RUNNER_TEMP/Geomagnetic-iOS.xcarchive" \
-            CURRENT_PROJECT_VERSION=${{ github.run_number }} \
-            archive ${{ env.AUTH_ARGS }}
+          xcodebuild archive \
+            -project Geomagnetic.xcodeproj \
+            -scheme Observatory \
+            -configuration Release \
+            -destination '${{ matrix.destination }}' \
+            -archivePath '${{ matrix.archive }}' \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath ~/private_keys/AuthKey_"$ASC_KEY_ID".p8 \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID"
 
-      - name: Upload iOS to App Store Connect
-        run: |
-          xcodebuild -exportArchive \
-            -archivePath "$RUNNER_TEMP/Geomagnetic-iOS.xcarchive" \
-            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
-            ${{ env.AUTH_ARGS }}
-
-      - name: Archive macOS
-        run: |
-          xcodebuild -project Geomagnetic.xcodeproj -scheme Observatory \
-            -destination 'generic/platform=macOS' \
-            -archivePath "$RUNNER_TEMP/Geomagnetic-macOS.xcarchive" \
-            CURRENT_PROJECT_VERSION=${{ github.run_number }} \
-            archive ${{ env.AUTH_ARGS }}
-
-      - name: Upload macOS to App Store Connect
+      - name: Upload to App Store Connect
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
         run: |
           xcodebuild -exportArchive \
-            -archivePath "$RUNNER_TEMP/Geomagnetic-macOS.xcarchive" \
-            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
-            ${{ env.AUTH_ARGS }}
-
-      - name: Keep dSYMs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: dSYMs-${{ github.run_number }}
-          path: |
-            ${{ runner.temp }}/Geomagnetic-iOS.xcarchive/dSYMs
-            ${{ runner.temp }}/Geomagnetic-macOS.xcarchive/dSYMs
-          if-no-files-found: ignore
+            -archivePath '${{ matrix.archive }}' \
+            -exportOptionsPlist build-exportOptions.plist \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath ~/private_keys/AuthKey_"$ASC_KEY_ID".p8 \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID"

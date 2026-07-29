@@ -1,0 +1,48 @@
+name: CI
+
+# Build checks on every push/PR. Unsigned (ephemeral runners have no signing identity);
+# distribution builds are signed by the App Store workflow instead.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build (${{ matrix.name }})
+    runs-on: macos-26
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macOS
+            scheme: Observatory
+            destination: generic/platform=macOS
+          - name: iOS
+            scheme: Observatory
+            destination: generic/platform=iOS Simulator
+          - name: watchOS
+            scheme: ObservatoryWatch
+            destination: generic/platform=watchOS Simulator
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Build
+        run: |
+          xcodebuild build \
+            -project Geomagnetic.xcodeproj \
+            -scheme '${{ matrix.scheme }}' \
+            -configuration Release \
+            -destination '${{ matrix.destination }}' \
+            CODE_SIGNING_ALLOWED=NO
