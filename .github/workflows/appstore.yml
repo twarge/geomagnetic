@@ -1,0 +1,113 @@
+# Archives Geomagnetic and uploads it to App Store Connect (TestFlight), for iOS
+# (which carries the watch companion) and macOS — all through xcodebuild, exactly
+# like Product ▸ Archive ▸ Distribute in Xcode.
+#
+# Signing: cloud-managed via an App Store Connect API key; no certificates or
+# profiles live in the repo. One-time setup:
+#   1. App Store Connect ▸ Users and Access ▸ Integrations ▸ Team Keys →
+#      generate a key with the App Manager role; note the Key ID and Issuer ID
+#      and download the .p8 (downloadable only once).
+#   2. Add repository secrets:
+#        APP_STORE_CONNECT_KEY_ID      – the 10-char key id
+#        APP_STORE_CONNECT_ISSUER_ID   – the issuer UUID
+#        APP_STORE_CONNECT_KEY_P8      – contents of the .p8, base64-encoded
+#      (e.g.  base64 -i AuthKey_XXXX.p8 | gh secret set APP_STORE_CONNECT_KEY_P8)
+#   3. The app record (com.twarge.observatory, iOS + macOS platforms) must exist
+#      in App Store Connect.
+#
+# The build number is the workflow run number, overriding the project's
+# CURRENT_PROJECT_VERSION so every upload is unique and ascending.
+
+name: App Store
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+concurrency:
+  group: appstore-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  AUTH_ARGS: >-
+    -authenticationKeyPath ${{ github.workspace }}/../AuthKey.p8
+    -authenticationKeyID ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+    -authenticationKeyIssuerID ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+    -allowProvisioningUpdates
+
+jobs:
+  upload:
+    runs-on: macos-26
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show Xcode
+        run: xcodebuild -version
+
+      - name: Install App Store Connect API key
+        run: |
+          echo "${{ secrets.APP_STORE_CONNECT_KEY_P8 }}" | base64 --decode \
+            > "${{ github.workspace }}/../AuthKey.p8"
+
+      - name: Write export options
+        run: |
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store-connect</string>
+            <key>destination</key>
+            <string>upload</string>
+            <key>signingStyle</key>
+            <string>automatic</string>
+            <key>teamID</key>
+            <string>257KW9ZJFP</string>
+            <key>manageAppVersionAndBuildNumber</key>
+            <false/>
+          </dict>
+          </plist>
+          EOF
+
+      - name: Archive iOS (with watch companion)
+        run: |
+          xcodebuild -project Geomagnetic.xcodeproj -scheme Observatory \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/Geomagnetic-iOS.xcarchive" \
+            CURRENT_PROJECT_VERSION=${{ github.run_number }} \
+            archive ${{ env.AUTH_ARGS }}
+
+      - name: Upload iOS to App Store Connect
+        run: |
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/Geomagnetic-iOS.xcarchive" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            ${{ env.AUTH_ARGS }}
+
+      - name: Archive macOS
+        run: |
+          xcodebuild -project Geomagnetic.xcodeproj -scheme Observatory \
+            -destination 'generic/platform=macOS' \
+            -archivePath "$RUNNER_TEMP/Geomagnetic-macOS.xcarchive" \
+            CURRENT_PROJECT_VERSION=${{ github.run_number }} \
+            archive ${{ env.AUTH_ARGS }}
+
+      - name: Upload macOS to App Store Connect
+        run: |
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/Geomagnetic-macOS.xcarchive" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            ${{ env.AUTH_ARGS }}
+
+      - name: Keep dSYMs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dSYMs-${{ github.run_number }}
+          path: |
+            ${{ runner.temp }}/Geomagnetic-iOS.xcarchive/dSYMs
+            ${{ runner.temp }}/Geomagnetic-macOS.xcarchive/dSYMs
+          if-no-files-found: ignore
