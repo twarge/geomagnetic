@@ -6,9 +6,6 @@
 # DerivedData location, and normal signing — so the products are byte-for-byte what ⌘B
 # produces, and the registered app/widgets on this machine are always the ones just built.
 #
-# (After adding or removing source files, run Scripts/generate-project.py first; both this
-# script and Xcode build the generated project as-is.)
-#
 # Pass simulator name overrides with IOS_SIM / WATCH_SIM if the defaults aren't installed.
 
 set -euo pipefail
