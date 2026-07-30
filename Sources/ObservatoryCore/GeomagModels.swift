@@ -150,6 +150,20 @@ public struct GeomagSeries: Sendable, Identifiable {
 
 /// The result of resolving a view: the per-element series plus the actual covered time
 /// span and a note on whether everything came from cache.
+/// Health of the mirror's upstream (the GIN), as reported by the mirror — lets clients say
+/// whether missing data is a mirror-reachability problem or the source itself being behind.
+public struct GeomagUpstreamStatus: Sendable {
+    public let lastSuccess: Date?
+    public let lastError: String?
+    public let lastErrorAt: Date?
+
+    public init(lastSuccess: Date? = nil, lastError: String? = nil, lastErrorAt: Date? = nil) {
+        self.lastSuccess = lastSuccess
+        self.lastError = lastError
+        self.lastErrorAt = lastErrorAt
+    }
+}
+
 public struct GeomagSeriesResult: Sendable {
     public let observatoryCode: String
     public let series: [GeomagSeries]
@@ -158,10 +172,14 @@ public struct GeomagSeriesResult: Sendable {
     public let fromCacheOnly: Bool
     public let stationName: String?   // from the IAGA-2002 header, when available
     public let source: String?        // operating institute, for attribution
+    /// The mirror's view of the GIN, when the response carried it (nil on the direct-GIN
+    /// path, cache-only reads, and warm mirror responses that never consulted upstream).
+    public var upstream: GeomagUpstreamStatus?
 
     public init(observatoryCode: String, series: [GeomagSeries],
                 requestedRange: ClosedRange<Double>, coveredRange: ClosedRange<Double>?,
-                fromCacheOnly: Bool, stationName: String? = nil, source: String? = nil) {
+                fromCacheOnly: Bool, stationName: String? = nil, source: String? = nil,
+                upstream: GeomagUpstreamStatus? = nil) {
         self.observatoryCode = observatoryCode
         self.series = series
         self.requestedRange = requestedRange
@@ -169,9 +187,16 @@ public struct GeomagSeriesResult: Sendable {
         self.fromCacheOnly = fromCacheOnly
         self.stationName = stationName
         self.source = source
+        self.upstream = upstream
     }
 
     public var isEmpty: Bool { series.allSatisfy { $0.samples.isEmpty } }
+
+    /// Time of the newest sample across all elements, if any.
+    public var newestSampleDate: Date? {
+        let newest = series.compactMap { $0.latest?.time }.max()
+        return newest.map { Date(timeIntervalSince1970: $0) }
+    }
 }
 
 /// Errors surfaced by the GIN client and repository.

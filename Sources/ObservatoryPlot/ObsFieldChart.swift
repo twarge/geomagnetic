@@ -25,10 +25,6 @@ import WidgetKit
 /// + element sit on a first line and the value + unit + trend on a second — for narrow tiles
 /// (the small "2×2" widget) where a single line would be squashed.
 struct ObsReadingLine: View {
-    /// The slashed chain-link marking a stale/offline reading, shown after the station and
-    /// element. (SF Symbols has no "link.slash"; the personal-hotspot glyph is a chain link.)
-    static let staleSymbol = "personalhotspot.slash"
-
     var stationCode: String? = nil
     var element: String? = nil
     var value: Double? = nil
@@ -36,8 +32,9 @@ struct ObsReadingLine: View {
     var trend: Double? = nil
     var font: Font = .subheadline
     var stacked: Bool = false
-    /// Show the broken-link symbol after the station/element label (stale/offline data).
-    var stale: Bool = false
+    /// Stale badge shown after the station/element label: a broken link when the mirror is
+    /// unreachable, a late clock when the source is behind. nil ⇒ fresh, no badge.
+    var staleSymbol: String? = nil
 
     var body: some View {
         Group {
@@ -66,8 +63,8 @@ struct ObsReadingLine: View {
             if let element {
                 Text(element).foregroundStyle(Color.accentColor).fontWeight(.semibold).widgetAccentable()
             }
-            if stale {
-                Image(systemName: Self.staleSymbol)
+            if let staleSymbol {
+                Image(systemName: staleSymbol)
                     .imageScale(.small)
                     .foregroundStyle(Color.accentColor)
                     .widgetAccentable()
@@ -109,8 +106,8 @@ struct ObsFieldChart: View {
     var headerFont: Font = .headline
     /// Break the header onto two lines (station+element / value+unit+trend) for narrow tiles.
     var headerStacked: Bool = false
-    /// Mark the header's reading as stale/offline (broken-link symbol after the label).
-    var headerStale: Bool = false
+    /// Stale badge for the header's reading (see ObsReadingLine.staleSymbol). nil ⇒ fresh.
+    var headerStaleSymbol: String? = nil
     /// The intended time window [start, end] in epoch seconds. When set, the x-axis is anchored
     /// to it (rather than to the data extent), so cached/stale data sits at its true time; any
     /// stretch of the window without data is filled with a subtle diagonal "no data" hatch.
@@ -139,7 +136,7 @@ struct ObsFieldChart: View {
         HStack(spacing: 4) {
             ObsReadingLine(stationCode: stationCode, element: element, value: latestValue,
                            unit: unit, trend: trend, font: headerFont, stacked: headerStacked,
-                           stale: headerStale)
+                           staleSymbol: headerStaleSymbol)
             if fillsVertically, let worst = stormIntervals.map(\.category).max() {
                 Image(systemName: "exclamationmark.triangle.fill")
                     .font(headerFont)

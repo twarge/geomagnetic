@@ -67,8 +67,8 @@ struct GeomagWidgetView: View {
     /// Text, so it stays one line and inherits the accent styling wherever it's used.
     private var stationElementLabel: Text {
         let station = "\(snapshot.observatoryCode) \(snapshot.primaryElement?.code ?? "")"
-        guard snapshot.isStale else { return Text(station) }
-        return Text("\(station) \(Image(systemName: ObsReadingLine.staleSymbol))")
+        guard let symbol = snapshot.staleSymbol else { return Text(station) }
+        return Text("\(station) \(Image(systemName: symbol))")
     }
 
     private var inlineLabel: Text {
@@ -76,8 +76,8 @@ struct GeomagWidgetView: View {
         let reading = snapshot.primaryValue.map {
             "\(Self.compact($0)) \(snapshot.primaryElement?.unit ?? "nT")"
         } ?? "—"
-        guard snapshot.isStale else { return Text("\(station) \(reading)") }
-        return Text("\(station) \(Image(systemName: ObsReadingLine.staleSymbol)) \(reading)")
+        guard let symbol = snapshot.staleSymbol else { return Text("\(station) \(reading)") }
+        return Text("\(station) \(Image(systemName: symbol)) \(reading)")
     }
 
     private var circular: some View {
@@ -160,7 +160,7 @@ struct GeomagWidgetView: View {
                                value: snapshot.primaryValue,
                                unit: snapshot.primaryElement?.unit,
                                font: .footnote,
-                               stale: snapshot.isStale)
+                               staleSymbol: snapshot.staleSymbol)
                 Spacer(minLength: 0)
             }
         } else {
@@ -174,7 +174,7 @@ struct GeomagWidgetView: View {
                           showHeader: true,
                           fillsVertically: true,
                           headerFont: .footnote,
-                          headerStale: snapshot.isStale,
+                          headerStaleSymbol: snapshot.staleSymbol,
                           windowStart: snapshot.windowStart,
                           windowEnd: snapshot.windowEnd)
         }
@@ -182,13 +182,13 @@ struct GeomagWidgetView: View {
 
     #if os(watchOS)
     private var corner: some View {
-        // "F" over "FRD" at the inner corner (broken-link symbol beside "FRD" when stale);
-        // the reading curves around the dial.
-        VStack(spacing: -2) {
-            Text(snapshot.primaryElement?.code ?? "")
+        // The 30-minute delta at the inner corner (stale badge beside the caption); the
+        // absolute reading curves around the dial.
+        VStack(spacing: -1) {
+            Text(snapshot.trend.map { String(format: "%+.0f", $0) } ?? "—")
                 .font(.system(size: 17, weight: .bold))
-            cornerStationLabel
-                .font(.system(size: 13, weight: .semibold))
+            cornerDeltaLabel
+                .font(.system(size: 11, weight: .semibold))
         }
         .foregroundStyle(Color.accentColor)
         .widgetAccentable()
@@ -201,9 +201,14 @@ struct GeomagWidgetView: View {
         }
     }
 
+    private var cornerDeltaLabel: Text {
+        guard let symbol = snapshot.staleSymbol else { return Text("Δ30m") }
+        return Text("Δ30m \(Image(systemName: symbol))")
+    }
+
     private var cornerStationLabel: Text {
-        guard snapshot.isStale else { return Text(snapshot.observatoryCode) }
-        return Text("\(snapshot.observatoryCode) \(Image(systemName: ObsReadingLine.staleSymbol))")
+        guard let symbol = snapshot.staleSymbol else { return Text(snapshot.observatoryCode) }
+        return Text("\(snapshot.observatoryCode) \(Image(systemName: symbol))")
     }
     #endif
 
@@ -223,8 +228,8 @@ struct GeomagWidgetView: View {
 
     // Every reported element on one tile: "F 50,083.42 nT   −30 nT/hr".
     private var stationOnlyLabel: Text {
-        guard snapshot.isStale else { return Text(snapshot.observatoryCode) }
-        return Text("\(snapshot.observatoryCode) \(Image(systemName: ObsReadingLine.staleSymbol))")
+        guard let symbol = snapshot.staleSymbol else { return Text(snapshot.observatoryCode) }
+        return Text("\(snapshot.observatoryCode) \(Image(systemName: symbol))")
     }
 
     private var componentsTile: some View {

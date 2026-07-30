@@ -24,6 +24,10 @@ public actor GeomagRepository {
     /// How long a non-final cached day is trusted before re-fetching.
     public var minRefreshInterval: TimeInterval = 300
 
+    /// The mirror's most recently reported upstream (GIN) health, kept so series results
+    /// can carry it even when a load was served without a fresh network roundtrip.
+    private var lastUpstream: GeomagUpstreamStatus?
+
     public init(client: GINClient = GINClient(),
                 store: GeomagStore = GeomagStore(),
                 cadence: GINClient.Cadence = .minute) {
@@ -61,9 +65,10 @@ public actor GeomagRepository {
         for run in contiguousRuns(needed) {
             let durationDays = Int(((run.last! - run.first!) / UTCDate.secondsPerDay).rounded()) + 1
             do {
-                let fetched = try await client.fetchDays(
+                let (fetched, upstream) = try await client.fetchDays(
                     code: code, startDayEpoch: run.first!, durationDays: durationDays,
                     cadence: cadence, today: today, now: now)
+                if let upstream { lastUpstream = upstream }
                 var produced = Set<Double>()
                 for day in fetched {
                     store.saveDay(day)
@@ -107,9 +112,10 @@ public actor GeomagRepository {
         let requestedRange = min(fromEpoch, toEpoch)...max(fromEpoch, toEpoch)
 
         let days = try await days(code: code, from: from, to: to, forceRefresh: forceRefresh, now: now)
-        let result = Self.buildSeries(days: days, requestedRange: requestedRange,
+        var result = Self.buildSeries(days: days, requestedRange: requestedRange,
                                       requestedElements: requested, maxPoints: maxPoints,
                                       code: code)
+        result.upstream = lastUpstream
         return result
     }
 

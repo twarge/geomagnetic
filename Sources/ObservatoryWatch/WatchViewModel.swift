@@ -10,6 +10,22 @@ final class WatchViewModel: ObservableObject {
     @Published private(set) var result: GeomagSeriesResult?
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage: String?
+    @Published private(set) var lastFetchFailed = false
+
+    /// Why the data is old, when it is: mirror unreachable vs. the source being behind.
+    var dataStatusMessage: String? {
+        guard let result, let newest = result.newestSampleDate else { return nil }
+        guard Date().timeIntervalSince(newest) > GeomagWidgetData.staleAfterSeconds else { return nil }
+        let since = newest.formatted(date: .omitted, time: .shortened)
+        if lastFetchFailed {
+            return "Mirror unreachable — data through \(since)."
+        }
+        if let up = result.upstream, let error = up.lastError, let at = up.lastErrorAt,
+           at > (up.lastSuccess ?? .distantPast) {
+            return "Source failing (\(error)) — data through \(since)."
+        }
+        return "No new source data since \(since)."
+    }
 
     init() {
         code = ObservatorySettings.observatoryCode
@@ -58,11 +74,13 @@ final class WatchViewModel: ObservableObject {
             result = try await GeomagRepository.shared.series(
                 code: code, from: window.lowerBound, to: window.upperBound,
                 maxPoints: 360, forceRefresh: force)
+            lastFetchFailed = false
             // Fresh data is now in the shared cache — have the complications pick it up
             // right away rather than waiting out their scheduled refresh.
             ObsWidgetRefresh.requestReload()
         } catch {
             errorMessage = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+            lastFetchFailed = true
         }
         isLoading = false
     }

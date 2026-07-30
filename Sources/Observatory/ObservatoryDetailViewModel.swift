@@ -33,6 +33,8 @@ final class ObservatoryDetailViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage: String?
     @Published private(set) var lastUpdated: Date?
+    /// True when the most recent fetch attempt failed outright (mirror unreachable).
+    @Published private(set) var lastFetchFailed = false
 
     private let repository = GeomagRepository.shared
 
@@ -67,10 +69,29 @@ final class ObservatoryDetailViewModel: ObservableObject {
             availableElements = result.series.map { $0.element.code }
             reconcileSelection()
             lastUpdated = now
+            lastFetchFailed = false
         } catch {
             errorMessage = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+            lastFetchFailed = true
         }
         isLoading = false
+    }
+
+    /// When the newest data is old, says *why*: the mirror couldn't be reached, or the
+    /// mirror is fine but the observatory source is behind (with the mirror's own upstream
+    /// error when it reported one). nil while data is fresh.
+    var dataStatusMessage: String? {
+        guard let result, let newest = result.newestSampleDate else { return nil }
+        guard Date().timeIntervalSince(newest) > GeomagWidgetData.staleAfterSeconds else { return nil }
+        let since = newest.formatted(date: .omitted, time: .shortened)
+        if lastFetchFailed {
+            return "Data mirror unreachable — showing data through \(since)."
+        }
+        if let up = result.upstream, let error = up.lastError, let at = up.lastErrorAt,
+           at > (up.lastSuccess ?? .distantPast) {
+            return "Mirror reachable, but its source is failing (\(error)) — data through \(since)."
+        }
+        return "Mirror reachable — the observatory hasn't published new data since \(since)."
     }
 
     /// Keep the selection valid against what's actually available, seeding a sensible

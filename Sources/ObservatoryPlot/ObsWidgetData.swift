@@ -40,10 +40,22 @@ struct GeomagWidgetSnapshot: Sendable {
     /// at its true time and hatch the stretch that's missing when offline. nil ⇒ fit to data.
     var windowStart: Double? = nil
     var windowEnd: Double? = nil
-    /// True when the newest available measurement is old enough that we're effectively
-    /// offline (or the source has stopped publishing); complications flag it with a
-    /// broken-link symbol next to the station/element label.
-    var isStale: Bool = false
+    /// Why the newest available measurement is old (when it is): the mirror couldn't be
+    /// reached at all, or the mirror answered but the observatory source is behind.
+    /// Complications flag the two cases with distinct symbols.
+    var staleCause: GeomagStaleCause = .fresh
+
+    var isStale: Bool { staleCause != .fresh }
+
+    /// Badge for the stale state, nil when fresh: a broken link when the mirror is
+    /// unreachable, a late clock when the mirror is fine but the source is behind.
+    var staleSymbol: String? {
+        switch staleCause {
+        case .fresh: return nil
+        case .unreachable: return "personalhotspot.slash"
+        case .sourceStale: return "clock.badge.exclamationmark"
+        }
+    }
 
     var hasData: Bool { primaryValue != nil && !sparkline.isEmpty }
 
@@ -59,6 +71,13 @@ struct GeomagWidgetSnapshot: Sendable {
         guard let lo = values.min(), let hi = values.max(), hi > lo else { return nil }
         return lo...hi
     }
+}
+
+/// Why glanceable data is stale (when it is).
+enum GeomagStaleCause: Sendable {
+    case fresh
+    case unreachable   // couldn't reach the mirror at all
+    case sourceStale   // mirror answered, but the observatory source is behind
 }
 
 enum GeomagWidgetData {
@@ -99,6 +118,7 @@ enum GeomagWidgetData {
         let repo = GeomagRepository.shared
 
         var result: GeomagSeriesResult?
+        var networkFailed = false
         if network {
             result = await withTimeout(seconds: timeout) {
                 // Compact path: the mirror returns ~80 server-decimated points + storm bands
@@ -113,6 +133,9 @@ enum GeomagWidgetData {
                 return try? await repo.series(code: code, from: window.lowerBound, to: window.upperBound,
                                               maxPoints: maxPoints, now: now)
             } ?? nil
+            // Both network paths failing (or timing out) means the mirror is unreachable;
+            // a response with old data means the mirror is fine but the source is behind.
+            networkFailed = (result == nil)
         }
         if result == nil || result?.isEmpty == true {
             result = await repo.cachedSeries(code: code, from: window.lowerBound,
@@ -129,7 +152,7 @@ enum GeomagWidgetData {
             empty.stormIntervals = []
             empty.windowStart = window.lowerBound.timeIntervalSince1970
             empty.windowEnd = window.upperBound.timeIntervalSince1970
-            empty.isStale = true   // nothing fetched and nothing cached — flag as offline
+            empty.staleCause = networkFailed ? .unreachable : .sourceStale
             return empty
         }
 
@@ -154,7 +177,8 @@ enum GeomagWidgetData {
         }
 
         let latestTime = primarySeries?.latest?.time
-        let isStale = latestTime.map { now.timeIntervalSince1970 - $0 > staleAfterSeconds } ?? true
+        let dataOld = latestTime.map { now.timeIntervalSince1970 - $0 > staleAfterSeconds } ?? true
+        let staleCause: GeomagStaleCause = dataOld ? (networkFailed ? .unreachable : .sourceStale) : .fresh
         return GeomagWidgetSnapshot(
             observatoryCode: observatory.code, observatoryName: observatory.name,
             primaryElement: primarySeries?.element,
@@ -165,7 +189,7 @@ enum GeomagWidgetData {
             range: range, isPlaceholder: false,
             windowStart: window.lowerBound.timeIntervalSince1970,
             windowEnd: window.upperBound.timeIntervalSince1970,
-            isStale: isStale)
+            staleCause: staleCause)
     }
 
     private static func demoSeries(range: ObservatoryTimeRange, now: Date = Date()) -> ObsLineSeries {

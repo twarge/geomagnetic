@@ -47,9 +47,11 @@ public struct GINClient: Sendable {
     }
 
     /// Fetch `durationDays` of data starting at the UTC day `startDay`. Returns the raw
-    /// IAGA-2002 text.
+    /// IAGA-2002 text plus the mirror's upstream-health headers when present (the direct
+    /// GIN sends none).
     public func fetchRaw(code: String, startDayEpoch: Double,
-                         durationDays: Int, cadence: Cadence = .minute) async throws -> String {
+                         durationDays: Int, cadence: Cadence = .minute)
+        async throws -> (text: String, upstream: GeomagUpstreamStatus?) {
         guard durationDays >= 1 else { throw GeomagError.badResponse }
 
         var components = URLComponents(string: Self.baseURL)!
@@ -76,13 +78,27 @@ public struct GINClient: Sendable {
         request.setValue("Observatory/1.0", forHTTPHeaderField: "User-Agent")
 
         let (data, response) = try await session.data(for: request)
-        if let http = response as? HTTPURLResponse, !(200...299).contains(http.statusCode) {
+        let http = response as? HTTPURLResponse
+        if let http, !(200...299).contains(http.statusCode) {
             throw GeomagError.serviceError("Data service returned HTTP \(http.statusCode).")
         }
         guard let text = String(data: data, encoding: .utf8) else {
             throw GeomagError.badResponse
         }
-        return text
+        return (text, http.flatMap(Self.upstreamStatus(from:)))
+    }
+
+    /// The mirror reports its own upstream (GIN) health as response headers.
+    static func upstreamStatus(from response: HTTPURLResponse) -> GeomagUpstreamStatus? {
+        func epochHeader(_ name: String) -> Date? {
+            response.value(forHTTPHeaderField: name).flatMap(Double.init)
+                .map { Date(timeIntervalSince1970: $0) }
+        }
+        let success = epochHeader("X-Upstream-Last-Success")
+        let error = response.value(forHTTPHeaderField: "X-Upstream-Last-Error")
+        let errorAt = epochHeader("X-Upstream-Last-Error-At")
+        guard success != nil || error != nil else { return nil }
+        return GeomagUpstreamStatus(lastSuccess: success, lastError: error, lastErrorAt: errorAt)
     }
 
     /// A past day whose data is still incomplete keeps being re-fetched (data fills in as
@@ -100,12 +116,13 @@ public struct GINClient: Sendable {
     /// it is so old that what's there is all there will be).
     public func fetchDays(code: String, startDayEpoch: Double, durationDays: Int,
                           cadence: Cadence = .minute, today: Double,
-                          now: Date) async throws -> [GeomagDay] {
-        let text = try await fetchRaw(code: code, startDayEpoch: startDayEpoch,
-                                      durationDays: durationDays, cadence: cadence)
+                          now: Date) async throws -> (days: [GeomagDay], upstream: GeomagUpstreamStatus?) {
+        let (text, upstream) = try await fetchRaw(code: code, startDayEpoch: startDayEpoch,
+                                                  durationDays: durationDays, cadence: cadence)
         let parsed = try IAGA2002Parser.parse(text)
-        return Self.bucketByDay(parsed, requestedCode: code, cadence: cadence,
-                                today: today, now: now)
+        let days = Self.bucketByDay(parsed, requestedCode: code, cadence: cadence,
+                                    today: today, now: now)
+        return (days, upstream)
     }
 
     /// Convert an HDZ-oriented file to XYZ so every cached day carries the same element set

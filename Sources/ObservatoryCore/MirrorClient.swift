@@ -86,6 +86,13 @@ private struct SeriesPayload: Decodable {
     let stationName: String?
     let covered: [Double]?
     let series: [Element]
+    let upstream: Upstream?
+
+    struct Upstream: Decodable {
+        let lastSuccess: Double?
+        let lastError: String?
+        let lastErrorAt: Double?
+    }
 
     struct Element: Decodable {
         let element: String
@@ -120,8 +127,15 @@ private struct SeriesPayload: Decodable {
             guard let covered, covered.count == 2, covered[1] >= covered[0] else { return nil }
             return covered[0]...covered[1]
         }()
+        let upstreamStatus = upstream.map {
+            GeomagUpstreamStatus(
+                lastSuccess: $0.lastSuccess.map { Date(timeIntervalSince1970: $0) },
+                lastError: $0.lastError,
+                lastErrorAt: $0.lastErrorAt.map { Date(timeIntervalSince1970: $0) })
+        }
         return GeomagSeriesResult(observatoryCode: obs, series: geomagSeries,
                                   requestedRange: requestedRange, coveredRange: coveredRange,
-                                  fromCacheOnly: false, stationName: stationName, source: source)
+                                  fromCacheOnly: false, stationName: stationName, source: source,
+                                  upstream: upstreamStatus)
     }
 }

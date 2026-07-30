@@ -246,14 +246,22 @@ struct ObservatoryDetailView: View {
     // MARK: - Footer
 
     private var footer: some View {
-        HStack(spacing: 8) {
-            if let updated = model.lastUpdated {
-                Label(updated.formatted(date: .omitted, time: .shortened), systemImage: "clock")
+        VStack(alignment: .leading, spacing: 2) {
+            // Stale data comes with its reason: mirror unreachable vs. source behind.
+            if let status = model.dataStatusMessage {
+                Label(status, systemImage: model.lastFetchFailed
+                      ? "personalhotspot.slash" : "clock.badge.exclamationmark")
+                    .foregroundStyle(.orange)
             }
-            if model.result?.fromCacheOnly == true {
-                Label("Cached", systemImage: "internaldrive")
+            HStack(spacing: 8) {
+                if let updated = model.lastUpdated {
+                    Label(updated.formatted(date: .omitted, time: .shortened), systemImage: "clock")
+                }
+                if model.result?.fromCacheOnly == true {
+                    Label("Cached", systemImage: "internaldrive")
+                }
+                Spacer()
             }
-            Spacer()
         }
         .font(.caption2)
         .foregroundStyle(.secondary)

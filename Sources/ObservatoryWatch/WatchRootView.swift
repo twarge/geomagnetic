@@ -50,6 +50,13 @@ struct WatchRootView: View {
             ForEach(model.elementGraphs) { graph in
                 graphCard(graph)
             }
+            if let status = model.dataStatusMessage {
+                Label(status, systemImage: model.lastFetchFailed
+                      ? "personalhotspot.slash" : "clock.badge.exclamationmark")
+                    .font(.caption2)
+                    .foregroundStyle(.orange)
+                    .padding(.horizontal, 4)
+            }
             attributionView
         } else if model.isLoading {
             ProgressView().frame(maxWidth: .infinity, minHeight: 120)
