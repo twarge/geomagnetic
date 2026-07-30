@@ -97,7 +97,7 @@ Sources/
   ObservatoryWatch/       watchOS app
   ObservatoryWatchWidgets/ watchOS complications (WidgetKit)
 Resources/                Entitlements, extension Info.plists, asset catalogs
-Scripts/                  Build helper (all-platform xcodebuild sweep)
+Makefile                  All-platform build sweep (make / make macos / ios / watchos)
 ```
 
 All targets compile `ObservatoryCore` + `ObservatoryPlot` directly (no embedded framework).
@@ -115,7 +115,7 @@ being linked as a framework.
 To build every platform from the command line (identical to Xcode's Build):
 
 ```sh
-./Scripts/build-all.sh                    # macOS, iOS simulator, watchOS simulator
+make                                      # macOS, iOS simulator, watchOS simulator
 ```
 
 Command line, single platform:
