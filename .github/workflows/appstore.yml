@@ -57,11 +57,9 @@ jobs:
           - name: iOS
             destination: generic/platform=iOS
             archive: build/Geomagnetic-iOS.xcarchive
-            asc_platform: IOS
           - name: macOS
             destination: generic/platform=macOS
             archive: build/Geomagnetic-macOS.xcarchive
-            asc_platform: MAC_OS
     steps:
       - uses: actions/checkout@v7
 
@@ -126,19 +124,6 @@ jobs:
           [[ "$VERSION" =~ ^[0-9]+(\.[0-9]+)*$ ]] || { echo "::error::Resolved version '$VERSION' is not a plain version number (tag like v1.2)"; exit 1; }
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "Building marketing version $VERSION"
-
-      # Fails fast with a readable message when App Store Connect would reject
-      # the upload because this version's train is already approved and closed.
-      - name: Check the version train is open
-        env:
-          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
-          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
-          ASC_BUNDLE_ID: com.twarge.observatory
-          ASC_PLATFORM: ${{ matrix.asc_platform }}
-          TARGET_VERSION: ${{ steps.version.outputs.version }}
-        run: |
-          ASC_KEY_PATH=~/private_keys/AuthKey_"$ASC_KEY_ID".p8 \
-            swift Scripts/check-appstore-version.swift
 
       - name: Write export options
         run: |
