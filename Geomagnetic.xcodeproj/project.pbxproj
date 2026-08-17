@@ -33,6 +33,7 @@
 		00000000000000000000002F /* GeomagShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000030 /* GeomagShortcuts.swift */; };
 		000000000000000000000031 /* ObservatoryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000032 /* ObservatoryApp.swift */; };
 		000000000000000000000033 /* ObservatoryDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000034 /* ObservatoryDetailView.swift */; };
+		0000000000000000000000D3 /* GeomagShareExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000000000000000D4 /* GeomagShareExport.swift */; };
 		000000000000000000000035 /* ObservatoryDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000036 /* ObservatoryDetailViewModel.swift */; };
 		000000000000000000000037 /* ObservatoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000038 /* ObservatoryListView.swift */; };
 		000000000000000000000039 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000003A /* RootView.swift */; };
@@ -203,6 +204,7 @@
 		00000000000000000000002A /* ObsSparkline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObsSparkline.swift; path = Sources/ObservatoryPlot/ObsSparkline.swift; sourceTree = SOURCE_ROOT; };
 		00000000000000000000002C /* ObsTimeAxis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObsTimeAxis.swift; path = Sources/ObservatoryPlot/ObsTimeAxis.swift; sourceTree = SOURCE_ROOT; };
 		00000000000000000000002E /* ObsWidgetData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObsWidgetData.swift; path = Sources/ObservatoryPlot/ObsWidgetData.swift; sourceTree = SOURCE_ROOT; };
+		0000000000000000000000D4 /* GeomagShareExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GeomagShareExport.swift; path = Sources/Observatory/GeomagShareExport.swift; sourceTree = SOURCE_ROOT; };
 		000000000000000000000030 /* GeomagShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GeomagShortcuts.swift; path = Sources/Observatory/GeomagShortcuts.swift; sourceTree = SOURCE_ROOT; };
 		000000000000000000000032 /* ObservatoryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryApp.swift; path = Sources/Observatory/ObservatoryApp.swift; sourceTree = SOURCE_ROOT; };
 		000000000000000000000034 /* ObservatoryDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryDetailView.swift; path = Sources/Observatory/ObservatoryDetailView.swift; sourceTree = SOURCE_ROOT; };
@@ -352,6 +354,7 @@
 		0000000000000000000000B4 /* Observatory */ = {
 			isa = PBXGroup;
 			children = (
+				0000000000000000000000D4 /* GeomagShareExport.swift */,
 				000000000000000000000030 /* GeomagShortcuts.swift */,
 				000000000000000000000032 /* ObservatoryApp.swift */,
 				000000000000000000000034 /* ObservatoryDetailView.swift */,
@@ -574,6 +577,7 @@
 				000000000000000000000029 /* ObsSparkline.swift in Sources */,
 				00000000000000000000002B /* ObsTimeAxis.swift in Sources */,
 				00000000000000000000002D /* ObsWidgetData.swift in Sources */,
+				0000000000000000000000D3 /* GeomagShareExport.swift in Sources */,
 				00000000000000000000002F /* GeomagShortcuts.swift in Sources */,
 				000000000000000000000031 /* ObservatoryApp.swift in Sources */,
 				000000000000000000000033 /* ObservatoryDetailView.swift in Sources */,

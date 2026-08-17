@@ -287,7 +287,50 @@ struct ObservatoryDetailView: View {
             }
             .accessibilityLabel("Refresh")
             .disabled(model.isLoading)
+
+            // The menu is the export selector: the system share sheet has no per-item
+            // picker, so choosing chart, data, or both happens here.
+            Menu {
+                if let export = shareExport {
+                    shareLink(export.file(.chart), title: "Chart Image")
+                    shareLink(export.file(.data), title: "Data (CSV)")
+                    ShareLink(items: export.shareFiles) { file in
+                        SharePreview(file.filename, icon: Image(systemName: file.iconSystemName))
+                    } label: {
+                        Label("Chart & Data", systemImage: "doc.on.doc")
+                    }
+                }
+            } label: {
+                Label("Share", systemImage: "square.and.arrow.up")
+            }
+            .accessibilityLabel("Share")
+            .disabled(shareExport == nil)
         }
+    }
+
+    private func shareLink(_ file: GeomagExportFile, title: LocalizedStringKey) -> some View {
+        ShareLink(item: file,
+                  preview: SharePreview(file.filename, icon: Image(systemName: file.iconSystemName))) {
+            Label(title, systemImage: file.iconSystemName)
+        }
+    }
+
+    /// The visible chart, captured for the share sheet: the plotted traces plus the
+    /// user's zoom window (clamped to the loaded range). nil until data exists, which
+    /// disables the Share menu.
+    private var shareExport: GeomagExport? {
+        guard let result = model.result, model.hasData, let window = model.fullXRange else {
+            return nil
+        }
+        return GeomagExport(
+            observatory: model.observatory,
+            stationName: result.stationName,
+            source: result.source,
+            rangeLabel: model.timeRange.longLabel,
+            series: model.plotSeries,
+            xRange: (visibleXRange ?? window).clamped(to: window),
+            yRange: visibleYRange,
+            yAxisLabel: model.yAxisLabel)
     }
 
     private func resetViewport() {
