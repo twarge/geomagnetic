@@ -106,15 +106,23 @@ enum GeomagWidgetData {
 
     /// Load a snapshot, fetching only the recent window and falling back to cache on
     /// timeout/failure. `network` allows complications to stay strictly on cache.
+    /// `lookback` extends the fetch (not the window) that many seconds further back, so a
+    /// scroll transition has the stretch left of the window to slide out.
     static func snapshot(code: String = ObservatorySettings.observatoryCode,
                          range: ObservatoryTimeRange = .day,
                          network: Bool = true,
                          timeout: Double = 18,
                          maxPoints: Int = 80,
                          preferredElement: String? = nil,
+                         lookback: Double = 0,
                          now: Date = Date()) async -> GeomagWidgetSnapshot {
         let observatory = Observatories.observatory(code: code) ?? Observatories.default
         let window = range.dateRange(now: now)
+        let lookback = max(0, lookback)
+        let fetchStart = window.lowerBound.addingTimeInterval(-lookback)
+        let budget = lookback > 0
+            ? Int((Double(maxPoints) * (1 + lookback / range.duration)).rounded())
+            : maxPoints
         let repo = GeomagRepository.shared
 
         var result: GeomagSeriesResult?
@@ -126,20 +134,20 @@ enum GeomagWidgetData {
                 // the watch radio especially. Falls back to the whole-day repository fetch
                 // when /v1 is unavailable (e.g. OBSERVATORY_BASE_URL points at the raw GIN).
                 if let compact = try? await MirrorClient.shared.series(
-                    code: code, from: window.lowerBound, to: window.upperBound,
-                    maxPoints: maxPoints, storms: true) {
+                    code: code, from: fetchStart, to: window.upperBound,
+                    maxPoints: budget, storms: true) {
                     return compact
                 }
-                return try? await repo.series(code: code, from: window.lowerBound, to: window.upperBound,
-                                              maxPoints: maxPoints, now: now)
+                return try? await repo.series(code: code, from: fetchStart, to: window.upperBound,
+                                              maxPoints: budget, now: now)
             } ?? nil
             // Both network paths failing (or timing out) means the mirror is unreachable;
             // a response with old data means the mirror is fine but the source is behind.
             networkFailed = (result == nil)
         }
         if result == nil || result?.isEmpty == true {
-            result = await repo.cachedSeries(code: code, from: window.lowerBound,
-                                             to: window.upperBound, maxPoints: maxPoints)
+            result = await repo.cachedSeries(code: code, from: fetchStart,
+                                             to: window.upperBound, maxPoints: budget)
         }
 
         guard let result, !result.isEmpty else {

@@ -21,11 +21,23 @@ struct GeomagWidgetView: View {
     /// When the host disables content margins, re-apply them on every side but the top so
     /// the header sits flush with the top edge (used by the complication).
     var dropsTopMargin: Bool = false
+    /// Scroll-pair state from the timeline entry (see ObsWidgetScrollMemory.entries): both
+    /// entries of an animated refresh share the snapshot; the pre-scroll one displays the
+    /// previous refresh's window end and reading, so the transition to the scrolled entry
+    /// is the only change — the chart slides and the digits roll together.
+    var scrollbackSeconds: Double = 0
+    var displayWindowEnd: Double? = nil
+    var displayValue: Double? = nil
     @Environment(\.widgetFamily) private var family
     @Environment(\.widgetContentMargins) private var contentMargins
 
+    /// The reading shown in headers and value faces — the previous refresh's reading on
+    /// the pre-scroll entry, the snapshot's own latest otherwise.
+    private var displayedPrimaryValue: Double? { displayValue ?? snapshot.primaryValue }
+
     var body: some View {
         content
+            .animation(ObsScrollTransition.animation, value: displayedPrimaryValue ?? 0)
             .padding(dropsTopMargin
                      ? EdgeInsets(top: 0, leading: contentMargins.leading,
                                   bottom: contentMargins.bottom, trailing: contentMargins.trailing)
@@ -73,7 +85,7 @@ struct GeomagWidgetView: View {
 
     private var inlineLabel: Text {
         let station = "\(snapshot.observatoryCode) \(snapshot.primaryElement?.code ?? "")"
-        let reading = snapshot.primaryValue.map {
+        let reading = displayedPrimaryValue.map {
             "\(Self.compact($0)) \(snapshot.primaryElement?.unit ?? "nT")"
         } ?? "—"
         guard let symbol = snapshot.staleSymbol else { return Text("\(station) \(reading)") }
@@ -91,10 +103,11 @@ struct GeomagWidgetView: View {
                     .minimumScaleFactor(0.7)
                     .lineLimit(1)
                 // The full 5-digit reading in nT, no decimals — always the latest measurement.
-                Text(snapshot.primaryValue.map { String(Int($0.rounded())) } ?? "—")
+                Text(displayedPrimaryValue.map { String(Int($0.rounded())) } ?? "—")
                     .font(.system(size: 18, weight: .semibold, design: .rounded))
                     .minimumScaleFactor(0.4)
                     .lineLimit(1)
+                    .contentTransition(.numericText(value: displayedPrimaryValue ?? 0))
             }
             .padding(.horizontal, 1)
         }
@@ -120,6 +133,7 @@ struct GeomagWidgetView: View {
                     .font(.system(size: 17, weight: .semibold, design: .rounded))
                     .minimumScaleFactor(0.4)
                     .lineLimit(1)
+                    .contentTransition(.numericText(value: snapshot.trendPerHour ?? 0))
                 Text("nT/hr")
                     .font(.system(size: 9))
                     .foregroundStyle(.secondary)
@@ -157,7 +171,7 @@ struct GeomagWidgetView: View {
             HStack(spacing: 4) {
                 ObsReadingLine(stationCode: snapshot.observatoryCode,
                                element: snapshot.primaryElement?.code,
-                               value: snapshot.primaryValue,
+                               value: displayedPrimaryValue,
                                unit: snapshot.primaryElement?.unit,
                                font: .footnote,
                                staleSymbol: snapshot.staleSymbol)
@@ -167,7 +181,7 @@ struct GeomagWidgetView: View {
             ObsFieldChart(series: snapshot.sparkline,
                           stationCode: snapshot.observatoryCode,
                           element: snapshot.primaryElement?.code,
-                          latestValue: snapshot.primaryValue,
+                          latestValue: displayedPrimaryValue,
                           unit: snapshot.primaryElement?.unit,
                           trend: snapshot.trend,
                           stormIntervals: snapshot.stormIntervals,
@@ -176,7 +190,9 @@ struct GeomagWidgetView: View {
                           headerFont: .footnote,
                           headerStaleSymbol: snapshot.staleSymbol,
                           windowStart: snapshot.windowStart,
-                          windowEnd: snapshot.windowEnd)
+                          windowEnd: snapshot.windowEnd,
+                          scrollbackSeconds: scrollbackSeconds,
+                          displayWindowEnd: displayWindowEnd)
         }
     }
 
@@ -187,6 +203,7 @@ struct GeomagWidgetView: View {
         VStack(spacing: -1) {
             Text(snapshot.trend.map { String(format: "%+.0f", $0) } ?? "—")
                 .font(.system(size: 17, weight: .bold))
+                .contentTransition(.numericText(value: snapshot.trend ?? 0))
             cornerDeltaLabel
                 .font(.system(size: 11, weight: .semibold))
         }
@@ -260,6 +277,7 @@ struct GeomagWidgetView: View {
                             HStack(spacing: 3) {
                                 Text(component.value, format: .number.precision(.fractionLength(2)))
                                     .monospacedDigit()
+                                    .contentTransition(.numericText(value: component.value))
                                 Text(component.element.unit).foregroundStyle(.secondary)
                             }
                             Text(component.trendPerHour.map {
@@ -268,6 +286,7 @@ struct GeomagWidgetView: View {
                                 .font(.system(size: 10))
                                 .monospacedDigit()
                                 .foregroundStyle(.secondary)
+                                .contentTransition(.numericText(value: component.trendPerHour ?? 0))
                         }
                     }
                     .font(.caption)
@@ -292,7 +311,7 @@ struct GeomagWidgetView: View {
         VStack(alignment: .leading, spacing: 2) {
             ObsReadingLine(stationCode: snapshot.observatoryCode,
                            element: snapshot.primaryElement?.code,
-                           value: snapshot.primaryValue,
+                           value: displayedPrimaryValue,
                            unit: snapshot.primaryElement?.unit,
                            trend: snapshot.trend,
                            font: .subheadline)
@@ -331,7 +350,7 @@ struct GeomagWidgetView: View {
             ObsFieldChart(series: snapshot.sparkline,
                           stationCode: snapshot.observatoryCode,
                           element: snapshot.primaryElement?.code,
-                          latestValue: snapshot.primaryValue,
+                          latestValue: displayedPrimaryValue,
                           unit: snapshot.primaryElement?.unit,
                           trend: showHeader ? snapshot.trend : nil,
                           stormIntervals: snapshot.stormIntervals,
@@ -339,7 +358,9 @@ struct GeomagWidgetView: View {
                           headerFont: .subheadline,
                           headerStacked: isSmallSystemFamily,
                           windowStart: snapshot.windowStart,
-                          windowEnd: snapshot.windowEnd)
+                          windowEnd: snapshot.windowEnd,
+                          scrollbackSeconds: scrollbackSeconds,
+                          displayWindowEnd: displayWindowEnd)
         }
     }
 

@@ -8,17 +8,21 @@
 import WidgetKit
 import SwiftUI
 
-private func watchProvider() -> GeomagWidgetProvider {
+private func watchProvider(scrollKind: String? = nil) -> GeomagWidgetProvider {
     // range nil = follow ObservatorySettings.timeRange, so the complication tracks the
     // window selected in the watch app (the app reloads timelines whenever it changes).
-    GeomagWidgetProvider(range: nil, timeout: 10, refreshMinutes: 30)
+    GeomagWidgetProvider(range: nil, timeout: 10, refreshMinutes: 30, scrollKind: scrollKind)
 }
 
 /// Value-focused complication for the small families.
 struct ObservatoryFieldComplication: Widget {
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "ObservatoryFieldComplication", provider: watchProvider()) { entry in
-            GeomagWidgetView(snapshot: entry.snapshot, style: .field)
+        StaticConfiguration(kind: "ObservatoryFieldComplication",
+                            provider: watchProvider(scrollKind: "field")) { entry in
+            GeomagWidgetView(snapshot: entry.snapshot, style: .field,
+                             scrollbackSeconds: entry.scrollback,
+                             displayWindowEnd: entry.displayWindowEnd,
+                             displayValue: entry.displayValue)
         }
         .configurationDisplayName("Field Reading")
         .description("Latest field reading from your selected observatory.")
@@ -42,8 +46,12 @@ struct ObservatoryTrendComplication: Widget {
 /// The large rectangular complication uses the same chart style as the watch app.
 struct ObservatoryChartComplication: Widget {
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "ObservatoryChartComplication", provider: watchProvider()) { entry in
-            GeomagWidgetView(snapshot: entry.snapshot, style: .chart, dropsTopMargin: true)
+        StaticConfiguration(kind: "ObservatoryChartComplication",
+                            provider: watchProvider(scrollKind: "chart")) { entry in
+            GeomagWidgetView(snapshot: entry.snapshot, style: .chart, dropsTopMargin: true,
+                             scrollbackSeconds: entry.scrollback,
+                             displayWindowEnd: entry.displayWindowEnd,
+                             displayValue: entry.displayValue)
         }
         .configurationDisplayName("Field Chart")
         .description("Recent field variation, storm highlights, and the latest reading.")

@@ -15,8 +15,11 @@ struct ObservatoryChartWidget: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(kind: "ObservatoryChartWidget",
                                intent: ObservatoryWidgetConfigIntent.self,
-                               provider: GeomagConfiguredProvider()) { entry in
-            GeomagWidgetView(snapshot: entry.snapshot, style: .chart)
+                               provider: GeomagConfiguredProvider(scrollKind: "chart")) { entry in
+            GeomagWidgetView(snapshot: entry.snapshot, style: .chart,
+                             scrollbackSeconds: entry.scrollback,
+                             displayWindowEnd: entry.displayWindowEnd,
+                             displayValue: entry.displayValue)
         }
         .configurationDisplayName("Field Chart")
         .description("Recent variation of the field over your selected time window.")
@@ -53,8 +56,11 @@ struct ObservatoryFieldWidget: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(kind: "ObservatoryFieldWidget",
                                intent: ObservatoryWidgetConfigIntent.self,
-                               provider: GeomagConfiguredProvider(maxPoints: 80)) { entry in
-            GeomagWidgetView(snapshot: entry.snapshot, style: .field)
+                               provider: GeomagConfiguredProvider(maxPoints: 80, scrollKind: "field")) { entry in
+            GeomagWidgetView(snapshot: entry.snapshot, style: .field,
+                             scrollbackSeconds: entry.scrollback,
+                             displayWindowEnd: entry.displayWindowEnd,
+                             displayValue: entry.displayValue)
         }
         .configurationDisplayName("Field Reading")
         .description("Latest field reading from your selected observatory.")
