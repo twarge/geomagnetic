@@ -113,11 +113,33 @@ struct ObservatoryDetailView: View {
                 .foregroundStyle(.secondary)
 
             if !model.latestReadings.isEmpty {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 14) {
-                        ForEach(model.latestReadings) { reading in
-                            readingView(reading.element, reading.sample)
-                        }
+                // One row where it fits; two to a row on narrow widths (e.g. iPhone Duo's
+                // cover screen, whose trailing toolbar bar insets the content). Scrolls only
+                // when even the grid can't fit (large accessibility text sizes).
+                ViewThatFits(in: .horizontal) {
+                    readingRow
+                    readingGrid
+                    ScrollView(.horizontal, showsIndicators: false) { readingRow }
+                }
+            }
+        }
+    }
+
+    private var readingRow: some View {
+        HStack(spacing: 14) {
+            ForEach(model.latestReadings) { reading in
+                readingView(reading.element, reading.sample)
+            }
+        }
+    }
+
+    private var readingGrid: some View {
+        let readings = model.latestReadings
+        return Grid(alignment: .leading, horizontalSpacing: 14, verticalSpacing: 8) {
+            ForEach(Array(stride(from: 0, to: readings.count, by: 2)), id: \.self) { start in
+                GridRow {
+                    ForEach(readings[start..<min(start + 2, readings.count)]) { reading in
+                        readingView(reading.element, reading.sample)
                     }
                 }
             }
