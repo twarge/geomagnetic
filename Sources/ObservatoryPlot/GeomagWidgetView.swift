@@ -198,29 +198,36 @@ struct GeomagWidgetView: View {
 
     #if os(watchOS)
     private var corner: some View {
-        // The 30-minute delta at the inner corner (stale badge beside the caption); the
-        // absolute reading curves around the dial.
-        VStack(spacing: -1) {
-            Text(snapshot.trend.map { String(format: "%+.0f", $0) } ?? "—")
+        // A sparkline of the field's history at the inner corner — the provider fetches a
+        // fixed six hours for this family — anchored to that window, so a stretch without
+        // data (stale or offline) is hatched as in the other charts; "—" when there's no
+        // trace at all. The absolute reading curves around the dial.
+        cornerSparkline
+            .widgetLabel {
+                Text(snapshot.primaryValue.map { String(format: "%.2f nT", $0) } ?? "—")
+                    .foregroundStyle(.primary)
+                    .privacySensitive(false)
+            }
+    }
+
+    @ViewBuilder
+    private var cornerSparkline: some View {
+        if snapshot.sparkline.contains(where: { $0.points.count >= 2 }) {
+            ObsSparkline(series: snapshot.sparkline, lineWidth: 1.5, showsLatestDot: true,
+                         tint: .accentColor, window: snapshotWindow, accentsTrace: true)
+                // Wide and short, so the trace stays inside the corner's round content area.
+                .aspectRatio(1.8, contentMode: .fit)
+        } else {
+            Text("—")
                 .font(.system(size: 17, weight: .bold))
-                .contentTransition(.numericText(value: snapshot.trend ?? 0))
-            cornerDeltaLabel
-                .font(.system(size: 11, weight: .semibold))
-        }
-        .foregroundStyle(Color.accentColor)
-        .widgetAccentable()
-        .minimumScaleFactor(0.5)
-        .lineLimit(1)
-        .widgetLabel {
-            Text(snapshot.primaryValue.map { String(format: "%.2f nT", $0) } ?? "—")
-                .foregroundStyle(.primary)
-                .privacySensitive(false)
+                .foregroundStyle(Color.accentColor)
+                .widgetAccentable()
         }
     }
 
-    private var cornerDeltaLabel: Text {
-        guard let symbol = snapshot.staleSymbol else { return Text("Δ30m") }
-        return Text("Δ30m \(Image(systemName: symbol))")
+    private var snapshotWindow: ClosedRange<Double>? {
+        guard let start = snapshot.windowStart, let end = snapshot.windowEnd, end > start else { return nil }
+        return start...end
     }
 
     private var cornerStationLabel: Text {

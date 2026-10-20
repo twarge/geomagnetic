@@ -93,6 +93,9 @@ enum ObsWidgetRefresh {
 struct GeomagWidgetProvider: TimelineProvider {
     /// nil follows the app's last-chosen range; a fixed value (e.g. complications) overrides.
     var range: ObservatoryTimeRange?
+    /// Non-nil fixes the window for the watch corner family alone (its inner sparkline),
+    /// whatever `range` is. The corner's sparkline draws no window, so it doesn't scroll.
+    var cornerRange: ObservatoryTimeRange? = nil
     var timeout: Double = 18
     var refreshMinutes: Double = 20
     /// Sparkline resolution. Small by default to keep the transfer (and the watch radio)
@@ -104,26 +107,45 @@ struct GeomagWidgetProvider: TimelineProvider {
 
     private var effectiveRange: ObservatoryTimeRange { range ?? ObservatorySettings.timeRange }
 
+    /// The corner's fixed window when this family is a watch corner and one is set.
+    private func fixedCornerRange(_ family: WidgetFamily) -> ObservatoryTimeRange? {
+        #if os(watchOS)
+        return family == .accessoryCorner ? cornerRange : nil
+        #else
+        return nil
+        #endif
+    }
+
+    private func range(for family: WidgetFamily) -> ObservatoryTimeRange {
+        fixedCornerRange(family) ?? effectiveRange
+    }
+
+    private func scrollKind(for family: WidgetFamily) -> String? {
+        fixedCornerRange(family) == nil ? scrollKind : nil
+    }
+
     func placeholder(in context: Context) -> GeomagEntry {
-        GeomagEntry(date: Date(), snapshot: GeomagWidgetData.placeholder(range: effectiveRange))
+        GeomagEntry(date: Date(), snapshot: GeomagWidgetData.placeholder(range: range(for: context.family)))
     }
 
     func getSnapshot(in context: Context, completion: @escaping (GeomagEntry) -> Void) {
+        let range = self.range(for: context.family)
         if context.isPreview {
-            completion(GeomagEntry(date: Date(), snapshot: GeomagWidgetData.placeholder(range: effectiveRange)))
+            completion(GeomagEntry(date: Date(), snapshot: GeomagWidgetData.placeholder(range: range)))
             return
         }
         Task {
-            let snapshot = await GeomagWidgetData.snapshot(range: effectiveRange, timeout: timeout, maxPoints: maxPoints)
+            let snapshot = await GeomagWidgetData.snapshot(range: range, timeout: timeout, maxPoints: maxPoints)
             completion(GeomagEntry(date: Date(), snapshot: snapshot))
         }
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<GeomagEntry>) -> Void) {
+        let range = self.range(for: context.family)
+        let scrollKind = self.scrollKind(for: context.family)
         Task {
             let now = Date()
             let code = ObservatorySettings.observatoryCode
-            let range = effectiveRange
             let prior = ObsWidgetScrollMemory.prior(kind: scrollKind, code: code, range: range, now: now)
             let snapshot = await GeomagWidgetData.snapshot(
                 code: code, range: range, timeout: timeout, maxPoints: maxPoints,

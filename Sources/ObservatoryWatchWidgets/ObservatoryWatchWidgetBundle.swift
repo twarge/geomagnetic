@@ -3,22 +3,25 @@
 //
 // The watch complication set. Both share GeomagWidgetProvider (following the app's chosen
 // time window, with a tight timeout since complications run on a small budget) and the
-// adaptive GeomagWidgetView.
+// adaptive GeomagWidgetView. The Field Reading corner is the exception: its sparkline
+// always covers the last six hours.
 
 import WidgetKit
 import SwiftUI
 
-private func watchProvider(scrollKind: String? = nil) -> GeomagWidgetProvider {
+private func watchProvider(scrollKind: String? = nil,
+                           cornerRange: ObservatoryTimeRange? = nil) -> GeomagWidgetProvider {
     // range nil = follow ObservatorySettings.timeRange, so the complication tracks the
     // window selected in the watch app (the app reloads timelines whenever it changes).
-    GeomagWidgetProvider(range: nil, timeout: 10, refreshMinutes: 30, scrollKind: scrollKind)
+    GeomagWidgetProvider(range: nil, cornerRange: cornerRange, timeout: 10, refreshMinutes: 30,
+                         scrollKind: scrollKind)
 }
 
 /// Value-focused complication for the small families.
 struct ObservatoryFieldComplication: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "ObservatoryFieldComplication",
-                            provider: watchProvider(scrollKind: "field")) { entry in
+                            provider: watchProvider(scrollKind: "field", cornerRange: .sixHours)) { entry in
             GeomagWidgetView(snapshot: entry.snapshot, style: .field,
                              scrollbackSeconds: entry.scrollback,
                              displayWindowEnd: entry.displayWindowEnd,
