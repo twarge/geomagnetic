@@ -6,11 +6,14 @@ import WidgetKit
 
 /// A minimal, non-interactive line chart for tight spaces: widgets, the watch face
 /// complications, and watch glances. No axes, no gestures — just the trace(s), optionally
-/// with a dot at the most recent sample.
+/// with a dot at the most recent sample and a dashed line at its level.
 struct ObsSparkline: View {
     let series: [ObsLineSeries]
     var lineWidth: CGFloat = 2
     var showsLatestDot: Bool = true
+    /// A dashed horizontal line across the plot at the most recent sample's level, as the
+    /// field chart draws — in the muted default layer, never accented.
+    var showsLatestLine: Bool = false
     var tint: Color? = nil
     var fill: Bool = false
     /// The intended time window in epoch seconds. When set, the x-axis is anchored to it
@@ -23,8 +26,11 @@ struct ObsSparkline: View {
 
     var body: some View {
         ZStack {
-            if window != nil {
-                Canvas { context, size in drawHatch(context, size) }
+            if window != nil || showsLatestLine {
+                Canvas { context, size in
+                    drawHatch(context, size)
+                    drawLatestLine(context, size)
+                }
             }
             Canvas { context, size in drawTrace(context, size) }
                 .widgetAccentable(accentsTrace)
@@ -34,7 +40,13 @@ struct ObsSparkline: View {
     private struct Layout {
         let rect: CGRect
         let xRange: ObsPlotRange
+        let yRange: ObsPlotRange?
         let drawable: [ObsLineSeries]
+
+        func point(_ p: ObsPlotPoint, yRange: ObsPlotRange) -> CGPoint {
+            CGPoint(x: rect.minX + rect.width * CGFloat(xRange.unclampedRatio(for: p.x)),
+                    y: rect.maxY - rect.height * CGFloat(yRange.unclampedRatio(for: p.y)))
+        }
     }
 
     private func layout(_ size: CGSize) -> Layout? {
@@ -47,7 +59,8 @@ struct ObsSparkline: View {
         let rect = CGRect(x: inset, y: inset,
                           width: max(1, size.width - inset * 2),
                           height: max(1, size.height - inset * 2))
-        return Layout(rect: rect, xRange: xRange, drawable: drawable)
+        let yRange = ObsPlotRange(optionalValues: drawable.flatMap { $0.points.map(\.y) })
+        return Layout(rect: rect, xRange: xRange, yRange: yRange, drawable: drawable)
     }
 
     private func drawHatch(_ context: GraphicsContext, _ size: CGSize) {
@@ -66,16 +79,24 @@ struct ObsSparkline: View {
         }
     }
 
+    /// The reference line at the level of the sample the latest dot marks.
+    private func drawLatestLine(_ context: GraphicsContext, _ size: CGSize) {
+        guard showsLatestLine, let layout = layout(size), let yRange = layout.yRange,
+              let last = layout.drawable.last?.points.last else { return }
+        let y = layout.point(last, yRange: yRange).y
+        var line = Path()
+        line.move(to: CGPoint(x: layout.rect.minX, y: y))
+        line.addLine(to: CGPoint(x: layout.rect.maxX, y: y))
+        context.stroke(line, with: .color(Color.secondary.opacity(0.55)),
+                       style: StrokeStyle(lineWidth: 1, dash: [3, 3]))
+    }
+
     private func drawTrace(_ context: GraphicsContext, _ size: CGSize) {
-        guard let layout = layout(size), !layout.drawable.isEmpty,
-              let yRange = ObsPlotRange(optionalValues: layout.drawable.flatMap { $0.points.map(\.y) })
+        guard let layout = layout(size), !layout.drawable.isEmpty, let yRange = layout.yRange
         else { return }
         let rect = layout.rect
 
-        func point(_ p: ObsPlotPoint) -> CGPoint {
-            CGPoint(x: rect.minX + rect.width * CGFloat(layout.xRange.unclampedRatio(for: p.x)),
-                    y: rect.maxY - rect.height * CGFloat(yRange.unclampedRatio(for: p.y)))
-        }
+        func point(_ p: ObsPlotPoint) -> CGPoint { layout.point(p, yRange: yRange) }
 
         for (offset, item) in layout.drawable.enumerated() {
             let color = tint ?? ObsPlotSeriesPalette.color(at: item.index)

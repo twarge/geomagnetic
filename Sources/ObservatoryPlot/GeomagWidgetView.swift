@@ -200,8 +200,9 @@ struct GeomagWidgetView: View {
     private var corner: some View {
         // A sparkline of the field's history at the inner corner — the provider fetches a
         // fixed six hours for this family — anchored to that window, so a stretch without
-        // data (stale or offline) is hatched as in the other charts; "—" when there's no
-        // trace at all. The absolute reading curves around the dial.
+        // data (stale or offline) is hatched as in the other charts, with the same dashed
+        // line at the latest reading's level; "—" when there's no trace at all. The absolute
+        // reading curves around the dial.
         cornerSparkline
             .widgetLabel {
                 Text(snapshot.primaryValue.map { String(format: "%.2f nT", $0) } ?? "—")
@@ -214,7 +215,8 @@ struct GeomagWidgetView: View {
     private var cornerSparkline: some View {
         if snapshot.sparkline.contains(where: { $0.points.count >= 2 }) {
             ObsSparkline(series: snapshot.sparkline, lineWidth: 1.5, showsLatestDot: true,
-                         tint: .accentColor, window: snapshotWindow, accentsTrace: true)
+                         showsLatestLine: true, tint: .accentColor, window: snapshotWindow,
+                         accentsTrace: true)
                 // Wide and short, so the trace stays inside the corner's round content area.
                 .aspectRatio(1.8, contentMode: .fit)
         } else {
