@@ -96,7 +96,9 @@ Sources/
   ObservatoryWidgets/     iOS + macOS WidgetKit extension
   ObservatoryWatch/       watchOS app
   ObservatoryWatchWidgets/ watchOS complications (WidgetKit)
-Resources/                Entitlements, extension Info.plists, asset catalogs
+Resources/                Entitlements, extension Info.plists, asset catalogs,
+                          AppIcon.icon (the layered app icon, shared with the watch app)
+Scripts/make-app-icon.py  Regenerates AppIcon.icon when the icon design changes
 Makefile                  All-platform build sweep (make / make macos / ios / watchos)
 ```
 

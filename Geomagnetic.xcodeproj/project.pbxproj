@@ -38,6 +38,7 @@
 		000000000000000000000037 /* ObservatoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000038 /* ObservatoryListView.swift */; };
 		000000000000000000000039 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000003A /* RootView.swift */; };
 		00000000000000000000003B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000003C /* Assets.xcassets */; };
+		0000000000000000000000D6 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 0000000000000000000000D5 /* AppIcon.icon */; };
 		00000000000000000000003D /* GINClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000002 /* GINClient.swift */; };
 		00000000000000000000003E /* GeomagModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000004 /* GeomagModels.swift */; };
 		00000000000000000000003F /* GeomagRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000006 /* GeomagRepository.swift */; };
@@ -91,6 +92,7 @@
 		000000000000000000000073 /* WatchRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000074 /* WatchRootView.swift */; };
 		000000000000000000000075 /* WatchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000076 /* WatchViewModel.swift */; };
 		000000000000000000000077 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000078 /* Assets.xcassets */; };
+		0000000000000000000000D7 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 0000000000000000000000D5 /* AppIcon.icon */; };
 		000000000000000000000079 /* GINClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000002 /* GINClient.swift */; };
 		00000000000000000000007A /* GeomagModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000004 /* GeomagModels.swift */; };
 		00000000000000000000007B /* GeomagRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000006 /* GeomagRepository.swift */; };
@@ -212,6 +214,7 @@
 		000000000000000000000038 /* ObservatoryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryListView.swift; path = Sources/Observatory/ObservatoryListView.swift; sourceTree = SOURCE_ROOT; };
 		00000000000000000000003A /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RootView.swift; path = Sources/Observatory/RootView.swift; sourceTree = SOURCE_ROOT; };
 		00000000000000000000003C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Resources/App/Assets.xcassets; sourceTree = SOURCE_ROOT; };
+		0000000000000000000000D5 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; name = AppIcon.icon; path = Resources/AppIcon.icon; sourceTree = SOURCE_ROOT; };
 		000000000000000000000055 /* ObservatoryWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryWidgetBundle.swift; path = Sources/ObservatoryWidgets/ObservatoryWidgetBundle.swift; sourceTree = SOURCE_ROOT; };
 		000000000000000000000057 /* ObservatoryWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryWidgets.swift; path = Sources/ObservatoryWidgets/ObservatoryWidgets.swift; sourceTree = SOURCE_ROOT; };
 		000000000000000000000070 /* ObservatoryWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryWatchApp.swift; path = Sources/ObservatoryWatch/ObservatoryWatchApp.swift; sourceTree = SOURCE_ROOT; };
@@ -290,6 +293,7 @@
 		0000000000000000000000B0 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				0000000000000000000000D5 /* AppIcon.icon */,
 				00000000000000000000003C /* Assets.xcassets */,
 				0000000000000000000000A2 /* Observatory-Info.plist */,
 				0000000000000000000000A3 /* Observatory.entitlements */,
@@ -522,6 +526,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00000000000000000000003B /* Assets.xcassets in Resources */,
+				0000000000000000000000D6 /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -537,6 +542,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				000000000000000000000077 /* Assets.xcassets in Resources */,
+				0000000000000000000000D7 /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
