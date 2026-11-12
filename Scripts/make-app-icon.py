@@ -12,10 +12,10 @@ square, or circle on the watch) and the glass, dark and tinted treatments, so
 the artwork here is full bleed and carries no mask, rim or shadow of its own.
 
 The picture is the original Geomagnetic icon's chart, split into layers from
-back to front: a night-blue background with a faint grid (Grid), a magnetogram
-running from edge to edge through three reconnection episodes (Glow under
-Trace), and a reading marked on it (Dot). The original's rim, which followed
-each platform's icon shape, is left out.
+back to front: a night-blue background with a faint grid (Grid), a recorded
+magnetogram of three reconnection episodes running from edge to edge (Glow
+under Trace), and its lowest reading marked (Dot). The original's rim, which
+followed each platform's icon shape, is left out.
 
 The bundle is committed, so this only needs running when the design changes.
 To look at the result without building:
@@ -25,7 +25,6 @@ To look at the result without building:
         --platform watchOS --rendition Default --width 512 --height 512 --scale 2
 """
 import json
-import math
 import os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -46,7 +45,7 @@ GRID_OPACITY = 0.12
 GLOW = "#4DB8FF"      # halo around the trace
 GLOW_OPACITY = 0.45
 TRACE = "#DEF5FF"     # the trace itself
-DOT = "#FFFFFF"       # the marked reading
+DOT = "#FFFFFF"       # the marked lowest reading
 
 # Geometry, on the 1024 x 1024 canvas with y downward.
 GRID_COLS, GRID_ROWS = 8, 6
@@ -55,42 +54,58 @@ GLOW_WIDTH = 51
 TRACE_WIDTH = 22.5
 DOT_RADIUS = 27
 
-# The trace: three reconnection episodes (substorms) as a ground observatory
-# records them. At each onset the ionospheric electrojet switches on and the
-# horizontal field drops within minutes, rings briefly, then recovers slowly.
-QUIET = 292           # y of the undisturbed field
-# One row per episode: x of the onset, depth of the drop, length of the recovery.
-EPISODES = [(140, 300, 105), (440, 425, 125), (735, 345, 115)]
-GROWTH = 0.14         # share of the depth lost slowly before the onset
-ONSET = 34            # how far the trace travels in x during the drop
-DOT_X = 884           # where the reading marker rides the trace
-STEP = 2.5            # x spacing of the trace's points
-
-
-def field(x):
-    """The trace's y at canvas x."""
-    y = QUIET
-    for onset, depth, recovery in EPISODES:
-        u = x - onset
-        if u < 0:
-            y += depth * GROWTH * math.exp(u / 80)
-        elif u < ONSET:
-            s = u / ONSET
-            y += depth * (GROWTH + (1 - GROWTH) * s * s * (3 - 2 * s))
-        else:
-            v = u - ONSET
-            y += depth * (math.exp(-v / recovery)
-                          + 0.11 * math.exp(-v / 55) * math.sin(2 * math.pi * v / 42))
-    # The restless fine structure every magnetogram has.
-    return y + 9 * math.sin(2 * math.pi * x / 58 + 1.2) + 5 * math.sin(2 * math.pi * x / 29 + 0.3)
+# The trace: a recorded magnetogram of three reconnection episodes, each a
+# sharp drop in the field and a slower recovery. The points were traced from
+# a screenshot of the chart and are in that screenshot's pixels (it was
+# RECORD_WIDTH wide, y downward).
+RECORD_WIDTH = 990
+RECORD = [
+    (0, 133), (3, 124), (16, 150), (23, 128), (26, 141), (29, 132), (38, 150), (45, 155),
+    (52, 152), (56, 146), (60, 143), (65, 138), (68, 141), (73, 122), (75, 119), (78, 126),
+    (84, 121), (92, 108), (96, 115), (100, 106), (103, 114), (110, 105), (115, 99), (117, 113),
+    (119, 111), (122, 118), (125, 134), (128, 121), (136, 99), (139, 99), (145, 121),
+    # First episode.
+    (153, 200), (158, 260), (163, 315), (168, 355), (172, 388), (178, 427), (181, 392),
+    (185, 365), (189, 340), (193, 308), (198, 313), (205, 292), (207, 299), (211, 260),
+    (216, 213), (221, 190), (226, 172), (229, 160), (237, 175), (244, 174), (252, 156),
+    (257, 128), (260, 112), (262, 108),
+    (267, 123), (275, 122), (276, 112), (281, 121), (290, 103), (294, 110), (298, 105),
+    (305, 125), (308, 123), (314, 135), (319, 130), (325, 137), (329, 139), (334, 132),
+    (338, 149), (347, 145), (352, 129), (358, 132), (366, 125), (370, 120), (375, 113),
+    (378, 115), (383, 103), (386, 103), (391, 91), (396, 90), (403, 103), (408, 106),
+    (411, 99), (415, 100), (420, 111), (424, 123), (430, 135), (432, 142),
+    # Second episode.
+    (438, 168), (442, 195), (447, 235), (448, 212), (452, 250), (456, 286), (458, 288),
+    (466, 313), (470, 350), (475, 395), (479, 422), (483, 447), (486, 455), (491, 476),
+    (494, 463), (498, 430), (501, 402), (510, 355), (514, 315), (519, 270), (523, 245),
+    (528, 220), (532, 198), (536, 178), (538, 176), (545, 153), (548, 158), (554, 128),
+    (558, 120), (565, 103),
+    (571, 116), (579, 108), (585, 111), (592, 123), (597, 134), (601, 129), (607, 145),
+    (613, 128), (615, 141), (620, 128), (624, 116), (629, 117), (635, 127), (640, 129),
+    (644, 123), (647, 134), (653, 129), (657, 137), (665, 137), (670, 127), (675, 112),
+    (679, 98), (684, 98), (688, 91), (690, 95), (694, 87), (700, 95), (704, 75), (707, 84),
+    (715, 100), (719, 100), (723, 93), (726, 91),
+    # Third episode.
+    (730, 115), (735, 150), (739, 185), (742, 215), (743, 208), (751, 240), (754, 290),
+    (756, 320), (759, 360), (761, 377), (762, 362), (765, 402), (770, 373), (775, 356),
+    (779, 370), (783, 330), (788, 358), (792, 378), (796, 345), (798, 310), (800, 280),
+    (803, 225), (804, 213), (806, 210), (810, 180), (813, 150), (816, 182), (819, 155),
+    (822, 128), (826, 108), (831, 80), (836, 77), (839, 86), (841, 78), (845, 100),
+    (849, 122), (858, 97), (863, 78), (865, 103), (868, 91), (873, 120), (879, 124),
+    (887, 105), (890, 125), (894, 147), (900, 158), (907, 170), (913, 139), (917, 148),
+    (920, 145), (926, 155), (934, 141), (938, 160), (943, 200), (947, 160), (955, 143),
+    (965, 121), (969, 133), (973, 108), (978, 118), (982, 105), (985, 106), (990, 130),
+]
+# The record is scaled evenly to run from just beyond one edge of the watch's
+# canvas to just beyond the other, so no end shows in the square or the circle.
+TRACE_LEFT = -BLEED - 4
+TRACE_SCALE = (SIZE + 2 * BLEED + 8) / RECORD_WIDTH
+TRACE_TOP = 298       # y of the record's highest point
 
 
 def trace_points():
-    # From beyond one edge to beyond the other, so no end shows in the square
-    # or in the watch's circle.
-    lo, hi = -BLEED - GLOW_WIDTH, SIZE + BLEED + GLOW_WIDTH
-    n = int(round((hi - lo) / STEP))
-    return [(x, field(x)) for x in (lo + (hi - lo) * i / n for i in range(n + 1))]
+    top = min(y for _, y in RECORD)
+    return [(TRACE_LEFT + x * TRACE_SCALE, TRACE_TOP + (y - top) * TRACE_SCALE) for x, y in RECORD]
 
 
 def svg(body, bleed=0):
@@ -119,7 +134,9 @@ def trace(color, width, opacity=None):
 
 
 def dot():
-    return ['<circle cx="%.1f" cy="%.1f" r="%g" fill="%s"/>' % (DOT_X, field(DOT_X), DOT_RADIUS, DOT)]
+    # On the record's lowest reading, the bottom of the deepest episode.
+    x, y = max(trace_points(), key=lambda p: p[1])
+    return ['<circle cx="%.1f" cy="%.1f" r="%g" fill="%s"/>' % (x, y, DOT_RADIUS, DOT)]
 
 
 # Layers from front to back, the order icon.json lists them: name, artwork,
