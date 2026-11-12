@@ -22,22 +22,6 @@
     {
       "layers": [
         {
-          "image-name": "Dot.svg",
-          "name": "Dot"
-        }
-      ],
-      "shadow": {
-        "kind": "neutral",
-        "opacity": 0.5
-      },
-      "translucency": {
-        "enabled": false,
-        "value": 0.5
-      }
-    },
-    {
-      "layers": [
-        {
           "image-name": "Trace.svg",
           "name": "Trace"
         }

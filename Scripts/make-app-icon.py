@@ -14,8 +14,8 @@ the artwork here is full bleed and carries no mask, rim or shadow of its own.
 The picture is the original Geomagnetic icon's chart, split into layers from
 back to front: a night-blue background with a faint grid (Grid), a recorded
 magnetogram of three reconnection episodes running from edge to edge (Glow
-under Trace), and its lowest reading marked (Dot). The original's rim, which
-followed each platform's icon shape, is left out.
+under Trace). The original's rim, which followed each platform's icon shape,
+and the dot on its latest reading are left out.
 
 The bundle is committed, so this only needs running when the design changes.
 To look at the result without building:
@@ -45,14 +45,12 @@ GRID_OPACITY = 0.12
 GLOW = "#4DB8FF"      # halo around the trace
 GLOW_OPACITY = 0.45
 TRACE = "#DEF5FF"     # the trace itself
-DOT = "#FFFFFF"       # the marked lowest reading
 
 # Geometry, on the 1024 x 1024 canvas with y downward.
 GRID_COLS, GRID_ROWS = 8, 6
 GRID_WIDTH = 4
 GLOW_WIDTH = 51
 TRACE_WIDTH = 22.5
-DOT_RADIUS = 27
 
 # The trace: a recorded magnetogram of three reconnection episodes, each a
 # sharp drop in the field and a slower recovery. The points were traced from
@@ -133,17 +131,10 @@ def trace(color, width, opacity=None):
             'stroke-linecap="round" stroke-linejoin="round"/>' % (d, color, extra, width)]
 
 
-def dot():
-    # On the record's lowest reading, the bottom of the deepest episode.
-    x, y = max(trace_points(), key=lambda p: p[1])
-    return ['<circle cx="%.1f" cy="%.1f" r="%g" fill="%s"/>' % (x, y, DOT_RADIUS, DOT)]
-
-
 # Layers from front to back, the order icon.json lists them: name, artwork,
 # overhang, glass, shadow opacity. The chart stays flat (no glass on the grid
-# or the halo); the trace and the dot are the glass pieces.
+# or the halo); the trace is the glass piece.
 LAYERS = [
-    ("Dot", dot(), 0, True, 0.5),
     ("Trace", trace(TRACE, TRACE_WIDTH), BLEED, True, 0.5),
     ("Glow", trace(GLOW, GLOW_WIDTH, GLOW_OPACITY), BLEED, False, 0.0),
     ("Grid", grid(), BLEED, False, 0.0),
