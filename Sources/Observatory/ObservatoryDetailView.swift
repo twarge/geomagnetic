@@ -59,7 +59,7 @@ struct ObservatoryDetailView: View {
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .navigationTitle(model.observatory.name)
-        #if os(iOS)
+        #if os(iOS) || os(visionOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif
         .toolbar { toolbarContent }
@@ -99,7 +99,7 @@ struct ObservatoryDetailView: View {
                 Task { await model.load() }
             }
         }
-        #if os(iOS)
+        #if os(iOS) || os(visionOS)
         .refreshable { await model.load(force: true) }
         #endif
     }

@@ -95,7 +95,7 @@ struct ObsLinePlotView: View {
                         .allowsHitTesting(false)
                 }
             }
-            #if os(iOS) || os(macOS)
+            #if os(iOS) || os(macOS) || os(visionOS)
             // Axis-reset buttons, each living in its axis's margin and appearing only once
             // that axis has been zoomed/panned: vertical in the upper-left of the y-axis
             // area, horizontal in the lower-right of the x-axis area.

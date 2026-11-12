@@ -144,7 +144,7 @@ struct ObsPlotResetButton: View {
         .background(.regularMaterial, in: Circle())
     }
 
-    #if os(iOS)
+    #if os(iOS) || os(visionOS)
     private static let iconFont: Font = .body
     private static let tapTarget: CGFloat? = 36
     #else

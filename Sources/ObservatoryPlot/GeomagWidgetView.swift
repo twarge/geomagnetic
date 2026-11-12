@@ -54,8 +54,10 @@ struct GeomagWidgetView: View {
     @ViewBuilder
     private var content: some View {
         switch family {
+        #if !os(visionOS)  // visionOS has no inline accessory family
         case .accessoryInline:
             inlineLabel
+        #endif
         case .accessoryCircular:
             style == .trend ? AnyView(trendCircular) : AnyView(circular)
         case .accessoryRectangular:
@@ -341,7 +343,7 @@ struct GeomagWidgetView: View {
 
     /// The narrow small home-screen tile (absent on watchOS, where `systemSmall` is unavailable).
     private var isSmallSystemFamily: Bool {
-        #if os(iOS) || os(macOS)
+        #if os(iOS) || os(macOS) || os(visionOS)
         return family == .systemSmall
         #else
         return false
@@ -389,7 +391,11 @@ struct GeomagWidgetView: View {
     @ViewBuilder
     private var background: some View {
         switch family {
-        case .accessoryInline, .accessoryCircular, .accessoryRectangular:
+        #if !os(visionOS)
+        case .accessoryInline:
+            Color.clear
+        #endif
+        case .accessoryCircular, .accessoryRectangular:
             Color.clear
         default:
             #if os(watchOS)

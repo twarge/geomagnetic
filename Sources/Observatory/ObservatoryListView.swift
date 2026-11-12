@@ -28,7 +28,7 @@ struct ObservatoryListView: View {
             }
         }
         .searchable(text: $query, prompt: "Code, name, or country")
-        #if os(iOS)
+        #if os(iOS) || os(visionOS)
         .listStyle(.insetGrouped)
         #endif
     }

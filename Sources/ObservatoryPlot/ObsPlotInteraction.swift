@@ -159,7 +159,7 @@ struct ObsPlotInteractionOverlay: View {
             onContinuousZoomBegan: onContinuousZoomBegan, onContinuousZoomEnded: onContinuousZoomEnded,
             onReset: onReset, onZoomSelectionChanged: onZoomSelectionChanged,
             onZoomSelectionEnded: onZoomSelectionEnded)
-        #elseif os(iOS)
+        #elseif os(iOS) || os(visionOS)
         ObsIOSPlotInteractionView(
             onPan: onPan, onZoom: onZoom,
             onContinuousZoomBegan: onContinuousZoomBegan, onContinuousZoomEnded: onContinuousZoomEnded,
@@ -306,7 +306,7 @@ private final class ObsMacPlotInteractionNSView: NSView {
         convert(event.locationInWindow, from: nil)
     }
 }
-#elseif os(iOS)
+#elseif os(iOS) || os(visionOS)
 import UIKit
 
 private struct ObsIOSPlotInteractionView: UIViewRepresentable {
