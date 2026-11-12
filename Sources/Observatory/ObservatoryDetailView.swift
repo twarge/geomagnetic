@@ -82,6 +82,11 @@ struct ObservatoryDetailView: View {
                   let range = link.range else { return }
             model.timeRange = range
         }
+        // Selections pulled from another device (iCloud key-value sync).
+        .onReceive(NotificationCenter.default.publisher(for: SettingsSync.didPullNotification)) { _ in
+            isFavorite = ObservatorySettings.isFavorite(model.observatory.code)
+            model.applySyncedSettings()
+        }
         .onChange(of: model.timeRange) { _, _ in
             if preserveViewportOnRangeChange {
                 preserveViewportOnRangeChange = false

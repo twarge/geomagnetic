@@ -24,7 +24,7 @@ final class ObservatoryDetailViewModel: ObservableObject {
     /// Elements the user chose to plot. Empty until the first result seeds a default.
     @Published var selectedElements: Set<String> = Set(ObservatorySettings.selectedElements) {
         didSet {
-            guard selectedElements != oldValue else { return }
+            guard selectedElements != oldValue, !isApplyingSyncedSettings else { return }
             ObservatorySettings.selectedElements = Array(selectedElements).sorted()
         }
     }
@@ -41,6 +41,22 @@ final class ObservatoryDetailViewModel: ObservableObject {
     init(observatory: GeomagObservatory) {
         self.observatory = observatory
         self.timeRange = ObservatorySettings.timeRange
+    }
+
+    private var isApplyingSyncedSettings = false
+
+    /// Adopt the range and element selection another device just synced into the shared
+    /// defaults. The element selection is taken only as far as this observatory reports
+    /// those elements, and is not written back: two devices showing stations with
+    /// different elements would otherwise keep correcting each other through iCloud.
+    func applySyncedSettings() {
+        timeRange = ObservatorySettings.timeRange
+        var synced = Set(ObservatorySettings.selectedElements)
+        if !availableElements.isEmpty { synced.formIntersection(availableElements) }
+        guard !synced.isEmpty else { return }
+        isApplyingSyncedSettings = true
+        selectedElements = synced
+        isApplyingSyncedSettings = false
     }
 
     /// Load the current window. Fetches all reported elements (they all arrive in one

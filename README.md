@@ -138,6 +138,13 @@ To run on device (and for widgets/watch to share the cache with the app), set yo
 target. Without a working App Group the app still runs — each process just falls back to its
 own Application Support directory instead of the shared cache.
 
+The favorites list and the selected observatory, elements, and time range also sync
+between the user's devices through the iCloud key-value store
+([`SettingsSync`](Sources/ObservatoryCore/SettingsSync.swift)). That needs the iCloud
+capability with **Key-value storage** on the Observatory and ObservatoryWatch app IDs (both
+use the store `$(TeamIdentifierPrefix)com.twarge.observatory`); without it, or signed out of
+iCloud, the settings simply stay on the device.
+
 Targets / bundle IDs:
 
 | Target | Platforms | Bundle ID |

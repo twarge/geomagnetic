@@ -8,6 +8,11 @@ import SwiftUI
 /// re-downloads a finalized past day.
 @main
 struct ObservatoryApp: App {
+    init() {
+        // Selections follow the user between devices; pulled values reach the widgets too.
+        SettingsSync.shared.start { ObsWidgetRefresh.requestReload() }
+    }
+
     var body: some Scene {
         WindowGroup(id: "main") {
             RootView()

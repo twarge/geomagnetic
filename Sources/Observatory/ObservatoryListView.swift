@@ -27,6 +27,9 @@ struct ObservatoryListView: View {
                 ForEach(results) { row($0) }
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: SettingsSync.didPullNotification)) { _ in
+            favorites = ObservatorySettings.favorites
+        }
         .searchable(text: $query, prompt: "Code, name, or country")
         #if os(iOS) || os(visionOS)
         .listStyle(.insetGrouped)

@@ -93,6 +93,18 @@ final class WatchViewModel: ObservableObject {
         ObsWidgetRefresh.requestReload()   // complications follow the selected observatory
     }
 
+    /// Adopt the observatory and range another device just synced into the shared defaults
+    /// (already stored, and the complications already reloaded, by `SettingsSync`).
+    func applySyncedSettings() {
+        let newCode = ObservatorySettings.observatoryCode
+        if newCode != code, Observatories.observatory(code: newCode) != nil {
+            code = newCode
+            result = nil
+        }
+        let newRange = ObservatorySettings.timeRange
+        if newRange != range { range = newRange }
+    }
+
     func setRange(_ newRange: ObservatoryTimeRange) {
         guard newRange != range else { return }
         range = newRange

@@ -48,6 +48,18 @@ struct RootView: View {
             }
             preferredColumn = .detail
         }
+        // Another device chose a different station: follow it. (The write-back in
+        // onChange(of: selection) above stores the value just pulled, which is a no-op.)
+        // Only when the station itself was pulled — a synced favorite or range must not
+        // push the detail while the list is showing (selection is nil there on iPhone).
+        .onReceive(NotificationCenter.default.publisher(for: SettingsSync.didPullNotification)) { note in
+            let pulled = note.userInfo?[SettingsSync.changedKeysKey] as? [String] ?? []
+            guard pulled.contains(ObservatorySettings.Key.observatoryCode) else { return }
+            let code = ObservatorySettings.observatoryCode
+            if code != selection, Observatories.observatory(code: code) != nil {
+                selection = code
+            }
+        }
         .handlesExternalEvents(preferring: ["*"], allowing: ["*"])
     }
 }

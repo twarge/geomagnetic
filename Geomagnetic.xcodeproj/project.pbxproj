@@ -17,6 +17,7 @@
 		00000000000000000000000F /* ObservatoryAppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000010 /* ObservatoryAppGroup.swift */; };
 		000000000000000000000011 /* ObservatoryIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000012 /* ObservatoryIntents.swift */; };
 		000000000000000000000013 /* ObservatorySelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000014 /* ObservatorySelection.swift */; };
+		0000000000000000000000E1 /* SettingsSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000000000000000E0 /* SettingsSync.swift */; };
 		000000000000000000000015 /* StormDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000016 /* StormDetector.swift */; };
 		000000000000000000000017 /* UTCDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000018 /* UTCDate.swift */; };
 		000000000000000000000019 /* GeomagWidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001A /* GeomagWidgetProvider.swift */; };
@@ -49,6 +50,7 @@
 		000000000000000000000044 /* ObservatoryAppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000010 /* ObservatoryAppGroup.swift */; };
 		000000000000000000000045 /* ObservatoryIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000012 /* ObservatoryIntents.swift */; };
 		000000000000000000000046 /* ObservatorySelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000014 /* ObservatorySelection.swift */; };
+		0000000000000000000000E2 /* SettingsSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000000000000000E0 /* SettingsSync.swift */; };
 		000000000000000000000047 /* StormDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000016 /* StormDetector.swift */; };
 		000000000000000000000048 /* UTCDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000018 /* UTCDate.swift */; };
 		000000000000000000000049 /* GeomagWidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001A /* GeomagWidgetProvider.swift */; };
@@ -74,6 +76,7 @@
 		00000000000000000000005F /* ObservatoryAppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000010 /* ObservatoryAppGroup.swift */; };
 		000000000000000000000060 /* ObservatoryIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000012 /* ObservatoryIntents.swift */; };
 		000000000000000000000061 /* ObservatorySelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000014 /* ObservatorySelection.swift */; };
+		0000000000000000000000E3 /* SettingsSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000000000000000E0 /* SettingsSync.swift */; };
 		000000000000000000000062 /* StormDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000016 /* StormDetector.swift */; };
 		000000000000000000000063 /* UTCDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000018 /* UTCDate.swift */; };
 		000000000000000000000064 /* GeomagWidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001A /* GeomagWidgetProvider.swift */; };
@@ -103,6 +106,7 @@
 		000000000000000000000080 /* ObservatoryAppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000010 /* ObservatoryAppGroup.swift */; };
 		000000000000000000000081 /* ObservatoryIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000012 /* ObservatoryIntents.swift */; };
 		000000000000000000000082 /* ObservatorySelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000014 /* ObservatorySelection.swift */; };
+		0000000000000000000000E4 /* SettingsSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000000000000000E0 /* SettingsSync.swift */; };
 		000000000000000000000083 /* StormDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000016 /* StormDetector.swift */; };
 		000000000000000000000084 /* UTCDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000018 /* UTCDate.swift */; };
 		000000000000000000000085 /* GeomagWidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001A /* GeomagWidgetProvider.swift */; };
@@ -193,6 +197,7 @@
 		000000000000000000000010 /* ObservatoryAppGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryAppGroup.swift; path = Sources/ObservatoryCore/ObservatoryAppGroup.swift; sourceTree = SOURCE_ROOT; };
 		000000000000000000000012 /* ObservatoryIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatoryIntents.swift; path = Sources/ObservatoryCore/ObservatoryIntents.swift; sourceTree = SOURCE_ROOT; };
 		000000000000000000000014 /* ObservatorySelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ObservatorySelection.swift; path = Sources/ObservatoryCore/ObservatorySelection.swift; sourceTree = SOURCE_ROOT; };
+		0000000000000000000000E0 /* SettingsSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SettingsSync.swift; path = Sources/ObservatoryCore/SettingsSync.swift; sourceTree = SOURCE_ROOT; };
 		000000000000000000000016 /* StormDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StormDetector.swift; path = Sources/ObservatoryCore/StormDetector.swift; sourceTree = SOURCE_ROOT; };
 		000000000000000000000018 /* UTCDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UTCDate.swift; path = Sources/ObservatoryCore/UTCDate.swift; sourceTree = SOURCE_ROOT; };
 		00000000000000000000001A /* GeomagWidgetProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GeomagWidgetProvider.swift; path = Sources/ObservatoryPlot/GeomagWidgetProvider.swift; sourceTree = SOURCE_ROOT; };
@@ -331,6 +336,7 @@
 				000000000000000000000010 /* ObservatoryAppGroup.swift */,
 				000000000000000000000012 /* ObservatoryIntents.swift */,
 				000000000000000000000014 /* ObservatorySelection.swift */,
+				0000000000000000000000E0 /* SettingsSync.swift */,
 				000000000000000000000016 /* StormDetector.swift */,
 				000000000000000000000018 /* UTCDate.swift */,
 			);
@@ -570,6 +576,7 @@
 				00000000000000000000000F /* ObservatoryAppGroup.swift in Sources */,
 				000000000000000000000011 /* ObservatoryIntents.swift in Sources */,
 				000000000000000000000013 /* ObservatorySelection.swift in Sources */,
+				0000000000000000000000E1 /* SettingsSync.swift in Sources */,
 				000000000000000000000015 /* StormDetector.swift in Sources */,
 				000000000000000000000017 /* UTCDate.swift in Sources */,
 				000000000000000000000019 /* GeomagWidgetProvider.swift in Sources */,
@@ -607,6 +614,7 @@
 				000000000000000000000044 /* ObservatoryAppGroup.swift in Sources */,
 				000000000000000000000045 /* ObservatoryIntents.swift in Sources */,
 				000000000000000000000046 /* ObservatorySelection.swift in Sources */,
+				0000000000000000000000E2 /* SettingsSync.swift in Sources */,
 				000000000000000000000047 /* StormDetector.swift in Sources */,
 				000000000000000000000048 /* UTCDate.swift in Sources */,
 				000000000000000000000049 /* GeomagWidgetProvider.swift in Sources */,
@@ -639,6 +647,7 @@
 				00000000000000000000005F /* ObservatoryAppGroup.swift in Sources */,
 				000000000000000000000060 /* ObservatoryIntents.swift in Sources */,
 				000000000000000000000061 /* ObservatorySelection.swift in Sources */,
+				0000000000000000000000E3 /* SettingsSync.swift in Sources */,
 				000000000000000000000062 /* StormDetector.swift in Sources */,
 				000000000000000000000063 /* UTCDate.swift in Sources */,
 				000000000000000000000064 /* GeomagWidgetProvider.swift in Sources */,
@@ -673,6 +682,7 @@
 				000000000000000000000080 /* ObservatoryAppGroup.swift in Sources */,
 				000000000000000000000081 /* ObservatoryIntents.swift in Sources */,
 				000000000000000000000082 /* ObservatorySelection.swift in Sources */,
+				0000000000000000000000E4 /* SettingsSync.swift in Sources */,
 				000000000000000000000083 /* StormDetector.swift in Sources */,
 				000000000000000000000084 /* UTCDate.swift in Sources */,
 				000000000000000000000085 /* GeomagWidgetProvider.swift in Sources */,

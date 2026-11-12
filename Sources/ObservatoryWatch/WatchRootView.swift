@@ -32,6 +32,11 @@ struct WatchRootView: View {
                     await model.load()
                 }
             }
+            // Selections pulled from another device (iCloud key-value sync); a changed
+            // station or range restarts the task above through its id.
+            .onReceive(NotificationCenter.default.publisher(for: SettingsSync.didPullNotification)) { _ in
+                model.applySyncedSettings()
+            }
             // .task(id:) does NOT re-fire when the app is re-activated with an unchanged
             // id — without this, reopening the app (e.g. from a complication tap) showed
             // stale data until a manual Refresh.

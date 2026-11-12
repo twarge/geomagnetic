@@ -75,7 +75,7 @@ public enum ObservatoryElementPreference {
 /// Cross-process selection state, persisted in the App Group defaults so the widgets and
 /// the watch render the same observatory the user last looked at in the app.
 public enum ObservatorySettings {
-    private enum Key {
+    enum Key {
         static let observatoryCode = "selectedObservatoryCode"
         static let timeRange = "selectedTimeRange"
         static let elements = "selectedElements"
