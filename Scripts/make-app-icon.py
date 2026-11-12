@@ -11,10 +11,11 @@ it into every size each platform needs and applies the system shape (rounded
 square, or circle on the watch) and the glass, dark and tinted treatments, so
 the artwork here is full bleed and carries no mask, rim or shadow of its own.
 
-The picture is the original Geomagnetic icon, split into layers from back to
-front: a night-blue chart with a faint grid (Grid), a couple of days of field
-variation (Glow under Trace), and the latest reading (Dot). The original's rim,
-which followed each platform's icon shape, is left out.
+The picture is the original Geomagnetic icon's chart, split into layers from
+back to front: a night-blue background with a faint grid (Grid), a magnetogram
+running from edge to edge through three reconnection episodes (Glow under
+Trace), and a reading marked on it (Dot). The original's rim, which followed
+each platform's icon shape, is left out.
 
 The bundle is committed, so this only needs running when the design changes.
 To look at the result without building:
@@ -45,32 +46,51 @@ GRID_OPACITY = 0.12
 GLOW = "#4DB8FF"      # halo around the trace
 GLOW_OPACITY = 0.45
 TRACE = "#DEF5FF"     # the trace itself
-DOT = "#FFFFFF"       # latest reading
+DOT = "#FFFFFF"       # the marked reading
 
 # Geometry, on the 1024 x 1024 canvas with y downward.
 GRID_COLS, GRID_ROWS = 8, 6
 GRID_WIDTH = 4
-PLOT_INSET_X, PLOT_INSET_Y = 0.13, 0.22   # the trace's box, as fractions of the canvas
-SAMPLES = 260
 GLOW_WIDTH = 51
 TRACE_WIDTH = 22.5
 DOT_RADIUS = 27
 
+# The trace: three reconnection episodes (substorms) as a ground observatory
+# records them. At each onset the ionospheric electrojet switches on and the
+# horizontal field drops within minutes, rings briefly, then recovers slowly.
+QUIET = 292           # y of the undisturbed field
+# One row per episode: x of the onset, depth of the drop, length of the recovery.
+EPISODES = [(140, 300, 105), (440, 425, 125), (735, 345, 115)]
+GROWTH = 0.14         # share of the depth lost slowly before the onset
+ONSET = 34            # how far the trace travels in x during the drop
+DOT_X = 884           # where the reading marker rides the trace
+STEP = 2.5            # x spacing of the trace's points
 
-def variation(t):
-    """A couple of days of plausible field variation: two diurnal cycles plus ripples."""
-    return (0.55 * math.sin(2 * math.pi * 2 * t - math.pi / 2)
-            + 0.17 * math.sin(2 * math.pi * 5 * t + 0.6)
-            + 0.10 * math.sin(2 * math.pi * 13 * t + 1.2)
-            + 0.05 * math.sin(2 * math.pi * 27 * t + 0.3))
+
+def field(x):
+    """The trace's y at canvas x."""
+    y = QUIET
+    for onset, depth, recovery in EPISODES:
+        u = x - onset
+        if u < 0:
+            y += depth * GROWTH * math.exp(u / 80)
+        elif u < ONSET:
+            s = u / ONSET
+            y += depth * (GROWTH + (1 - GROWTH) * s * s * (3 - 2 * s))
+        else:
+            v = u - ONSET
+            y += depth * (math.exp(-v / recovery)
+                          + 0.11 * math.exp(-v / 55) * math.sin(2 * math.pi * v / 42))
+    # The restless fine structure every magnetogram has.
+    return y + 9 * math.sin(2 * math.pi * x / 58 + 1.2) + 5 * math.sin(2 * math.pi * x / 29 + 0.3)
 
 
 def trace_points():
-    left = SIZE * PLOT_INSET_X
-    width = SIZE * (1 - 2 * PLOT_INSET_X)
-    half = SIZE * (1 - 2 * PLOT_INSET_Y) / 2
-    return [(left + width * i / SAMPLES, SIZE / 2 - half * variation(i / SAMPLES))
-            for i in range(SAMPLES + 1)]
+    # From beyond one edge to beyond the other, so no end shows in the square
+    # or in the watch's circle.
+    lo, hi = -BLEED - GLOW_WIDTH, SIZE + BLEED + GLOW_WIDTH
+    n = int(round((hi - lo) / STEP))
+    return [(x, field(x)) for x in (lo + (hi - lo) * i / n for i in range(n + 1))]
 
 
 def svg(body, bleed=0):
@@ -99,8 +119,7 @@ def trace(color, width, opacity=None):
 
 
 def dot():
-    x, y = trace_points()[-1]
-    return ['<circle cx="%.1f" cy="%.1f" r="%g" fill="%s"/>' % (x, y, DOT_RADIUS, DOT)]
+    return ['<circle cx="%.1f" cy="%.1f" r="%g" fill="%s"/>' % (DOT_X, field(DOT_X), DOT_RADIUS, DOT)]
 
 
 # Layers from front to back, the order icon.json lists them: name, artwork,
@@ -108,8 +127,8 @@ def dot():
 # or the halo); the trace and the dot are the glass pieces.
 LAYERS = [
     ("Dot", dot(), 0, True, 0.5),
-    ("Trace", trace(TRACE, TRACE_WIDTH), 0, True, 0.5),
-    ("Glow", trace(GLOW, GLOW_WIDTH, GLOW_OPACITY), 0, False, 0.0),
+    ("Trace", trace(TRACE, TRACE_WIDTH), BLEED, True, 0.5),
+    ("Glow", trace(GLOW, GLOW_WIDTH, GLOW_OPACITY), BLEED, False, 0.0),
     ("Grid", grid(), BLEED, False, 0.0),
 ]
 
